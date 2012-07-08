@@ -2,7 +2,6 @@ package main
 
 import (
 	"flag"
-	"fmt"
 	"html/template"
 	"io/ioutil"
 	"log"
@@ -31,7 +30,7 @@ func main() {
 
 	http.HandleFunc("/", handleRequest)
 
-	fmt.Println("Started web server at 127.0.0.1:" + *httpPort + ".")
+	log.Println("Started web server at 127.0.0.1:" + *httpPort + ".")
 	error := http.ListenAndServe(":"+*httpPort, nil)
 
 	if error != nil {
@@ -44,8 +43,8 @@ func handleRequest(responseWriter http.ResponseWriter, request *http.Request) {
 		fileContent, error := ioutil.ReadFile("views/layouts/default.html")
 
 		if error != nil {
-			fmt.Println("Error:", error)
 			http.NotFound(responseWriter, request)
+			log.Println("Error:", error)
 			return
 		}
 
@@ -56,7 +55,7 @@ func handleRequest(responseWriter http.ResponseWriter, request *http.Request) {
 
 		if error != nil {
 			http.Error(responseWriter, error.Error(), http.StatusInternalServerError)
-			fmt.Println(error)
+			log.Println("Error:", error)
 			return
 		}
 
@@ -68,13 +67,15 @@ func handleRequest(responseWriter http.ResponseWriter, request *http.Request) {
 
 		if error != nil {
 			http.NotFound(responseWriter, request)
+			log.Println("Error:", error)
 			return
 		}
 
 		fileInfo, error := file.Stat()
 
 		if error != nil {
-			fmt.Println("Error:", error)
+			http.NotFound(responseWriter, request)
+			log.Println("Error:", error)
 			return
 		}
 
