@@ -2,6 +2,7 @@ window.addEvent("domready", function() {
 	var boardElement = $("board");
 
 	if (!boardElement) {
+		console.error("app: HTML element with id 'board' could not be found.");
 		return;
 	}
 
@@ -12,18 +13,4 @@ window.addEvent("domready", function() {
 	var boardControls = app.views.boardControls.createInstance();
 	var boardControlsElement = boardControls.create();
 	$(document.body).grab(boardControlsElement);
-
-
-	// var view = app.views.main.createView();
-
-	// var infoContainer = view.createInfoContainer();
-	// $(document.body).grab(infoContainer);
-
-	// var imageColumnsContainer = view.createImageColumnsContainer();
-	// $(document.body).grab(imageColumnsContainer);
-
-	// var loadMoreAnchor = view.createLoadMoreAnchor();
-	// $(document.body).grab(loadMoreAnchor);
-
-	// view.fillList(imageColumnsContainer);
 });
