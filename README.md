@@ -21,3 +21,23 @@ Once the biggest problems are fixed and the most requested features are added, t
 * There is no endless scrolling, you must click "Load more" all the time.
 * There is no convenient way to select subreddits.
 * You can't switch between Reddit's "Hot", "New", "Controversial", "Top" sections. (Current default is "Hot".)
+
+## Compiling Panoptikos
+
+Clone the repository, go to the directory and build an executable (which will be automatically named after the directory, in this case "panoptikos"):
+
+	$ git clone https://github.com/ChristianSiegert/panoptikos.git
+	$ cd ./panoptikos
+	$ go build
+
+## Running Panoptikos
+
+Simply execute the compiled file:
+
+	$ ./panoptikos
+
+## Command-line arguments
+
+Panoptikos currently supports these command-line arguments:
+
+* **--port** HTTP port the web server listens to. Default is "8080".
