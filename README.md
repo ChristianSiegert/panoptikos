@@ -13,6 +13,7 @@ Once the biggest problems are fixed and the most requested features are added, t
 * By default, you see content from Reddit's ”Hot” section instead of from the ”New” section. This protects us largely from trolls that post NSFL content.
 
 ## Known Issues
+
 * Uneven column bottoms because images are not distributed by column height.
 * Possible high memory usage and even browser crashes on 32-bit systems because images outside the visible screen area are not removed.
 * Jerky scrolling because high-resolution images from sources other than Imgur are often used for the small previews.
@@ -38,6 +39,6 @@ Simply execute the compiled file:
 
 ## Command-line arguments
 
-Panoptikos currently supports these command-line arguments:
+Panoptikos supports these command-line arguments:
 
 * **--port** HTTP port the web server listens to. Default is "8080".
