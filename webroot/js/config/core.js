@@ -2,8 +2,8 @@
 	var exports = app.namespace("app.config.core");
 
 	exports.board = {
-		columnLeftMargin: 10,
-		columnWidth: 328
+		columnMarginLeft: 10,
+		columnMaxWidth: 328
 	};
 
 	/**

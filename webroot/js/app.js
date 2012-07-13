@@ -6,7 +6,11 @@ window.addEvent("domready", function() {
 		return;
 	}
 
-	var board = app.views.board.createInstance(boardElement, app.config.core.board.columnWidth, app.config.core.board.columnLeftMargin);
+	var board = app.views.board.createInstance(
+		boardElement,
+		app.config.core.board.columnMaxWidth,
+		app.config.core.board.columnMarginLeft
+	);
 	board.initialize();
 	board.rebuild();
 

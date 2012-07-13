@@ -4,27 +4,29 @@
 	/**
 	 * createInstance returns a new instance of class Board.
 	 * @param HTMLElement board Root element where all other markup is placed to create the board.
-	 * @param integer columnWidth Width of a column in pixels. Used to calculate how many columns can be displayed.
-	 * @param integer columnLeftMargin Margin between columns in pixels.
+	 * @param integer columnMaxWidth Maximum width of columns in pixels.
+	 * @param integer columnMarginLeft Margin between columns in pixels.
 	 * @returns object Board
 	 */
-	exports.createInstance = function(board, columnWidth, columnLeftMargin) {
-		return new Board(board, columnWidth, columnLeftMargin);
+	exports.createInstance = function(board, columnMaxWidth, columnMarginLeft) {
+		return new Board(board, columnMaxWidth, columnMarginLeft);
 	};
 
 	/**
 	 * Class Board manages the display of images as well as some delegated click
 	 * events.
 	 * @param HTMLElement board Root element where all other markup is placed to create the board.
-	 * @param integer columnWidth Width of a column in pixels. Used to calculate how many columns can be displayed.
-	 * @param integer columnLeftMargin Margin between columns in pixels.
+	 * @param integer columnMaxWidth Maximum width of columns in pixels.
+	 * @param integer columnMarginLeft Margin between columns in pixels.
 	 */
-	function Board(board, columnWidth, columnLeftMargin) {
+	function Board(board, columnMaxWidth, columnMarginLeft) {
 		var self = this;
 
 		var columnCount;
+		var columnWidth;
+
 		var columns = [];
-		var images = [];
+		var boardItems = [];
 		var resizeTimeoutId;
 
 		// For keeping track of states
@@ -33,7 +35,8 @@
 		var lastThreadId;
 		var requestToReddit;
 
-		var columnIndex = -1;
+		var columnIndex = 0;
+		var styleElement;
 
 		self.initialize = function() {
 			window.addEvent("app.views.board.loadMoreImages", handleLoadImagesEvent);
@@ -96,13 +99,18 @@
 			}
 
 			var availableBoardWidth = board.getWidth();
-			var newColumnCount = 0;
+			var newColumnCount = 1;
+			var newColumnWidth = columnMaxWidth;
 
-			if (columnWidth <= availableBoardWidth) {
-				newColumnCount++;
-				availableBoardWidth -= columnWidth;
+			if (newColumnWidth > availableBoardWidth) {
+				newColumnWidth = availableBoardWidth;
+			} else {
+				newColumnCount += Math.floor((availableBoardWidth - newColumnWidth) / (newColumnWidth + columnMarginLeft));
+			}
 
-				newColumnCount += Math.floor(availableBoardWidth / (columnWidth + columnLeftMargin));
+			if (newColumnWidth !== columnWidth) {
+				resizeColumns(newColumnWidth, columnMarginLeft);
+				columnWidth = newColumnWidth;
 			}
 
 			if (newColumnCount === columnCount) {
@@ -112,17 +120,27 @@
 			columnCount = newColumnCount;
 			columns = [];
 
-			// Remove all children elements
+			// Remove all child elements and reset column index
 			board.empty();
+			columnIndex = 0;
 
-			for (i = 0; i < columnCount; i++) {
-				var column = createColumn({
-					// styles: {
-					// 	"margin-left": i === 0 ? 0 : columnLeftMargin
-					// }
-				});
+			// Create columns
+			for (var i = 0; i < columnCount; i++) {
+				var column = createColumn();
 				columns.push(column);
 				board.grab(column);
+			}
+
+			// alert(JSON.stringify({
+			// 	availableBoardWidth: availableBoardWidth,
+			// 	columnCount: columnCount,
+			// 	newColumnWidth: newColumnWidth
+			// }));
+			console.log("app.views.board.rebuild: Rebuilding board with %d images.", boardItems.length);
+
+			// Fill columns with previously fetched images, if any.
+			for (var i = 0, boardItemCount = boardItems.length; i < boardItemCount; i++) {
+				placeImageOnBoard(boardItems[i]);
 			}
 
 			return board;
@@ -131,13 +149,7 @@
 		function createColumn(properties) {
 			properties = properties || {};
 			properties = Object.merge(properties, {
-				"class": "board-column",
-				// styles: {
-				// 	"background-color": "orange",
-				// 	display: "inline-block",
-				// 	"min-height": 500,
-				// 	width: columnWidth
-				// }
+				"class": "board-column"
 			});
 
 			var column = new Element("div", properties);
@@ -246,20 +258,25 @@
 				return;
 			}
 
-			if (columnIndex < 0 || columnIndex >= columns.length) {
-				columnIndex = 0;
-			}
-
 			var boardItem = app.views.boardItem.createInstance();
 			var boardItemElement = boardItem.create(thread, image, fullsizeImageUrl);
 
-			columns[columnIndex].grab(boardItemElement);
-			columnIndex++;
+			boardItems.push(boardItemElement);
+			placeImageOnBoard(boardItemElement);
 
 			if (!hasLoadedAnImage) {
 				hasLoadedAnImage = true;
 				updateLoadMoreAnchor();
 			}
+		}
+
+		function placeImageOnBoard(boardItem) {
+			if (columnIndex < 0 || columnIndex >= columns.length) {
+				columnIndex = 0;
+			}
+
+			columns[columnIndex].grab(boardItem);
+			columnIndex++;
 		}
 
 		function updateLoadMoreAnchor() {
@@ -276,6 +293,48 @@
 			// }
 
 			// loadMoreAnchor.set("html", anchorText);
+		}
+
+
+		var columnHeights = [30, 20, 10, 40];
+
+		/**
+		 * getShortestColumn returns the shortest of the provided columns.
+		 * @param array Array of HTMLElements
+		 * @returns HTMLElement|null Returns HTMLElement if columns array has at least one item, null otherwise.
+		 */
+		function getShortestColumn(columns) {
+			return column = null;
+
+			for (var i = 0, columnCount = columns.length; i < columnCount; i++) {
+				if (i === 0) {
+					column = 0;
+					continue;
+				}
+
+				if (columns[i].getHeight() > column.getHeight()) {
+					column = columns[i];
+				}
+			}
+
+			return column;
+		}
+
+		function resizeColumns(columnWidth, columnMarginLeft) {
+			var style = ".board-column {margin-left: " + columnMarginLeft + "px; width: " + columnWidth + "px;}";
+			style += ".board-item {width: " + (columnWidth - 8) + "px;}";
+
+			if (!styleElement) {
+				styleElement = new Element("style", {
+					"html": style,
+					"type": "text/css"
+				});
+
+				styleElement.inject($(document.head));
+				return;
+			}
+
+			styleElement.set("html", style);
 		}
 	};
 })();
