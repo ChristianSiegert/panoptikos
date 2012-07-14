@@ -131,11 +131,6 @@
 				board.grab(column);
 			}
 
-			// alert(JSON.stringify({
-			// 	availableBoardWidth: availableBoardWidth,
-			// 	columnCount: columnCount,
-			// 	newColumnWidth: newColumnWidth
-			// }));
 			console.log("app.views.board.rebuild: Rebuilding board with %d images.", boardItems.length);
 
 			// Fill columns with previously fetched images, if any.
@@ -240,12 +235,11 @@
 		}
 
 		function handleImgurRequestLoadEvent(thread, image, fullsizeImageUrl) {
-			console.log("app.views.board.handleImgurRequestLoadEvent: " + image.width + "x" + image.height);
 			handleImageLoadEvent(thread, image, fullsizeImageUrl);
 		}
 
 		function handleImageErrorEvent() {
-			console.log("imageError", arguments);
+			console.log("app.views.board.handleImageErrorEvent:", arguments);
 		}
 
 		function handleImageLoadEvent(thread, image, fullsizeImageUrl) {
@@ -254,7 +248,7 @@
 			if (image.height === 81
 					&& image.width === 161
 					&& image.src.match(/^https?:\/\/i\.imgur\.com\//)) {
-				console.log("Ignoring image: " + image.src);
+				console.log("app.views.board.handleImageLoadEvent: Ignoring image: " + image.src);
 				return;
 			}
 
@@ -320,6 +314,14 @@
 			return column;
 		}
 
+		/**
+		 * resizeColumns injects CSS with style rules for Board margin, Board
+		 * width and BoardItem width into the page by creating a <style> element
+		 * or modifying the created <style> element.
+		 * @param integer columnWidth New width of columns in pixels.
+		 * @param integer columnMarginLeft New margin between board columns in pixels.
+		 * @returns void
+		 */
 		function resizeColumns(columnWidth, columnMarginLeft) {
 			var style = ".board-column {margin-left: " + columnMarginLeft + "px; width: " + columnWidth + "px;}";
 			style += ".board-item {width: " + (columnWidth - 8) + "px;}";
