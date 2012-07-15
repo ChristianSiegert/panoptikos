@@ -26,6 +26,8 @@
 		var columnWidth;
 
 		var columns = [];
+		var columnHeights = [];
+
 		var boardItems = [];
 		var resizeTimeoutId;
 
@@ -35,9 +37,17 @@
 		var lastThreadId;
 		var requestToReddit;
 
-		var columnIndex = 0;
+		/**
+		 * @var HTMLElement
+		 */
 		var styleElement;
 
+		/**
+		 * initialize adds event listeners to the window and board to handle the
+		 * window resize event, some board click events and a custom app-wide
+		 * event. Do not call this method more than once.
+		 * @returns void
+		 */
 		self.initialize = function() {
 			window.addEvent("app.views.board.loadMoreImages", handleLoadImagesEvent);
 			window.addEvent("resize", handleWindowResizeEvent);
@@ -90,8 +100,10 @@
 		}
 
 		/**
-		 * rebuild creates a board with image columns from scratch.
-		 * @returns element HTML element
+		 * rebuild calculates how many columns can be displayed, adjusts the
+		 * column size, and if necessary empties the board and creates new
+		 * columns that are filled with board items.
+		 * @returns HTMLElement
 		 */
 		self.rebuild = function() {
 			if (typeOf(board) !== "element") {
@@ -113,21 +125,25 @@
 				columnWidth = newColumnWidth;
 			}
 
+			// If we show the same number of columns as before, don't rebuild the board
 			if (newColumnCount === columnCount) {
 				return;
 			}
 
 			columnCount = newColumnCount;
+
+			// Reset variables
 			columns = [];
+			columnHeights = [];
 
-			// Remove all child elements and reset column index
+			// Remove all columns
 			board.empty();
-			columnIndex = 0;
 
-			// Create columns
+			// Create new columns
 			for (var i = 0; i < columnCount; i++) {
 				var column = createColumn();
 				columns.push(column);
+				columnHeights.push(0);
 				board.grab(column);
 			}
 
@@ -135,19 +151,17 @@
 
 			// Fill columns with previously fetched images, if any.
 			for (var i = 0, boardItemCount = boardItems.length; i < boardItemCount; i++) {
-				placeImageOnBoard(boardItems[i]);
+				addBoardItemToBoard(boardItems[i]);
 			}
 
 			return board;
 		};
 
-		function createColumn(properties) {
-			properties = properties || {};
-			properties = Object.merge(properties, {
+		function createColumn() {
+			var column = new Element("div", {
 				"class": "board-column"
 			});
 
-			var column = new Element("div", properties);
 			return column;
 		}
 
@@ -256,7 +270,7 @@
 			var boardItemElement = boardItem.create(thread, image, fullsizeImageUrl);
 
 			boardItems.push(boardItemElement);
-			placeImageOnBoard(boardItemElement);
+			addBoardItemToBoard(boardItemElement);
 
 			if (!hasLoadedAnImage) {
 				hasLoadedAnImage = true;
@@ -264,13 +278,19 @@
 			}
 		}
 
-		function placeImageOnBoard(boardItem) {
-			if (columnIndex < 0 || columnIndex >= columns.length) {
-				columnIndex = 0;
+		/**
+		 * addBoardItemToBoard adds the board item to the shortest column.
+		 * @returns void
+		 */
+		function addBoardItemToBoard(boardItem) {
+			var columnIndex = getIndexOfShortestColumn(columnHeights);
+
+			if (columnIndex === null || !columns || !columns[columnIndex]) {
+				return;
 			}
 
 			columns[columnIndex].grab(boardItem);
-			columnIndex++;
+			columnHeights[columnIndex] = columns[columnIndex].getHeight();
 		}
 
 		function updateLoadMoreAnchor() {
@@ -289,29 +309,30 @@
 			// loadMoreAnchor.set("html", anchorText);
 		}
 
-
-		var columnHeights = [30, 20, 10, 40];
-
 		/**
-		 * getShortestColumn returns the shortest of the provided columns.
-		 * @param array Array of HTMLElements
-		 * @returns HTMLElement|null Returns HTMLElement if columns array has at least one item, null otherwise.
+		 * getIndexOfShortestColumn returns the index of the shortest column, or
+		 * null if there are no columns.
+		 * @param array<integer> columnHeights Array of integers.
+		 * @returns integer
 		 */
-		function getShortestColumn(columns) {
-			return column = null;
+		function getIndexOfShortestColumn(columnHeights) {
+			var shortestColumnHeight = null;
+			var shortestColumnIndex = null;
 
-			for (var i = 0, columnCount = columns.length; i < columnCount; i++) {
-				if (i === 0) {
-					column = 0;
+			for (var i = 0, columnHeightsCount = columnHeights.length; i < columnHeightsCount; i++) {
+				if (shortestColumnHeight === null) {
+					shortestColumnHeight = columnHeights[i];
+					shortestColumnIndex = i;
 					continue;
 				}
 
-				if (columns[i].getHeight() > column.getHeight()) {
-					column = columns[i];
+				if (shortestColumnHeight > columnHeights[i]) {
+					shortestColumnHeight = columnHeights[i];
+					shortestColumnIndex = i;
 				}
 			}
 
-			return column;
+			return shortestColumnIndex;
 		}
 
 		/**
