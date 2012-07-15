@@ -25,11 +25,13 @@ Once the biggest problems are fixed and the most requested features are added, t
 
 ## Compiling Panoptikos
 
-Clone the repository, go to the directory and build an executable (which will be automatically named after the directory, in this case "panoptikos"):
+[Install the Go tools](http://golang.org/doc/install) if you haven't done so already. Then, clone the repository, go to the cloned directory and build the executable:
 
 	$ git clone https://github.com/ChristianSiegert/panoptikos.git
 	$ cd ./panoptikos
 	$ go build
+
+The executable is named after the directory, in this case "panoptikos".
 
 ## Running Panoptikos
 
@@ -42,3 +44,9 @@ Simply execute the compiled file:
 Panoptikos supports these command-line arguments:
 
 * **--port** HTTP port the web server listens to. Default is "8080".
+
+## Example
+
+To start the web server and make it listen to port 80:
+
+	$ ./panoptikos --port=80
