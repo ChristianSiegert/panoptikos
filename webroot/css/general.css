@@ -71,3 +71,11 @@ html {
 				margin: 4px 0 0;
 				text-decoration: none;
 			}
+
+#board-controls {
+	cursor: pointer;
+	display: block;
+	font-size: 14px;
+	padding: 10px 0;
+	text-align: center;
+}

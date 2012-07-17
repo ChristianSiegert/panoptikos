@@ -38,6 +38,15 @@
 		var requestToReddit;
 
 		/**
+		 * Number of running requests.
+		 * @var integer
+		 */
+		var runningRequestsCount = 0;
+
+		/**
+		 * <style> element that is injected into the document head with
+		 * generated CSS that changes the board column widths, among other
+		 * things.
 		 * @var HTMLElement
 		 */
 		var styleElement;
@@ -49,7 +58,7 @@
 		 * @returns void
 		 */
 		self.initialize = function() {
-			window.addEvent("app.views.board.loadMoreImages", handleLoadImagesEvent);
+			window.addEvent("app.views.boardControls.userDidAskForImages", handleUserDidAskForImagesEvent);
 			window.addEvent("resize", handleWindowResizeEvent);
 			board.addEvent("click:relay(.board-item-image-anchor)", handleBoardItemImageAnchorClickEvent);
 			board.addEvent("click:relay(.board-item-title-anchor)", handleBoardItemTitleAnchorClickEvent);
@@ -181,28 +190,28 @@
 			return url;
 		}
 
-		function handleLoadImagesEvent() {
+		function handleUserDidAskForImagesEvent() {
+			window.fireEvent("app.views.board.willLoadMoreImages");
+
 			requestToReddit = new Request.JSONP({
 				callbackKey: "jsonp",
 				onCancel: handleRedditRequestCancelEvent,
 				onComplete: handleRedditRequestCompleteEvent,
-				onRequest: handleRedditRequestRequestEvent,
 				onTimeout: handleRedditRequestTimeoutEvent,
 				timeout: app.config.core.network.timeout,
 				url: getUrl()
 			});
 
+			runningRequestsCount++;
 			requestToReddit.send();
 		}
 
 		function handleRedditRequestCancelEvent() {
-			isWaitingForRedditResponse = false;
-			updateLoadMoreAnchor();
+			runningRequestsCount--;
+			window.fireEvent("app.views.board.didCompleteRequest", {runningRequestsCount: runningRequestsCount});
 		}
 
 		function handleRedditRequestCompleteEvent(response) {
-			isWaitingForRedditResponse = false;
-
 			var threads = response.data.children;
 
 			for (var i = 0, threadCount = threads.length; i < threadCount; i++) {
@@ -217,6 +226,8 @@
 					var image = new Image();
 					image.addEvent("error", handleImgurRequestErrorEvent.pass([threads[i].data]));
 					image.addEvent("load", handleImgurRequestLoadEvent.pass([threads[i].data, image, fullsizeImageUrl]));
+
+					runningRequestsCount++;
 					image.src = url;
 					continue;
 				}
@@ -225,27 +236,28 @@
 				var image = new Image();
 				image.addEvent("error", handleImageErrorEvent.pass([threads[i].data]));
 				image.addEvent("load", handleImageLoadEvent.pass([threads[i].data, image]));
+
+				runningRequestsCount++;
 				image.src = url;
 			}
 
 			lastThreadId = response.data.after;
-			updateLoadMoreAnchor();
-		}
 
-		function handleRedditRequestRequestEvent(event) {
-			isWaitingForRedditResponse = true;
-			updateLoadMoreAnchor();
+			runningRequestsCount--;
+			window.fireEvent("app.views.board.didCompleteRequest", {runningRequestsCount: runningRequestsCount});
 		}
 
 		function handleRedditRequestTimeoutEvent(event) {
 			console.log("timeout", arguments);
-			isWaitingForRedditResponse = false;
-			updateLoadMoreAnchor();
+			runningRequestsCount--;
+			window.fireEvent("app.views.board.didCompleteRequest", {runningRequestsCount: runningRequestsCount});
 			alert("Panoptikos cannot retrieve data from Reddit because Reddit is slow or you are not connected to the Internet.");
 		}
 
 		function handleImgurRequestErrorEvent(thread) {
 			console.log("app.views.board.handleImgurRequestErrorEvent:", thread)
+			runningRequestsCount--;
+			window.fireEvent("app.views.board.didCompleteRequest", {runningRequestsCount: runningRequestsCount});
 		}
 
 		function handleImgurRequestLoadEvent(thread, image, fullsizeImageUrl) {
@@ -254,6 +266,8 @@
 
 		function handleImageErrorEvent() {
 			console.log("app.views.board.handleImageErrorEvent:", arguments);
+			runningRequestsCount--;
+			window.fireEvent("app.views.board.didCompleteRequest", {runningRequestsCount: runningRequestsCount});
 		}
 
 		function handleImageLoadEvent(thread, image, fullsizeImageUrl) {
@@ -263,6 +277,11 @@
 					&& image.width === 161
 					&& image.src.match(/^https?:\/\/i\.imgur\.com\//)) {
 				console.log("app.views.board.handleImageLoadEvent: Ignoring image: " + image.src);
+
+				runningRequestsCount--;
+				window.fireEvent("app.views.board.didCompleteRequest", {
+					runningRequestsCount: runningRequestsCount
+				});
 				return;
 			}
 
@@ -272,10 +291,11 @@
 			boardItems.push(boardItemElement);
 			addBoardItemToBoard(boardItemElement);
 
-			if (!hasLoadedAnImage) {
-				hasLoadedAnImage = true;
-				updateLoadMoreAnchor();
-			}
+			runningRequestsCount--;
+			window.fireEvent("app.views.board.didCompleteRequest", {
+				hasLoadedAnImage: true,
+				runningRequestsCount: runningRequestsCount
+			});
 		}
 
 		/**
@@ -291,22 +311,6 @@
 
 			columns[columnIndex].grab(boardItem);
 			columnHeights[columnIndex] = columns[columnIndex].getHeight();
-		}
-
-		function updateLoadMoreAnchor() {
-			// if (!loadMoreAnchor) {
-			// 	return;
-			// }
-
-			// var anchorText = loadMoreAnchorTextDefault1;
-
-			// if (isWaitingForRedditResponse) {
-			// 	anchorText = loadMoreAnchorTextActive1;
-			// } else if (hasLoadedAnImage) {
-			// 	anchorText = loadMoreAnchorTextDefault2;
-			// }
-
-			// loadMoreAnchor.set("html", anchorText);
 		}
 
 		/**
