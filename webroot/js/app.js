@@ -17,4 +17,6 @@ window.addEvent("domready", function() {
 	var boardControls = app.views.boardControls.createInstance();
 	var boardControlsElement = boardControls.create();
 	$(document.body).grab(boardControlsElement);
+
+	window.fireEvent("app.views.boardControls.userDidAskForImages");
 });
