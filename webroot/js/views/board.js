@@ -31,11 +31,12 @@
 		var boardItems = [];
 		var resizeTimeoutId;
 
-		// For keeping track of states
-		var hasLoadedAnImage = false;
-		var isWaitingForRedditResponse = false;
+		/**
+		 * ID of the last Reddit thread that the HTTP response contained. Used
+		 * to request threads that come afterwards.
+		 * @var string
+		 */
 		var lastThreadId;
-		var requestToReddit;
 
 		/**
 		 * Number of running requests.
@@ -97,10 +98,6 @@
 		}
 
 		function handleWindowResizeEvent() {
-			if (!board) {
-				return;
-			}
-
 			if (resizeTimeoutId) {
 				clearTimeout(resizeTimeoutId);
 			}
@@ -193,7 +190,7 @@
 		function handleUserDidAskForImagesEvent() {
 			window.fireEvent("app.views.board.willLoadMoreImages");
 
-			requestToReddit = new Request.JSONP({
+			var requestToReddit = new Request.JSONP({
 				callbackKey: "jsonp",
 				onCancel: handleRedditRequestCancelEvent,
 				onComplete: handleRedditRequestCompleteEvent,
