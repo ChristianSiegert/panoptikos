@@ -1,6 +1,9 @@
 (function() {
 	var exports = app.namespace("app.config.core");
 
+	/**
+	 * Dimensions in pixels.
+	 */
 	exports.board = {
 		columnMarginLeft: 10,
 		columnMaxWidth: 328
