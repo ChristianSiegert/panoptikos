@@ -32,7 +32,7 @@
 		var hasLoadedAnImage = false;
 
 		self.create = function() {
-			boardControls = new Element("div", {
+			boardControls = new Element("a", {
 				html: loadMoreAnchorTextDefault1,
 				id: "board-controls"
 			});
