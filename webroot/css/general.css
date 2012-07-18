@@ -1,7 +1,7 @@
 html {
 	background-color: #F7F5F5;
 	color: #211922;
-	font-family: "Droid Serif", "Ubuntu", "DejaVu Sans", "Helvetica Neue", sans-serif;
+	font-family: "Droid Serif", "Ubuntu", "DejaVu Sans", "Lucida Grande", Georgia, sans-serif;
 	font-size: 16px;
 	padding: 20px;
 
@@ -16,6 +16,15 @@ html {
 	html {
 		padding: 10px;
 	}
+}
+
+a {
+	color: #0154A4;
+	text-decoration: none;
+}
+
+a:hover {
+	color: #4B81BD;
 }
 
 #about {
