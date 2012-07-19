@@ -2,8 +2,8 @@ html {
 	background-color: #F7F5F5;
 	color: #211922;
 	font-family: "Droid Serif", "Ubuntu", "DejaVu Sans", "Lucida Grande", Georgia, sans-serif;
-	font-size: 16px;
 	padding: 20px;
+	padding: 1.25rem;
 
 	/* Prevent Webkit on iOS from scaling text up when orientation is changed to landscape. */
 	-webkit-text-size-adjust: 100%;
@@ -15,6 +15,7 @@ html {
 @media (max-width: 1024px) {
 	html {
 		padding: 10px;
+		padding: 0.625rem;
 	}
 }
 
@@ -29,12 +30,16 @@ a:hover {
 
 #about {
 	font-size: 16px;
+	font-size: 1rem;
 	margin: 0 0 10px;
+	margin: 0 0 0.625rem;
 }
 
 #about-hint {
 	font-size: 14px;
+	font-size: 0.875rem;
 	margin: 0 0 10px;
+	margin: 0 0 0.625rems;
 }
 
 #board {
@@ -56,6 +61,7 @@ a:hover {
 			background-color: #FFF;
 			display: inline-block;
 			margin: 0 0 10px;
+			margin: 0 0 0.625rem;
 			padding: 4px;
 
 			-webkit-box-shadow: 0 1px 3px rgba(34, 25, 25, 0.4);
@@ -76,8 +82,11 @@ a:hover {
 				color: #333;
 				display: block;
 				font-size: 13px;
+				font-size: 0.8125rem;
 				line-height: 20px;
+				line-height: 1.25rem;
 				margin: 4px 0 0;
+				margin: 0.25rem 0 0;
 				text-decoration: none;
 			}
 
@@ -85,6 +94,8 @@ a:hover {
 	cursor: pointer;
 	display: block;
 	font-size: 14px;
+	font-size: 0.875rem;
 	padding: 10px 0;
+	padding: 0.625rem 0;
 	text-align: center;
 }
