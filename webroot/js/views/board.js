@@ -60,10 +60,23 @@
 		 */
 		self.initialize = function() {
 			window.addEvent("app.views.boardControls.userDidAskForImages", handleUserDidAskForImagesEvent);
+			window.addEvent("app.views.subredditPicker.userDidChangeSelectedSubreddits", handleUserDidChangeSelectedSubredditsEvent);
 			window.addEvent("resize", handleWindowResizeEvent);
 			board.addEvent("click:relay(.board-item-image-anchor)", handleBoardItemImageAnchorClickEvent);
 			board.addEvent("click:relay(.board-item-title-anchor)", handleBoardItemTitleAnchorClickEvent);
 		};
+
+		function reset() {
+			columnCount = null;
+			columnWidth = null;
+
+			columns = [];
+			columnHeights = [];
+
+			boardItems = [];
+			lastThreadId = "";
+			runningRequestsCount = 0;
+		}
 
 		function handleBoardItemImageAnchorClickEvent(event) {
 			event.stop();
@@ -172,13 +185,7 @@
 		}
 
 		function getUrl() {
-			var subredditNames = app.extractSubredditNamesFromLocationHash(location.hash);
-
-			if (subredditNames.length === 0) {
-				subredditNames = app.config.core.getNamesOfDefaultSubreddits();
-			}
-
-			url = "http://www.reddit.com/r/" + subredditNames.join("+") + ".json?limit=25";
+			url = "http://www.reddit.com/r/" + app.models.subreddit.getSelectedSubreddits().join("+") + ".json?limit=25";
 
 			if (lastThreadId) {
 				url += "&after=" + lastThreadId;
@@ -188,8 +195,6 @@
 		}
 
 		function handleUserDidAskForImagesEvent() {
-			window.fireEvent("app.views.board.willLoadMoreImages");
-
 			var requestToReddit = new Request.JSONP({
 				callbackKey: "jsonp",
 				onCancel: handleRedditRequestCancelEvent,
@@ -359,6 +364,12 @@
 			}
 
 			styleElement.set("html", style);
+		}
+
+		function handleUserDidChangeSelectedSubredditsEvent() {
+			reset();
+			self.rebuild();
+			handleUserDidAskForImagesEvent();
 		}
 	};
 })();

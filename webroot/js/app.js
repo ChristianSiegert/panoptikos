@@ -1,3 +1,6 @@
+// Create namespace for our app
+var app = {};
+
 window.addEvent("domready", function() {
 	var boardElement = $("board");
 
@@ -17,6 +20,9 @@ window.addEvent("domready", function() {
 	var boardControls = app.views.boardControls.createInstance();
 	var boardControlsElement = boardControls.create();
 	$(document.body).grab(boardControlsElement);
+
+	var subredditPickerLauncher = new app.ui.SubredditPickerLauncher().toElement();
+	boardElement.grab(subredditPickerLauncher, "before");
 
 	window.fireEvent("app.views.boardControls.userDidAskForImages");
 });

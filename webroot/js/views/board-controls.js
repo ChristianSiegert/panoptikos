@@ -21,6 +21,9 @@
 		 */
 		var boardControls;
 
+		/**
+		 * @var string
+		 */
 		var loadMoreAnchorTextDefault1 = "Load images";
 		var loadMoreAnchorTextDefault2 = "Load more";
 		var loadMoreAnchorTextActive = "Loading images&hellip;"
@@ -37,7 +40,7 @@
 				id: "board-controls"
 			});
 
-			window.addEvent("app.views.board.didCompleteRequest", handleDidLoadMoreImage);
+			window.addEvent("app.views.board.didCompleteRequest", handleBoardDidCompleteRequestEvent);
 
 			boardControls.addEvent("click", handleClickEvent);
 			return boardControls;
@@ -47,7 +50,7 @@
 			window.fireEvent("app.views.boardControls.userDidAskForImages");
 		};
 
-		function handleDidLoadMoreImage(event) {
+		function handleBoardDidCompleteRequestEvent(event) {
 			if (!event
 					|| typeof(event.runningRequestsCount) !== "number"
 					|| isNaN(event.runningRequestsCount)) {

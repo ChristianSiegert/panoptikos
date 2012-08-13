@@ -67,7 +67,36 @@ a:hover {
 			-webkit-box-shadow: 0 1px 3px rgba(34, 25, 25, 0.4);
 			   -moz-box-shadow: 0 1px 3px rgba(34, 25, 25, 0.4);
 			        box-shadow: 0 1px 3px rgba(34, 25, 25, 0.4);
+	    }
+
+
+	    .board-item.new-from-request {
+			-webkit-animation-duration: 0.5s;
+			   -moz-animation-duration: 0.5s;
+
+			-webkit-animation-name: board-item-fade-in;
+			   -moz-animation-name: board-item-fade-in;
 		}
+
+			@-webkit-keyframes board-item-fade-in {
+				from {
+					opacity: 0;
+				}
+
+				to {
+					opacity: 1;
+				}
+			}
+
+			@-moz-keyframes board-item-fade-in {
+				from {
+					opacity: 0;
+				}
+
+				to {
+					opacity: 1;
+				}
+			}
 
 			.board-item-image-anchor {
 				display: block
@@ -98,4 +127,13 @@ a:hover {
 	padding: 10px 0;
 	padding: 0.625rem 0;
 	text-align: center;
+}
+
+#subreddit-picker-launcher {
+	cursor: pointer;
+	display: inline-block;
+	font-size: 14px;
+	font-size: 0.875rem;
+	margin: 0 0 10px;
+	margin: 0 0 0.625rem;
 }

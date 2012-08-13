@@ -3,6 +3,7 @@
 
 	/**
 	 * Dimensions in pixels.
+	 * @var object
 	 */
 	exports.board = {
 		columnMarginLeft: 10,
@@ -10,25 +11,18 @@
 	};
 
 	/**
-	 * @returns array Array with subreddit names that are chosen by default
+	 * @var object
 	 */
-	exports.getNamesOfDefaultSubreddits = function() {
-		return [
-			"1000words",
-			"aviation",
-			"aww",
-			"birdpics",
-			"cityporn",
-			"earthporn",
-			"itookapicture",
-			"picturechallenge",
-			"wallpaper",
-			"wallpapers",
-			"windowshots"
-		];
-	};
-
 	exports.network = {
 		timeout: 30000 // in milliseconds
 	}
+
+	/**
+	 * You can overwrite the default subreddits by uncommenting the lines below
+	 * and adding subreddit names.
+	 */
+	// app.models.subreddit.setDefaultSubreddits([
+	// 	"adviceanimals",
+	// 	"aww"
+	// ]);
 })();

@@ -1,29 +1,12 @@
-// Create namespace for our app
-var app = {};
-
 (function() {
 	var exports = app;
 
 	/**
-	 * Returns an array of subreddit names
-	 * @param string value
-	 * @returns array
+	 * namespace takes a dot-delimited string and creates a corresponding
+	 * namespace, e.g. string "foo.bar.moo" creates the namespace foo.bar.moo.
+	 * @param string namespace
+	 * @returns object Reference to the leaf node of the namespace object.
 	 */
-	exports.extractSubredditNamesFromLocationHash = function(value) {
-		// Remove "#" from beginning of string and split string at "+" character
-		var names = value.replace(/^#/, "").split("+");
-
-		// Remove invalid subreddit names
-		for (var i = 0, iMax = names.length; i < iMax; i++) {
-			if (!names[i].match(/^[0-9a-zA-Z_]+$/)) {
-				names.splice(i, 1);
-				iMax--;
-			}
-		}
-
-		return names;
-	};
-
 	exports.namespace = function(namespace) {
 		var pieces = namespace.split(".");
 		var namespaceSegment = window;
@@ -40,6 +23,7 @@ var app = {};
 			namespaceSegment = namespaceSegment[pieces[i]];
 		}
 
+		// Return reference to the leaf node of the namespace object, e.g. a reference to "moo".
 		return namespaceSegment;
 	};
 })();
