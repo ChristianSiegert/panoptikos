@@ -29,3 +29,38 @@ textarea:focus {
 	-webkit-box-shadow: inset 0 2px 4px #B9B9B9;
 	        box-shadow: inset 0 2px 4px #B9B9B9;
 }
+
+button {
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0.05, #FFF), color-stop(1, #F6F6F6));
+	background: -moz-linear-gradient(center top, #FFF 5%, #F6F6F6 100%);
+	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFF', endColorstr='#F6F6F6');
+	background-color: #FFF;
+	border: 1px solid #DCDCDC;
+	color: #666;
+	cursor: pointer;
+	display: inline-block;
+	font-family: Arial, sans-serif;
+	font-size: 15px;
+	font-size: 0.9375rem;
+	font-weight: bold;
+	margin: 0 0 10px;
+	margin: 0 0 0.625rem;
+	padding: 6px 24px;
+	text-decoration: none;
+	text-shadow: 1px 1px 0px #FFF;
+
+	-webkit-border-radius: 6px;
+	   -moz-border-radius: 6px;
+	        border-radius: 6px;
+
+	-webkit-box-shadow: inset 0px 1px 0px 0px #FFF;
+	   -moz-box-shadow: inset 0px 1px 0px 0px #FFF;
+	        box-shadow: inset 0px 1px 0px 0px #FFF;
+}
+
+button:active {
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0.05, #F6F6F6), color-stop(1, #FFF));
+	background: -moz-linear-gradient(center top, #F6F6F6 5%, #FFF 100%);
+	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#F6F6F6', endColorstr='#FFF');
+	background-color: #F6F6F6;
+}
