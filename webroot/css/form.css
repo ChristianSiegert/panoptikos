@@ -31,6 +31,8 @@ textarea:focus {
 }
 
 button {
+	-webkit-appearance: none;
+	-webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 	background: -webkit-gradient(linear, left top, left bottom, color-stop(0.05, #FFF), color-stop(1, #F6F6F6));
 	background: -moz-linear-gradient(center top, #FFF 5%, #F6F6F6 100%);
 	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFF', endColorstr='#F6F6F6');
