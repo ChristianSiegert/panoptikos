@@ -8,8 +8,8 @@
 		var self = this;
 
 		self.toElement = function() {
-			var element = new Element("a", {
-				html: "Edit subreddits",
+			var element = new Element("button", {
+				html: "Edit Subreddits",
 				id: "subreddit-picker-launcher"
 			});
 
