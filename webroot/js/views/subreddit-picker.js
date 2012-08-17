@@ -114,7 +114,7 @@
 				list.grab(listItem);
 			}
 
-			list.addEvent("click:relay(div)", handleSubredditListButtonClickEvent);
+			list.addEvent("click:relay(button)", handleSubredditListButtonClickEvent);
 			return list;
 		}
 
@@ -145,7 +145,7 @@
 				"class": "subreddit-picker-subreddit-list-item"
 			});
 
-			var button = new Element("div", {
+			var button = new Element("button", {
 				"class": "subreddit-picker-subreddit-remove-button",
 				"data-subreddit-name": subredditName,
 				html: subredditName
