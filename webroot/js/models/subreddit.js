@@ -10,7 +10,6 @@
 		"1000words",
 		"agricultureporn",
 		"aviation",
-		"aww",
 		"birdpics",
 		"cityporn",
 		"earthporn",
