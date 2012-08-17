@@ -28,11 +28,22 @@
 		<script src="js/basic.js"></script>
 		<script src="js/models/subreddit.js"></script>
 		<script src="js/config/core.js"></script>
-		<script src="js/libraries/google-analytics.js"></script>
 		<script src="js/views/board.js"></script>
 		<script src="js/views/board-controls.js"></script>
 		<script src="js/views/board-item.js"></script>
 		<script src="js/views/subreddit-picker.js"></script>
 		<script src="js/views/subreddit-picker-launcher.js"></script>
+
+		<script>
+			var _gaq = _gaq || [];
+			_gaq.push(['_setAccount', 'UA-10403694-9']);
+			_gaq.push(['_trackPageview']);
+
+			(function() {
+				var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+				ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+				var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+			})();
+		</script>
 	</body>
 </html>
