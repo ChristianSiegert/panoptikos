@@ -20,6 +20,7 @@
 		 * together creates a board item, e.g. an image and anchor elements.
 		 * @param object thread Object representing a Reddit thread
 	 	 * @param object image HTML image
+	 	 * @param string fullsizeImageUrl
 	 	 * @returns HTMLElement boardItem
 	 	 */
 		self.create = function(thread, image, fullsizeImageUrl) {

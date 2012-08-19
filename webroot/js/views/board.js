@@ -64,6 +64,10 @@
 			window.addEvent("resize", handleWindowResizeEvent);
 			board.addEvent("click:relay(.board-item-image-anchor)", handleBoardItemImageAnchorClickEvent);
 			board.addEvent("click:relay(.board-item-title-anchor)", handleBoardItemTitleAnchorClickEvent);
+
+			if (Browser.ie) {
+				loadStylesheet("css/board-item-ie.css");
+			}
 		};
 
 		function reset() {
@@ -364,6 +368,22 @@
 			}
 
 			styleElement.set("html", style);
+		}
+
+		/**
+		 * loadStylesheet injects a <link> element into the document head which
+		 * causes the browser to load the specified stylesheet.
+		 * @param string url URL to the stylesheet to load.
+		 * @returns void
+		 */
+		function loadStylesheet(url) {
+			var element = new Element("link", {
+				href: url,
+				rel: "stylesheet",
+				type: "text/css"
+			});
+
+			$(document.head).grab(element);
 		}
 
 		function handleUserDidChangeSelectedSubredditsEvent() {

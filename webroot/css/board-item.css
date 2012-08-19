@@ -1,0 +1,61 @@
+.board-item {
+	background-color: #FFF;
+	display: inline-block;
+	margin: 0 0 10px;
+	margin: 0 0 0.625rem;
+	padding: 4px;
+
+	-webkit-box-shadow: 0 1px 3px rgba(34, 25, 25, 0.4);
+	   -moz-box-shadow: 0 1px 3px rgba(34, 25, 25, 0.4);
+	        box-shadow: 0 1px 3px rgba(34, 25, 25, 0.4);
+}
+
+
+.board-item.new-from-request {
+	-webkit-animation-duration: 0.5s;
+	   -moz-animation-duration: 0.5s;
+
+	-webkit-animation-name: board-item-fade-in;
+	   -moz-animation-name: board-item-fade-in;
+}
+
+	@-webkit-keyframes board-item-fade-in {
+		from {
+			opacity: 0;
+		}
+
+		to {
+			opacity: 1;
+		}
+	}
+
+	@-moz-keyframes board-item-fade-in {
+		from {
+			opacity: 0;
+		}
+
+		to {
+			opacity: 1;
+		}
+	}
+
+	.board-item-image-anchor {
+		display: block
+	}
+
+		.board-item-image {
+			display: inline-block;
+			width: 100%;
+		}
+
+	.board-item-title-anchor {
+		color: #333;
+		display: block;
+		font-size: 13px;
+		font-size: 0.8125rem;
+		line-height: 20px;
+		line-height: 1.25rem;
+		margin: 4px 0 0;
+		margin: 0.25rem 0 0;
+		text-decoration: none;
+	}

@@ -1,0 +1,14 @@
+#board {
+	line-height: 0;
+	text-align: center;
+}
+
+	.board-column {
+		display: inline-block;
+		/*margin-left is set programmatically in /webroot/js/views/board.js. */
+		vertical-align: top;
+	}
+
+	.board-column:first-of-type {
+		margin-left: 0;
+	}
