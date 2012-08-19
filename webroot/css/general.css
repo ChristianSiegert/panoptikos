@@ -5,6 +5,9 @@ html {
 	padding: 20px;
 	padding: 1.25rem;
 
+	/* Show scrollbar right away so the available width for our board remains the same when images are added. */
+	overflow-y: scroll;
+
 	/* Prevent Webkit on iOS from scaling text up when orientation is changed to landscape. */
 	-webkit-text-size-adjust: 100%;
 	   -moz-text-size-adjust: 100%;
