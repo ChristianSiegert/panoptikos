@@ -10,6 +10,8 @@
 		columnMaxWidth: 328
 	};
 
+	exports.isProductionMode = true;
+
 	/**
 	 * @var object
 	 */

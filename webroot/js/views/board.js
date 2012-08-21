@@ -170,7 +170,7 @@
 				board.grab(column);
 			}
 
-			console.log("app.views.board.rebuild: Rebuilding board with %d images.", boardItems.length);
+			app.console.log("app.views.board.rebuild: Rebuilding board with %d images.", boardItems.length);
 
 			// Fill columns with previously fetched images, if any.
 			for (var i = 0, boardItemCount = boardItems.length; i < boardItemCount; i++) {
@@ -254,14 +254,14 @@
 		}
 
 		function handleRedditRequestTimeoutEvent(event) {
-			console.log("timeout", arguments);
+			app.console.log("timeout", arguments);
 			runningRequestsCount--;
 			window.fireEvent("app.views.board.didCompleteRequest", {runningRequestsCount: runningRequestsCount});
 			alert("Panoptikos cannot retrieve data from Reddit because Reddit is slow or you are not connected to the Internet.");
 		}
 
 		function handleImgurRequestErrorEvent(thread) {
-			console.log("app.views.board.handleImgurRequestErrorEvent:", thread)
+			app.console.log("app.views.board.handleImgurRequestErrorEvent:", thread)
 			runningRequestsCount--;
 			window.fireEvent("app.views.board.didCompleteRequest", {runningRequestsCount: runningRequestsCount});
 		}
@@ -271,7 +271,7 @@
 		}
 
 		function handleImageErrorEvent() {
-			console.log("app.views.board.handleImageErrorEvent:", arguments);
+			app.console.log("app.views.board.handleImageErrorEvent:", arguments);
 			runningRequestsCount--;
 			window.fireEvent("app.views.board.didCompleteRequest", {runningRequestsCount: runningRequestsCount});
 		}
@@ -282,7 +282,7 @@
 			if (image.height === 81
 					&& image.width === 161
 					&& image.src.match(/^https?:\/\/i\.imgur\.com\//)) {
-				console.log("app.views.board.handleImageLoadEvent: Ignoring image: " + image.src);
+				app.console.log("app.views.board.handleImageLoadEvent: Ignoring image: " + image.src);
 
 				runningRequestsCount--;
 				window.fireEvent("app.views.board.didCompleteRequest", {

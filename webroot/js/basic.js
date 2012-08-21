@@ -26,4 +26,19 @@
 		// Return reference to the leaf node of the namespace object, e.g. a reference to "moo".
 		return namespaceSegment;
 	};
+
+	exports.console = {};
+
+	/**
+	 * app.console.log wraps the browser's console.log. The only difference is
+	 * that app.console.log will not log anything if the app is in production
+	 * mode.
+	 */
+	exports.console.log = function() {
+		if (app.config.core.isProductionMode) {
+			return;
+		}
+
+		console.log.apply(console, arguments);
+	}
 })();
