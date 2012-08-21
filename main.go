@@ -18,7 +18,7 @@ type Page struct {
 var httpPort = flag.String("port", "8080", "HTTP port the web server listens to.")
 
 // RegEx patterns
-var assetUrlPattern = regexp.MustCompile("^/(?:css|js)/")
+var assetUrlPattern = regexp.MustCompile("^/(?:css|images|js)/")
 var whitespacePattern = regexp.MustCompile(">[ \f\n\r\t]+<")
 
 func main() {
