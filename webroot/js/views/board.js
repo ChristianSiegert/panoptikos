@@ -32,6 +32,12 @@
 		var resizeTimeoutId;
 
 		/**
+		 * True if Reddit can't deliver any more threads, false otherwise.
+		 * @var boolean
+		 */
+		var hasReachedEnd = false;
+
+		/**
 		 * ID of the last Reddit thread that the HTTP response contained. Used
 		 * to request threads that come afterwards.
 		 * @var string
@@ -199,6 +205,10 @@
 		}
 
 		function handleUserDidAskForImagesEvent() {
+			if (hasReachedEnd) {
+				return;
+			}
+
 			var requestToReddit = new Request.JSONP({
 				callbackKey: "jsonp",
 				onCancel: handleRedditRequestCancelEvent,
@@ -249,8 +259,15 @@
 
 			lastThreadId = response.data.after;
 
+			if (!lastThreadId) {
+				hasReachedEnd = true;
+			}
+
 			runningRequestsCount--;
-			window.fireEvent("app.views.board.didCompleteRequest", {runningRequestsCount: runningRequestsCount});
+			window.fireEvent("app.views.board.didCompleteRequest", {
+				hasReachedEnd: hasReachedEnd,
+				runningRequestsCount: runningRequestsCount
+			});
 		}
 
 		function handleRedditRequestTimeoutEvent(event) {

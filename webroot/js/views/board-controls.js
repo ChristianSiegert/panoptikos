@@ -32,9 +32,10 @@
 		/**
 		 * @var string
 		 */
+		var loadMoreButtonTextActive = "Loading images&hellip;";
 		var loadMoreButtonTextDefault1 = "Load images";
 		var loadMoreButtonTextDefault2 = "Load more";
-		var loadMoreButtonTextActive = "Loading images&hellip;"
+		var loadMoreButtonTextDisabled = "You reached the end";
 
 		/**
 		 * Flag that indicates if at least one image has been loaded. Used to
@@ -42,6 +43,12 @@
 		 * @var boolean
 		 */
 		var hasLoadedAnImage = false;
+
+		/**
+		 * True if Reddit can't deliver any more threads, false otherwise.
+		 * @var boolean
+		 */
+		var hasReachedEnd = false;
 
 		self.create = function() {
 			boardControls = new Element("div", {
@@ -65,14 +72,26 @@
 		}
 
 		function handleLoadMoreButtonClickEvent() {
+			if (hasReachedEnd) {
+				return;
+			}
+
 			loadMoreButton.set("html", loadMoreButtonTextActive);
 			window.fireEvent("app.views.boardControls.userDidAskForImages");
 		};
 
 		function updateLoadMoreButtonText(event) {
-			if (!event
-					|| typeof(event.runningRequestsCount) !== "number"
-					|| isNaN(event.runningRequestsCount)) {
+			if (!event || hasReachedEnd) {
+				return;
+			}
+
+			if (event.hasReachedEnd) {
+				hasReachedEnd = true;
+				loadMoreButton.set("html", loadMoreButtonTextDisabled);
+				return;
+			}
+
+			if (typeof(event.runningRequestsCount) !== "number" || isNaN(event.runningRequestsCount)) {
 				return;
 			}
 
