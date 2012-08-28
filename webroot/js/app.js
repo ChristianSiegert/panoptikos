@@ -1,7 +1,6 @@
-// Create namespace for our app
-var app = {};
+goog.provide("app");
 
-window.addEvent("domready", function() {
+app.start = function() {
 	var boardElement = $("board");
 
 	if (!boardElement) {
@@ -9,7 +8,7 @@ window.addEvent("domready", function() {
 		return;
 	}
 
-	var board = app.views.board.createInstance(
+	var board = new app.ui.Board(
 		boardElement,
 		app.config.core.board.columnMaxWidth,
 		app.config.core.board.columnMarginLeft
@@ -17,12 +16,13 @@ window.addEvent("domready", function() {
 	board.initialize();
 	board.rebuild();
 
-	var boardControls = app.views.boardControls.createInstance();
+	var boardControls = new app.ui.BoardControls();
 	var boardControlsElement = boardControls.create();
-	$(document.body).grab(boardControlsElement);
+	goog.dom.appendChild(document.body, boardControlsElement);
 
-	var subredditPickerLauncher = new app.ui.SubredditPickerLauncher().toElement();
-	boardElement.grab(subredditPickerLauncher, "before");
+	var subredditPickerLauncherElement = new app.ui.SubredditPickerLauncher().toElement();
+	goog.dom.insertChildAt(document.body, subredditPickerLauncherElement, 0);
 
-	window.fireEvent("app.views.boardControls.userDidAskForImages");
-});
+	window.fireEvent("app.ui.boardControls.userDidAskForImages");
+};
+
