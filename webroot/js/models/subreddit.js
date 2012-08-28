@@ -21,6 +21,11 @@
 	];
 
 	/**
+	 * @var array
+	 */
+	var selectedSubreddits = [];
+
+	/**
 	 * getDefaultSubreddits returns the subreddits that are selected by default.
 	 * @returns array Array of strings. Each string is the name of a subreddit.
 	 */
@@ -93,7 +98,7 @@
 
 		subredditNames.push(subredditName);
 		exports.setSelectedSubreddits(subredditNames);
-		exports.writeSelectedSubredditsToLocationHash();
+		exports.writeSubredditsToLocationHash(subredditNames);
 	}
 
 	/**
@@ -112,7 +117,7 @@
 
 		subredditNames.splice(index, 1);
 		exports.setSelectedSubreddits(subredditNames);
-		exports.writeSelectedSubredditsToLocationHash();
+		exports.writeSubredditsToLocationHash(subredditNames);
 	};
 
 	/**
@@ -146,11 +151,11 @@
 	};
 
 	/**
-	 * readSelectedSubredditsFromLocationHash searches the location hash for
-	 * valid subreddit names and returns them.
+	 * readSubredditsFromLocationHash searches the location hash for valid
+	 * subreddit names and returns them.
 	 * @returns array Array of strings. Each string is the name of a subreddit.
 	 */
-	exports.readSelectedSubredditsFromLocationHash = function() {
+	exports.readSubredditsFromLocationHash = function() {
 		// Remove "#" character from beginning of location hash and split location hash at "+" character
 		var names = location.hash.replace(/^#/, "").split("+");
 
@@ -166,11 +171,12 @@
 	};
 
 	/**
-	 * writeSelectedSubredditsToLocationHash stores
+	 * writeSubredditsToLocationHash stores subreddits in location hash.
+	 * @param array Array of strings. Each string is the name of a subreddit.
 	 * @returns void
 	 */
-	exports.writeSelectedSubredditsToLocationHash = function() {
-		location.hash = exports.getSelectedSubreddits(false).join("+");
+	exports.writeSubredditsToLocationHash = function(subreddits) {
+		location.hash = subreddits.join("+");
 	};
 
 	/**
@@ -186,13 +192,4 @@
 
 		return false;
 	};
-
-	/**
-	 * @var array
-	 */
-	var selectedSubreddits = exports.readSelectedSubredditsFromLocationHash();
-
-	if (selectedSubreddits.length === 0) {
-		selectedSubreddits = exports.getDefaultSubreddits();
-	}
 })();

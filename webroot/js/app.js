@@ -24,5 +24,16 @@ window.addEvent("domready", function() {
 	var subredditPickerLauncher = new app.ui.SubredditPickerLauncher().toElement();
 	boardElement.grab(subredditPickerLauncher, "before");
 
+
+	// If user selected subreddits, use them, otherwise use default subreddits
+	var subreddits = app.models.subreddit.readSubredditsFromLocationHash();
+
+	if (subreddits.length === 0) {
+		subreddits = app.models.subreddit.getDefaultSubreddits();
+	}
+
+	app.models.subreddit.setSelectedSubreddits(subreddits);
+
+	// Load images
 	window.fireEvent("app.views.boardControls.userDidAskForImages");
 });
