@@ -3,7 +3,6 @@ goog.provide("panoptikos.Panoptikos");
 goog.require("panoptikos.config.core");
 goog.require("panoptikos.ui.Board");
 goog.require("panoptikos.ui.BoardControls");
-goog.require("panoptikos.ui.BoardControlsEvent");
 goog.require("panoptikos.ui.SubredditPicker");
 goog.require("panoptikos.ui.SubredditPickerLauncher");
 goog.require("goog.dom");
@@ -78,7 +77,10 @@ panoptikos.Panoptikos.prototype.createUi_ = function() {
 	var boardControlsElement = boardControls.toElement();
 	goog.dom.appendChild(document.body, boardControlsElement);
 
-	boardControls.dispatchEvent(new panoptikos.ui.BoardControlsEvent(panoptikos.ui.BoardControls.EventType.USER_DID_ASK_FOR_IMAGES));
+	// Load images
+	boardControls.dispatchEvent(
+		panoptikos.ui.BoardControls.EventType.USER_DID_ASK_FOR_IMAGES
+	);
 };
 
 /**

@@ -1,6 +1,5 @@
 goog.provide("panoptikos.ui.BoardControls");
 goog.provide("panoptikos.ui.BoardControls.EventType");
-goog.provide("panoptikos.ui.BoardControlsEvent");
 
 goog.require("goog.dom");
 goog.require("goog.events");
@@ -95,15 +94,3 @@ panoptikos.ui.BoardControls.prototype.updateLoadMoreButtonText = function(event)
 panoptikos.ui.BoardControls.EventType = {
 	USER_DID_ASK_FOR_IMAGES: "a"
 };
-
-/**
- * BoardControlsEvent represents a BoardControls event.
- * @param {string} eventType Event type.
- * @param {!panoptikos.ui.BoardControls} eventTarget
- * @constructor
- * @extends {goog.events.Event}
- */
-panoptikos.ui.BoardControlsEvent = function(eventType, eventTarget) {
-	goog.base(this, eventType, eventTarget);
-};
-goog.inherits(panoptikos.ui.BoardControlsEvent, goog.events.Event);
