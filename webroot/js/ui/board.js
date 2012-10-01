@@ -1,395 +1,501 @@
-(function() {
-	var exports = app.namespace("app.views.board");
+goog.provide("panoptikos.ui.Board");
+goog.provide("panoptikos.ui.Board.EventType");
+goog.provide("panoptikos.ui.BoardEvent");
+
+goog.require("panoptikos.models.subreddit");
+goog.require("panoptikos.ui.BoardItem");
+goog.require("panoptikos.ui.BoardControls.EventType");
+goog.require("goog.debug.Logger");
+goog.require("goog.dom");
+goog.require("goog.events.EventTarget");
+goog.require("goog.net.Jsonp");
+goog.require("goog.Uri");
+goog.require("goog.userAgent");
+
+/**
+ * Class Board manages the display of images as well as some delegated click
+ * events.
+ * @param {!Element} boardElement Root element where all other markup is placed to create the board.
+ * @param {number} columnMaxWidth Maximum width of columns in pixels.
+ * @param {number} columnMarginLeft Margin between columns in pixels.
+ * @param {number} maxThreadsPerRequest Maximum number of threads to retrieve from Reddit per request.
+ * @constructor
+ * @extends goog.events.EventTarget
+ */
+panoptikos.ui.Board = function(boardElement, columnMaxWidth, columnMarginLeft, maxThreadsPerRequest) {
+	/**
+	 * @type {!Element}
+	 * @private
+	 */
+	this.boardElement_ = boardElement;
 
 	/**
-	 * createInstance returns a new instance of class Board.
-	 * @param HTMLElement board Root element where all other markup is placed to create the board.
-	 * @param integer columnMaxWidth Maximum width of columns in pixels.
-	 * @param integer columnMarginLeft Margin between columns in pixels.
-	 * @returns object Board
+	 * @type {!Array.<panoptikos.ui.BoardItem>}
+	 * @private
 	 */
-	exports.createInstance = function(board, columnMaxWidth, columnMarginLeft) {
-		return new Board(board, columnMaxWidth, columnMarginLeft);
-	};
+	this.boardItems_ = [];
 
 	/**
-	 * Class Board manages the display of images as well as some delegated click
-	 * events.
-	 * @param HTMLElement board Root element where all other markup is placed to create the board.
-	 * @param integer columnMaxWidth Maximum width of columns in pixels.
-	 * @param integer columnMarginLeft Margin between columns in pixels.
+	 * @type {number}
+	 * @private
 	 */
-	function Board(board, columnMaxWidth, columnMarginLeft) {
-		var self = this;
+	this.columnCount_;
 
-		var columnCount;
-		var columnWidth;
+	/**
+	 * @type {!Array.<number>}
+	 * @private
+	 */
+	this.columnHeights_ = [];
 
-		var columns = [];
-		var columnHeights = [];
+	/**
+	 * The margin between two columns.
+	 * @type {number}
+	 * @private
+	 */
+	this.columnMarginLeft_ = columnMarginLeft;
 
-		var boardItems = [];
-		var resizeTimeoutId;
+	/**
+	 * @type {number}
+	 * @private
+	 */
+	this.columnMaxWidth_ = columnMaxWidth;
 
-		/**
-		 * ID of the last Reddit thread that the HTTP response contained. Used
-		 * to request threads that come afterwards.
-		 * @var string
-		 */
-		var lastThreadId;
+	/**
+	 * @type {!Array}
+	 * @private
+	 */
+	this.columns_ = [];
 
-		/**
-		 * Number of running requests.
-		 * @var integer
-		 */
-		var runningRequestsCount = 0;
+	/**
+	 * @type {number}
+	 * @private
+	 */
+	this.columnWidth_;
 
-		/**
-		 * <style> element that is injected into the document head with
-		 * generated CSS that changes the board column widths, among other
-		 * things.
-		 * @var HTMLElement
-		 */
-		var styleElement;
+	/**
+	 * Whether at least one image has been loaded already.
+	 * @type {boolean}
+	 */
+	this.hasLoadedFirstImage_ = false;
 
-		/**
-		 * initialize adds event listeners to the window and board to handle the
-		 * window resize event, some board click events and a custom app-wide
-		 * event. Do not call this method more than once.
-		 * @returns void
-		 */
-		self.initialize = function() {
-			window.addEvent("app.views.boardControls.userDidAskForImages", handleUserDidAskForImagesEvent);
-			window.addEvent("app.views.subredditPicker.userDidChangeSelectedSubreddits", handleUserDidChangeSelectedSubredditsEvent);
-			window.addEvent("resize", handleWindowResizeEvent);
-			board.addEvent("click:relay(.board-item-image-anchor)", handleBoardItemImageAnchorClickEvent);
-			board.addEvent("click:relay(.board-item-title-anchor)", handleBoardItemTitleAnchorClickEvent);
+	/**
+	 * ID of the last Reddit thread that the HTTP response contained. Used to
+	 * request threads that come afterwards.
+	 * @type {string}
+	 * @private
+	 */
+	this.lastThreadId_ = "";
 
-			if (Browser.ie) {
-				loadStylesheet("css/board-item-ie.css");
-			}
-		};
+	/**
+	 * @type {!goog.debug.Logger}
+	 * @private
+	 */
+	this.logger_ = goog.debug.Logger.getLogger("panoptikos.ui.Board");
 
-		function reset() {
-			columnCount = null;
-			columnWidth = null;
+	/**
+	 * Maximum number of threads to retrieve from Reddit per request.
+	 * @type {number}
+	 * @private
+	 */
+	this.maxThreadsPerRequest_ = maxThreadsPerRequest;
 
-			columns = [];
-			columnHeights = [];
+	/**
+	 * Number of milliseconds until a request times out.
+	 * @type {number}
+	 */
+	this.requestTimeout_ = 30000;
 
-			boardItems = [];
-			lastThreadId = "";
-			runningRequestsCount = 0;
+	/**
+	 * @type {number}
+	 * @private
+	 */
+	this.resizeTimeoutId_;
+
+	/**
+	 * Number of running requests.
+	 * @type {number}
+	 * @private
+	 */
+	this.runningRequestsCount_ = 0;
+
+	/**
+	 * <style> element that is injected into the document head with generated
+	 * CSS that changes the board column widths, among other things.
+	 * @type {Element}
+	 */
+	this.styleElement_;
+
+	goog.events.listen(window, goog.events.EventType.RESIZE, this.handleWindowResizeEvent_, false, this);
+	goog.events.listen(this.boardElement_, goog.events.EventType.CLICK, this.handleBoardClickEvent_, false, this);
+
+	if (goog.userAgent.IE) {
+		this.loadStylesheet_("css/board-item-ie.css");
+	}
+};
+goog.inherits(panoptikos.ui.Board, goog.events.EventTarget);
+
+/**
+ * @private
+ */
+panoptikos.ui.Board.prototype.reset_ = function() {
+	this.columnCount_ = null;
+	this.columnWidth_ = null;
+
+	this.columns_ = [];
+	this.columnHeights_ = [];
+
+	this.boardItems_ = [];
+	this.lastThreadId_ = "";
+	this.runningRequestsCount_ = 0;
+};
+
+/**
+ * @param {!goog.events.BrowserEvent} event
+ * @private
+ */
+panoptikos.ui.Board.prototype.handleBoardClickEvent_ = function(event) {
+	event.preventDefault();
+
+	if (event.target.className === "board-item-title-anchor"
+			&& event.target.hasAttribute("href")) {
+		window.open(event.target.getAttribute("href"));
+		return;
+	}
+
+	if (event.target.className === "board-item-image") {
+		event.target = goog.dom.getParentElement(event.target);
+	}
+
+	if (event.target.className === "board-item-image-anchor"
+			&& event.target.hasAttribute("href")) {
+		window.open(event.target.getAttribute("href"));
+		return;
+	}
+};
+
+/**
+ * @private
+ */
+panoptikos.ui.Board.prototype.handleWindowResizeEvent_ = function() {
+	clearTimeout(this.resizeTimeoutId_);
+	this.resizeTimeoutId_ = goog.global.setTimeout(goog.bind(this.rebuild, this), 10);
+};
+
+/**
+ * rebuild calculates how many columns can be displayed, adjusts the column
+ * size, and if necessary empties the board and creates new columns that are
+ * filled with panoptikos.ui.BoardItem items.
+ */
+panoptikos.ui.Board.prototype.rebuild = function() {
+	var availableBoardWidth = this.boardElement_.offsetWidth;
+	var newColumnCount = 1;
+	var newColumnWidth = this.columnMaxWidth_;
+
+	if (availableBoardWidth < newColumnWidth) {
+		newColumnWidth = availableBoardWidth;
+	} else {
+		newColumnCount += Math.floor((availableBoardWidth - newColumnWidth) / (newColumnWidth + this.columnMarginLeft_));
+	}
+
+	if (this.columnWidth_ !== newColumnWidth) {
+		this.columnWidth_ = newColumnWidth;
+		this.resizeColumns();
+	}
+
+	// If we show the same number of columns as before, don't rebuild the board
+	if (newColumnCount === this.columnCount_) {
+		return;
+	}
+
+	this.columnCount_ = newColumnCount;
+
+	// Reset variables
+	this.columns_ = [];
+	this.columnHeights_ = [];
+
+	// Remove all columns
+	goog.dom.removeChildren(this.boardElement_);
+
+	// Create new columns
+	for (var i = 0; i < this.columnCount_; i++) {
+		var column = this.createColumn_();
+		this.columns_.push(column);
+		this.columnHeights_.push(0);
+		goog.dom.appendChild(this.boardElement_, column);
+	}
+
+	this.logger_.info("Rebuilding board with " + this.boardItems_.length + " images.");
+
+	// Fill columns with previously fetched images, if any.
+	for (var i = 0, boardItemCount = this.boardItems_.length; i < boardItemCount; i++) {
+		this.addBoardItemToBoard_(this.boardItems_[i]);
+	}
+};
+
+/**
+ * @private
+ * @return {!Element}
+ */
+panoptikos.ui.Board.prototype.createColumn_ = function() {
+	return goog.dom.createDom("div", "board-column");
+};
+
+/**
+ * @private
+ */
+panoptikos.ui.Board.prototype.getRedditRequestUri_ = function() {
+	var uri = new goog.Uri("http://www.reddit.com/r/" + panoptikos.models.subreddit.getSelectedSubreddits().join("+") + ".json");
+	uri.setParameterValue("after", this.lastThreadId_);
+	uri.setParameterValue("limit", this.maxThreadsPerRequest_);
+	return uri;
+};
+
+panoptikos.ui.Board.prototype.retrieveThreadsFromReddit = function() {
+	// Prevent parallel requests
+	if (this.runningRequestsCount_ > 0) {
+		return;
+	}
+
+	this.runningRequestsCount_++;
+
+	var request = new goog.net.Jsonp(this.getRedditRequestUri_(), "jsonp");
+	request.setRequestTimeout(this.requestTimeout_);
+	request.send(
+		null,
+		goog.bind(this.handleRedditRequestSuccessEvent_, this),
+		goog.bind(this.handleRedditRequestErrorEvent_, this)
+	);
+};
+
+/**
+ * @param {!Object} response
+ * @private
+ */
+panoptikos.ui.Board.prototype.handleRedditRequestSuccessEvent_ = function(response) {
+	var threads = response.data.children;
+
+	for (var i = 0, threadCount = threads.length; i < threadCount; i++) {
+		var url = threads[i].data.url;
+		var imgurImageHash = threads[i].data.url.match(/^https?:\/\/(?:i\.)?imgur\.com\/([a-zA-Z0-9]+)/);
+
+		// If image is hosted on Imgur, try to load large preview version of image
+		if (imgurImageHash) {
+			url = "http://i.imgur.com/" + imgurImageHash[1] + "l.jpg";
+			var fullsizeImageUrl = "http://i.imgur.com/" + imgurImageHash[1] + ".jpg";
+
+			var image = new Image();
+			goog.events.listen(image, "error", goog.bind(this.handleImgurRequestErrorEvent_, this, [threads[i].data]), false, this);
+			goog.events.listen(image, "load", goog.bind(this.handleImgurRequestLoadEvent_, this, threads[i].data, image, fullsizeImageUrl), false, this);
+
+			this.runningRequestsCount_++;
+			image.src = url;
+			continue;
 		}
 
-		function handleBoardItemImageAnchorClickEvent(event) {
-			event.stop();
-			var anchor = event.target;
+		// Load image
+		var image = new Image();
+		goog.events.listen(image, "error", goog.bind(this.handleImageErrorEvent_, this, threads[i].data));
+		goog.events.listen(image, "load", goog.bind(this.handleImageLoadEvent_, this, threads[i].data, image, image.src));
 
-			if (anchor.get("tag") !== "a") {
-				anchor = anchor.getParent(".board-item-image-anchor");
-			}
+		this.runningRequestsCount_++;
+		image.src = url;
+	}
 
-			if (!anchor) {
-				return;
-			}
+	this.lastThreadId_ = response.data.after;
+	this.runningRequestsCount_--;
+	this.dispatchDidCompleteRequestEvent_();
+};
 
-			var url = anchor.getProperty("href");
+/**
+ * @private
+ */
+panoptikos.ui.Board.prototype.handleRedditRequestErrorEvent_ = function(event) {
+	this.runningRequestsCount_--;
+	this.dispatchDidCompleteRequestEvent_();
+	alert("Panoptikos cannot retrieve data from Reddit because Reddit is slow or you are not connected to the Internet.");
+};
 
-			if (!url) {
-				return;
-			}
+/**
+ * @param {!Object} thread
+ * @private
+ */
+panoptikos.ui.Board.prototype.handleImgurRequestErrorEvent_ = function(thread) {
+	this.runningRequestsCount_--;
+	this.dispatchDidCompleteRequestEvent_();
+};
 
-			window.open(url);
+/**
+ * @param {!Object} thread Reddit thread.
+ * @param {!HTMLImageElement} image
+ * @param {string} fullsizeImageUrl
+ * @private
+ */
+panoptikos.ui.Board.prototype.handleImgurRequestLoadEvent_ = function(thread, image, fullsizeImageUrl) {
+	this.handleImageLoadEvent_(thread, image, fullsizeImageUrl);
+};
+
+/**
+ * @private
+ */
+panoptikos.ui.Board.prototype.handleImageErrorEvent_ = function() {
+	this.runningRequestsCount_--;
+	this.dispatchDidCompleteRequestEvent_();
+};
+
+/**
+ * @param {!Object} thread Reddit thread.
+ * @param {!HTMLImageElement} image
+ * @param {string} fullsizeImageUrl
+ * @private
+ */
+panoptikos.ui.Board.prototype.handleImageLoadEvent_ = function(thread, image, fullsizeImageUrl) {
+	// Ignore Imgur's "Image does not exist" image
+	// TODO: Find a way to make absolutely sure we are actually blocking Imgur's "Image does not exist" image and not a random image with the same dimensions.
+	if (image.height === 81
+			&& image.width === 161
+			&& image.src.match(/^https?:\/\/i\.imgur\.com\//)) {
+		this.logger_.fine('Ignoring Imgur’s “Image does not exist” image: ' + image.src);
+
+		this.runningRequestsCount_--;
+		this.dispatchDidCompleteRequestEvent_();
+		return;
+	}
+
+	var boardItem = new panoptikos.ui.BoardItem(thread, image, fullsizeImageUrl);
+	var boardItemElement = boardItem.toElement();
+
+	this.boardItems_.push(boardItemElement);
+	this.addBoardItemToBoard_(boardItemElement);
+
+	this.runningRequestsCount_--;
+	this.hasLoadedFirstImage_ = true;
+	this.dispatchDidCompleteRequestEvent_();
+};
+
+/**
+ * addBoardItemToBoard_ adds the board item to the shortest column.
+ * @param {panoptikos.ui.BoardItem} boardItemElement
+ * @private
+ */
+panoptikos.ui.Board.prototype.addBoardItemToBoard_ = function(boardItemElement) {
+	var columnIndex = this.getIndexOfShortestColumn_();
+
+	if (columnIndex === null || !this.columns_ || !this.columns_[columnIndex]) {
+		return;
+	}
+
+	goog.dom.appendChild(this.columns_[columnIndex], boardItemElement);
+	this.columnHeights_[columnIndex] = this.columns_[columnIndex].offsetHeight;
+};
+
+/**
+ * getIndexOfShortestColumn_ returns the index of the shortest column, or null
+ * if there are no columns.
+ * @return {?number}
+ * @private
+ */
+panoptikos.ui.Board.prototype.getIndexOfShortestColumn_ = function() {
+	var shortestColumnHeight = null;
+	var shortestColumnIndex = null;
+
+	for (var i = 0, columnHeightsCount = this.columnHeights_.length; i < columnHeightsCount; i++) {
+		if (shortestColumnHeight === null) {
+			shortestColumnHeight = this.columnHeights_[i];
+			shortestColumnIndex = i;
+			continue;
 		}
 
-		function handleBoardItemTitleAnchorClickEvent(event) {
-			event.stop();
-			var url = event.target.getProperty("href");
-
-			if (!url) {
-				return;
-			}
-
-			window.open(url);
+		if (shortestColumnHeight > this.columnHeights_[i]) {
+			shortestColumnHeight = this.columnHeights_[i];
+			shortestColumnIndex = i;
 		}
+	}
 
-		function handleWindowResizeEvent() {
-			if (resizeTimeoutId) {
-				clearTimeout(resizeTimeoutId);
-			}
+	return shortestColumnIndex;
+};
 
-			resizeTimeoutId = self.rebuild.delay(10);
-		}
+/**
+ * resizeColumns injects CSS with style rules for Board margin, Board width and
+ * BoardItem width into the page by creating a <style> element or modifying the
+ * created <style> element.
+ */
+panoptikos.ui.Board.prototype.resizeColumns = function() {
+	var style = ".board-column {margin-left: " + this.columnMarginLeft_ + "px; width: " + this.columnWidth_ + "px;}";
+	style += ".board-item {width: " + (this.columnWidth_ - 8) + "px;}";
 
-		/**
-		 * rebuild calculates how many columns can be displayed, adjusts the
-		 * column size, and if necessary empties the board and creates new
-		 * columns that are filled with board items.
-		 * @returns HTMLElement
-		 */
-		self.rebuild = function() {
-			if (typeOf(board) !== "element") {
-				return;
-			}
+	if (!this.styleElement_) {
+		this.styleElement_ = goog.dom.createDom("style", {
+			"type": "text/css"
+		});
+		this.styleElement_.innerHTML = style;
 
-			var availableBoardWidth = board.getWidth();
-			var newColumnCount = 1;
-			var newColumnWidth = columnMaxWidth;
+		goog.dom.appendChild(document.head, this.styleElement_);
+		return;
+	}
 
-			if (newColumnWidth > availableBoardWidth) {
-				newColumnWidth = availableBoardWidth;
-			} else {
-				newColumnCount += Math.floor((availableBoardWidth - newColumnWidth) / (newColumnWidth + columnMarginLeft));
-			}
+	this.styleElement_.innerHTML = style;
+};
 
-			if (newColumnWidth !== columnWidth) {
-				resizeColumns(newColumnWidth, columnMarginLeft);
-				columnWidth = newColumnWidth;
-			}
+/**
+ * loadStylesheet_ injects a <link> element into the document head which
+ * causes the browser to load the specified stylesheet.
+ * @param {string} url URL to the stylesheet to load.
+ * @private
+ */
+panoptikos.ui.Board.prototype.loadStylesheet_ = function(url) {
+	var element = goog.dom.createDom("link", {
+		href: url,
+		rel: "stylesheet",
+		type: "text/css"
+	});
 
-			// If we show the same number of columns as before, don't rebuild the board
-			if (newColumnCount === columnCount) {
-				return;
-			}
+	goog.dom.appendChild(document.head, element);
+};
 
-			columnCount = newColumnCount;
+panoptikos.ui.Board.prototype.handleUserDidChangeSelectedSubredditsEvent = function() {
+	this.reset_();
+	this.rebuild();
+	this.retrieveThreadsFromReddit();
+};
 
-			// Reset variables
-			columns = [];
-			columnHeights = [];
+/**
+ * @private
+ */
+panoptikos.ui.Board.prototype.dispatchDidCompleteRequestEvent_ = function() {
+	this.dispatchEvent(new panoptikos.ui.BoardEvent(
+		panoptikos.ui.Board.EventType.DID_COMPLETE_REQUEST,
+		this,
+		this.runningRequestsCount_,
+		this.hasLoadedFirstImage_
+	));
+};
 
-			// Remove all columns
-			board.empty();
+/**
+ * @enum {string}
+ */
+panoptikos.ui.Board.EventType = {
+	DID_COMPLETE_REQUEST: "a"
+};
 
-			// Create new columns
-			for (var i = 0; i < columnCount; i++) {
-				var column = createColumn();
-				columns.push(column);
-				columnHeights.push(0);
-				board.grab(column);
-			}
+/**
+ * @param {string} eventType
+ * @param {!panoptikos.ui.Board} eventTarget
+ * @param {number} runningRequestsCount
+ * @param {boolean} hasLoadedFirstImage
+ * @constructor
+ * @extends goog.events.Event
+ */
+panoptikos.ui.BoardEvent = function(eventType, eventTarget, runningRequestsCount, hasLoadedFirstImage) {
+	goog.base(this, eventType, eventTarget);
 
-			app.console.log("app.views.board.rebuild: Rebuilding board with %d images.", boardItems.length);
+	/**
+	 * @type {boolean}
+	 */
+	this.hasLoadedFirstImage = hasLoadedFirstImage;
 
-			// Fill columns with previously fetched images, if any.
-			for (var i = 0, boardItemCount = boardItems.length; i < boardItemCount; i++) {
-				addBoardItemToBoard(boardItems[i]);
-			}
-
-			return board;
-		};
-
-		function createColumn() {
-			var column = new Element("div", {
-				"class": "board-column"
-			});
-
-			return column;
-		}
-
-		function getUrl() {
-			url = "http://www.reddit.com/r/" + app.models.subreddit.getSelectedSubreddits().join("+") + ".json?limit=25";
-
-			if (lastThreadId) {
-				url += "&after=" + lastThreadId;
-			}
-
-			return url;
-		}
-
-		function handleUserDidAskForImagesEvent() {
-			var requestToReddit = new Request.JSONP({
-				callbackKey: "jsonp",
-				onCancel: handleRedditRequestCancelEvent,
-				onComplete: handleRedditRequestCompleteEvent,
-				onTimeout: handleRedditRequestTimeoutEvent,
-				timeout: app.config.core.network.timeout,
-				url: getUrl()
-			});
-
-			runningRequestsCount++;
-			requestToReddit.send();
-		}
-
-		function handleRedditRequestCancelEvent() {
-			runningRequestsCount--;
-			window.fireEvent("app.views.board.didCompleteRequest", {runningRequestsCount: runningRequestsCount});
-		}
-
-		function handleRedditRequestCompleteEvent(response) {
-			var threads = response.data.children;
-
-			for (var i = 0, threadCount = threads.length; i < threadCount; i++) {
-				var url = threads[i].data.url;
-				var imgurImageHash = threads[i].data.url.match(/^https?:\/\/(?:i\.)?imgur\.com\/([a-zA-Z0-9]+)/);
-
-				// If image is hosted on Imgur, try to load large preview version of image
-				if (imgurImageHash) {
-					url = "http://i.imgur.com/" + imgurImageHash[1] + "l.jpg";
-					fullsizeImageUrl = "http://i.imgur.com/" + imgurImageHash[1] + ".jpg";
-
-					var image = new Image();
-					image.addEvent("error", handleImgurRequestErrorEvent.pass([threads[i].data]));
-					image.addEvent("load", handleImgurRequestLoadEvent.pass([threads[i].data, image, fullsizeImageUrl]));
-
-					runningRequestsCount++;
-					image.src = url;
-					continue;
-				}
-
-				// Load image
-				var image = new Image();
-				image.addEvent("error", handleImageErrorEvent.pass([threads[i].data]));
-				image.addEvent("load", handleImageLoadEvent.pass([threads[i].data, image]));
-
-				runningRequestsCount++;
-				image.src = url;
-			}
-
-			lastThreadId = response.data.after;
-
-			runningRequestsCount--;
-			window.fireEvent("app.views.board.didCompleteRequest", {runningRequestsCount: runningRequestsCount});
-		}
-
-		function handleRedditRequestTimeoutEvent(event) {
-			app.console.log("timeout", arguments);
-			runningRequestsCount--;
-			window.fireEvent("app.views.board.didCompleteRequest", {runningRequestsCount: runningRequestsCount});
-			alert("Panoptikos cannot retrieve data from Reddit because Reddit is slow or you are not connected to the Internet.");
-		}
-
-		function handleImgurRequestErrorEvent(thread) {
-			app.console.log("app.views.board.handleImgurRequestErrorEvent:", thread)
-			runningRequestsCount--;
-			window.fireEvent("app.views.board.didCompleteRequest", {runningRequestsCount: runningRequestsCount});
-		}
-
-		function handleImgurRequestLoadEvent(thread, image, fullsizeImageUrl) {
-			handleImageLoadEvent(thread, image, fullsizeImageUrl);
-		}
-
-		function handleImageErrorEvent() {
-			app.console.log("app.views.board.handleImageErrorEvent:", arguments);
-			runningRequestsCount--;
-			window.fireEvent("app.views.board.didCompleteRequest", {runningRequestsCount: runningRequestsCount});
-		}
-
-		function handleImageLoadEvent(thread, image, fullsizeImageUrl) {
-			// Ignore Imgur's "Image does not exist" image
-			// TODO: Find a way to make absolutely sure we are actually blocking Imgur's "Image does not exist" image and not a random image with the same dimensions.
-			if (image.height === 81
-					&& image.width === 161
-					&& image.src.match(/^https?:\/\/i\.imgur\.com\//)) {
-				app.console.log("app.views.board.handleImageLoadEvent: Ignoring image: " + image.src);
-
-				runningRequestsCount--;
-				window.fireEvent("app.views.board.didCompleteRequest", {
-					runningRequestsCount: runningRequestsCount
-				});
-				return;
-			}
-
-			var boardItem = app.views.boardItem.createInstance();
-			var boardItemElement = boardItem.create(thread, image, fullsizeImageUrl);
-
-			boardItems.push(boardItemElement);
-			addBoardItemToBoard(boardItemElement);
-
-			runningRequestsCount--;
-			window.fireEvent("app.views.board.didCompleteRequest", {
-				hasLoadedAnImage: true,
-				runningRequestsCount: runningRequestsCount
-			});
-		}
-
-		/**
-		 * addBoardItemToBoard adds the board item to the shortest column.
-		 * @returns void
-		 */
-		function addBoardItemToBoard(boardItem) {
-			var columnIndex = getIndexOfShortestColumn(columnHeights);
-
-			if (columnIndex === null || !columns || !columns[columnIndex]) {
-				return;
-			}
-
-			columns[columnIndex].grab(boardItem);
-			columnHeights[columnIndex] = columns[columnIndex].getHeight();
-		}
-
-		/**
-		 * getIndexOfShortestColumn returns the index of the shortest column, or
-		 * null if there are no columns.
-		 * @param array<integer> columnHeights Array of integers.
-		 * @returns integer
-		 */
-		function getIndexOfShortestColumn(columnHeights) {
-			var shortestColumnHeight = null;
-			var shortestColumnIndex = null;
-
-			for (var i = 0, columnHeightsCount = columnHeights.length; i < columnHeightsCount; i++) {
-				if (shortestColumnHeight === null) {
-					shortestColumnHeight = columnHeights[i];
-					shortestColumnIndex = i;
-					continue;
-				}
-
-				if (shortestColumnHeight > columnHeights[i]) {
-					shortestColumnHeight = columnHeights[i];
-					shortestColumnIndex = i;
-				}
-			}
-
-			return shortestColumnIndex;
-		}
-
-		/**
-		 * resizeColumns injects CSS with style rules for Board margin, Board
-		 * width and BoardItem width into the page by creating a <style> element
-		 * or modifying the created <style> element.
-		 * @param integer columnWidth New width of columns in pixels.
-		 * @param integer columnMarginLeft New margin between board columns in pixels.
-		 * @returns void
-		 */
-		function resizeColumns(columnWidth, columnMarginLeft) {
-			var style = ".board-column {margin-left: " + columnMarginLeft + "px; width: " + columnWidth + "px;}";
-			style += ".board-item {width: " + (columnWidth - 8) + "px;}";
-
-			if (!styleElement) {
-				styleElement = new Element("style", {
-					"html": style,
-					"type": "text/css"
-				});
-
-				styleElement.inject($(document.head));
-				return;
-			}
-
-			styleElement.set("html", style);
-		}
-
-		/**
-		 * loadStylesheet injects a <link> element into the document head which
-		 * causes the browser to load the specified stylesheet.
-		 * @param string url URL to the stylesheet to load.
-		 * @returns void
-		 */
-		function loadStylesheet(url) {
-			var element = new Element("link", {
-				href: url,
-				rel: "stylesheet",
-				type: "text/css"
-			});
-
-			$(document.head).grab(element);
-		}
-
-		function handleUserDidChangeSelectedSubredditsEvent() {
-			reset();
-			self.rebuild();
-			handleUserDidAskForImagesEvent();
-		}
-	};
-})();
+	/**
+	 * @type {number}
+	 */
+	this.runningRequestsCount = runningRequestsCount;
+};
+goog.inherits(panoptikos.ui.BoardEvent, goog.events.Event);

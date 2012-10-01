@@ -1,25 +1,22 @@
-(function() {
-	var exports = app.namespace("app.ui");
+goog.provide("panoptikos.ui.SubredditPickerLauncher");
 
-	/**
-	 * Class SubredditPickerLauncher manages UI for opening a SubredditPicker.
-	 */
-	exports.SubredditPickerLauncher = function() {
-		var self = this;
+goog.require("goog.dom");
 
-		self.toElement = function() {
-			var element = new Element("button", {
-				html: "Edit Subreddits",
-				id: "subreddit-picker-launcher"
-			});
+/**
+ * Class SubredditPickerLauncher manages UI for opening a SubredditPicker.
+ * @constructor
+ */
+panoptikos.ui.SubredditPickerLauncher = function() {
 
-			element.addEvent("click", handleElementClickEvent);
-			return element;
-		};
+};
 
-		function handleElementClickEvent(event) {
-			event.stop();
-			new app.ui.SubredditPicker().open();
-		}
-	};
-})();
+/**
+ * @return {!Element}
+ */
+panoptikos.ui.SubredditPickerLauncher.prototype.toElement = function() {
+	var element = goog.dom.createDom("button", {
+		id: "subreddit-picker-launcher"
+	}, "Edit Subreddits");
+
+	return element;
+};

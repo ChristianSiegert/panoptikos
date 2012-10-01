@@ -1,72 +1,85 @@
-(function() {
-	var exports = app.namespace("app.views.boardItem");
+goog.provide("panoptikos.ui.BoardItem");
+
+goog.require("goog.dom");
+
+/**
+ * Class BoardItem manages an HTML element that consists of image and anchor
+ * elements.
+ * @param {!Object} thread Reddit thread.
+ * @param {!HTMLImageElement} image
+ * @param {string=} fullsizeImageUrl Optional.
+ * @constructor
+ */
+panoptikos.ui.BoardItem = function(thread, image, fullsizeImageUrl) {
+	/**
+	 * @type {?string}
+	 * @private
+	 */
+	this.fullsizeImageUrl_ = fullsizeImageUrl;
 
 	/**
-	 * createInstance returns a new instance of class BoardItem.
-	 * @returns object BoardItem
+	 * @type {!Element}
+	 * @private
 	 */
-	exports.createInstance = function() {
-		return new BoardItem();
-	};
+	this.image_ = image;
 
 	/**
-	 * Class BoardItem manages an image and related anchor elements.
+	 * @type {!Object}
+	 * @private
 	 */
-	function BoardItem() {
-		var self = this;
+	this.thread_ = thread;
+};
 
-		/**
-		 * create returns an HTML element that contains other markup that all
-		 * together creates a board item, e.g. an image and anchor elements.
-		 * @param object thread Object representing a Reddit thread
-	 	 * @param object image HTML image
-	 	 * @param string fullsizeImageUrl
-	 	 * @returns HTMLElement boardItem
-	 	 */
-		self.create = function(thread, image, fullsizeImageUrl) {
-			var boardItem = new Element("div", {
-				"class": "board-item"
-			});
+/**
+ * toElement returns an HTML element that contains other markup that all
+ * together creates a board item, e.g. an image and anchor elements.
+ * @return {!Element}
+ */
+panoptikos.ui.BoardItem.prototype.toElement = function() {
+	var element = goog.dom.createDom("div", "board-item");
+	goog.dom.appendChild(element, this.createImageAnchor());
+	goog.dom.appendChild(element, this.createTitleAnchor());
+	return element;
+};
 
-			var imageAnchor = createImageAnchor(image, fullsizeImageUrl);
-			boardItem.grab(imageAnchor);
+/**
+ * @return {!Element}
+ * @private
+ */
+panoptikos.ui.BoardItem.prototype.createImageAnchor = function() {
+	var imageAnchor = goog.dom.createDom("a", {
+		"class": "board-item-image-anchor",
+		href: this.fullsizeImageUrl_ ? this.fullsizeImageUrl_ : this.image_.src
+	});
 
-			var titleAnchor = createTitleAnchor(thread);
-			boardItem.grab(titleAnchor);
+	goog.dom.appendChild(imageAnchor, this.createImageElement());
+	return imageAnchor;
+};
 
-			return boardItem;
-		};
+/**
+ * @return {!Element}
+ * @private
+ */
+panoptikos.ui.BoardItem.prototype.createImageElement = function() {
+	var imageElement = goog.dom.createDom("img", {
+		"class": "board-item-image",
+		"data-original-src": this.image_.src,
+		src: this.image_.src
+	});
 
-		function createImageAnchor(image, fullsizeImageUrl) {
-			var imageAnchor = new Element("a", {
-				"class": "board-item-image-anchor",
-				href: fullsizeImageUrl ? fullsizeImageUrl : image.src
-			});
+	return imageElement;
+};
 
-			var image = createImage(image);
-			imageAnchor.grab(image);
+/**
+ * @return {!Element}
+ * @private
+ */
+panoptikos.ui.BoardItem.prototype.createTitleAnchor = function() {
+	var titleAnchor = goog.dom.createDom("a", {
+		"class": "board-item-title-anchor",
+		href: "http://www.reddit.com" + this.thread_.permalink
+	});
+	titleAnchor.innerHTML = this.thread_.title;
 
-			return imageAnchor;
-		}
-
-		function createImage(image) {
-			var image = new Element("img", {
-				"class": "board-item-image",
-				"data-original-src": image.src,
-				src: image.src,
-			});
-
-			return image;
-		}
-
-		function createTitleAnchor(thread) {
-			var titleAnchor = new Element("a", {
-				"class": "board-item-title-anchor",
-				href: "http://www.reddit.com" + thread.permalink,
-				html: thread.title,
-			});
-
-			return titleAnchor;
-		}
-	};
-})();
+	return titleAnchor;
+};

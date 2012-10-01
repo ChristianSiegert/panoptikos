@@ -1,19 +1,24 @@
-goog.provide("app.config.core");
+goog.provide("panoptikos.config.core");
 
 /**
  * Dimensions in pixels.
- * @var object
+ * @type {!Object}
  */
-app.config.core.board = {
+panoptikos.config.core.board = {
 	columnMarginLeft: 10,
 	columnMaxWidth: 328
 };
 
-app.config.core.isProductionMode = false;
+/**
+ * @type {!Object}
+ */
+panoptikos.config.core.network = {
+	timeout: 30000 // in milliseconds
+};
 
 /**
- * @var object
+ * @type {!Object}
  */
-app.config.core.network = {
-	timeout: 30000 // in milliseconds
+panoptikos.config.core.reddit = {
+	maxThreadsPerRequest: 25
 };

@@ -1,12 +1,12 @@
-goog.provide("app.models.subreddit");
+goog.provide("panoptikos.models.subreddit");
 
 /**
  * Names of subreddits that are selected for the user by default. Can be
  * overwritten by setDefaultSubreddits.
- * @type {Array.<string>} Each string is the name of a subreddit.
+ * @type {!Array.<string>} Each string is the name of a subreddit.
  * @private
  */
-app.models.subreddit.defaultSubreddits = [
+panoptikos.models.subreddit.defaultSubreddits = [
 	"1000words",
 	"agricultureporn",
 	"aviation",
@@ -22,18 +22,18 @@ app.models.subreddit.defaultSubreddits = [
 
 /**
  * getDefaultSubreddits returns the subreddits that are selected by default.
- * @return {Array.<string>} Each string is the name of a subreddit.
+ * @return {!Array.<string>} Each string is the name of a subreddit.
  */
-app.models.subreddit.getDefaultSubreddits = function() {
-	return app.models.subreddit.defaultSubreddits.slice();
+panoptikos.models.subreddit.getDefaultSubreddits = function() {
+	return panoptikos.models.subreddit.defaultSubreddits.slice();
 }
 
 /**
  * setDefaultSubreddits sets the subreddits that are selected by default.
- * @param {Array.<string>} subreddits Each string is the name of a subreddit.
+ * @param {!Array.<string>} subreddits Each string is the name of a subreddit.
  */
-app.models.subreddit.setDefaultSubreddits = function(subreddits) {
-	app.models.subreddit.defaultSubreddits = subreddits;
+panoptikos.models.subreddit.setDefaultSubreddits = function(subreddits) {
+	panoptikos.models.subreddit.defaultSubreddits = subreddits;
 };
 
 /**
@@ -41,26 +41,26 @@ app.models.subreddit.setDefaultSubreddits = function(subreddits) {
  * and returns them. If no valid subreddit names were found and
  * useDefaultSubredditsAsFallback is true, it returns the names of the default
  * subreddits.
- * @param {boolean} useDefaultSubredditsAsFallback Whether to use the default subreddits. Defaults to true.
- * @return {Array.<string>} Each string is the name of a subreddit.
+ * @param {boolean=} useDefaultSubredditsAsFallback Whether to use the default subreddits. Defaults to true.
+ * @return {!Array.<string>} Each string is the name of a subreddit.
  */
-app.models.subreddit.getSelectedSubreddits = function(useDefaultSubredditsAsFallback) {
+panoptikos.models.subreddit.getSelectedSubreddits = function(useDefaultSubredditsAsFallback) {
 	if (typeof(useDefaultSubredditsAsFallback) !== "boolean") {
 		useDefaultSubredditsAsFallback = true;
 	}
 
-	if (app.models.subreddit.selectedSubreddits.length === 0 && useDefaultSubredditsAsFallback) {
-		return app.models.subreddit.getDefaultSubreddits();
+	if (panoptikos.models.subreddit.selectedSubreddits.length === 0 && useDefaultSubredditsAsFallback) {
+		return panoptikos.models.subreddit.getDefaultSubreddits();
 	}
 
-	return app.models.subreddit.selectedSubreddits.slice();
+	return panoptikos.models.subreddit.selectedSubreddits.slice();
 }
 
 /**
- * @param {Array.<string>} subreddits Each string is the name of a subreddit.
+ * @param {!Array.<string>} subreddits Each string is the name of a subreddit.
  */
-app.models.subreddit.setSelectedSubreddits = function(subreddits) {
-	app.models.subreddit.selectedSubreddits = subreddits;
+panoptikos.models.subreddit.setSelectedSubreddits = function(subreddits) {
+	panoptikos.models.subreddit.selectedSubreddits = subreddits;
 };
 
 /**
@@ -68,8 +68,8 @@ app.models.subreddit.setSelectedSubreddits = function(subreddits) {
  * selected subreddits and updates the location hash (our storage).
  * @param {string} subredditName
  */
-app.models.subreddit.addToSelectedSubreddits = function(subredditName) {
-	var subredditNames = app.models.subreddit.getSelectedSubreddits(false);
+panoptikos.models.subreddit.addToSelectedSubreddits = function(subredditName) {
+	var subredditNames = panoptikos.models.subreddit.getSelectedSubreddits(false);
 	var index = subredditNames.indexOf(subredditName);
 
 	if (index >= 0) {
@@ -77,8 +77,8 @@ app.models.subreddit.addToSelectedSubreddits = function(subredditName) {
 	}
 
 	subredditNames.push(subredditName);
-	app.models.subreddit.setSelectedSubreddits(subredditNames);
-	app.models.subreddit.writeSelectedSubredditsToLocationHash();
+	panoptikos.models.subreddit.setSelectedSubreddits(subredditNames);
+	panoptikos.models.subreddit.writeSelectedSubredditsToLocationHash();
 }
 
 /**
@@ -86,8 +86,8 @@ app.models.subreddit.addToSelectedSubreddits = function(subredditName) {
  * list of selected subreddits and updates the location hash (our storage).
  * @param {string} subredditName
  */
-app.models.subreddit.removeFromSelectedSubreddits = function(subredditName) {
-	var subredditNames = app.models.subreddit.getSelectedSubreddits(false);
+panoptikos.models.subreddit.removeFromSelectedSubreddits = function(subredditName) {
+	var subredditNames = panoptikos.models.subreddit.getSelectedSubreddits(false);
 	var index = subredditNames.indexOf(subredditName);
 
 	if (index < 0) {
@@ -95,18 +95,18 @@ app.models.subreddit.removeFromSelectedSubreddits = function(subredditName) {
 	}
 
 	subredditNames.splice(index, 1);
-	app.models.subreddit.setSelectedSubreddits(subredditNames);
-	app.models.subreddit.writeSelectedSubredditsToLocationHash();
+	panoptikos.models.subreddit.setSelectedSubreddits(subredditNames);
+	panoptikos.models.subreddit.writeSelectedSubredditsToLocationHash();
 };
 
 /**
  * haveSelectedSubredditsChanged compares two arrays of subreddit names to
  * determine if there is a difference.
- * @param {Array.<string>} currentlySelectedSubreddits Each string is the name of a subreddit.
- * @param {Array.<string>} originallySelectedSubreddits Each string is the name of a subreddit.
+ * @param {!Array.<string>} currentlySelectedSubreddits Each string is the name of a subreddit.
+ * @param {!Array.<string>} originallySelectedSubreddits Each string is the name of a subreddit.
  * @return {boolean} Whether there is a difference.
  */
-app.models.subreddit.haveSelectedSubredditsChanged = function(currentlySelectedSubreddits, originallySelectedSubreddits) {
+panoptikos.models.subreddit.haveSelectedSubredditsChanged = function(currentlySelectedSubreddits, originallySelectedSubreddits) {
 	var currentlySelectedSubredditsCount = currentlySelectedSubreddits.length;
 	var originallySelectedSubredditsCount = originallySelectedSubreddits.length;
 
@@ -128,15 +128,15 @@ app.models.subreddit.haveSelectedSubredditsChanged = function(currentlySelectedS
 /**
  * readSelectedSubredditsFromLocationHash searches the location hash for
  * valid subreddit names and returns them.
- * @return {Array.<string>} Each string is the name of a subreddit.
+ * @return {!Array.<string>} Each string is the name of a subreddit.
  */
-app.models.subreddit.readSelectedSubredditsFromLocationHash = function() {
+panoptikos.models.subreddit.readSelectedSubredditsFromLocationHash = function() {
 	// Remove "#" character from beginning of location hash and split location hash at "+" character
 	var names = location.hash.replace(/^#/, "").split("+");
 
 	// Remove invalid subreddit names
 	for (var i = 0, nameCount = names.length; i < nameCount; i++) {
-		if (!app.models.subreddit.isValidSubredditName(names[i])) {
+		if (!panoptikos.models.subreddit.isValidSubredditName(names[i])) {
 			names.splice(i, 1);
 			nameCount--;
 		}
@@ -149,8 +149,8 @@ app.models.subreddit.readSelectedSubredditsFromLocationHash = function() {
  * writeSelectedSubredditsToLocationHash stores the selected subreddits in the
  * location hash.
  */
-app.models.subreddit.writeSelectedSubredditsToLocationHash = function() {
-	location.hash = app.models.subreddit.getSelectedSubreddits(false).join("+");
+panoptikos.models.subreddit.writeSelectedSubredditsToLocationHash = function() {
+	location.hash = panoptikos.models.subreddit.getSelectedSubreddits(false).join("+");
 };
 
 /**
@@ -159,16 +159,16 @@ app.models.subreddit.writeSelectedSubredditsToLocationHash = function() {
  * @param {*} value
  * @return {boolean} Whether the subreddit name is valid.
  */
-app.models.subreddit.isValidSubredditName = function(value) {
-	return typeof(value) === "string" && /^[0-9a-zA-Z_]+$/.test(value));
+panoptikos.models.subreddit.isValidSubredditName = function(value) {
+	return typeof(value) === "string" && /^[0-9a-zA-Z_]+$/.test(value);
 };
 
 /**
- * @type {Array.<string>}
+ * @type {!Array.<string>}
  * @private
  */
-app.models.subreddit.selectedSubreddits = app.models.subreddit.readSelectedSubredditsFromLocationHash();
+panoptikos.models.subreddit.selectedSubreddits = panoptikos.models.subreddit.readSelectedSubredditsFromLocationHash();
 
-if (app.models.subreddit.selectedSubreddits.length === 0) {
-	app.models.subreddit.selectedSubreddits = app.models.subreddit.getDefaultSubreddits();
+if (panoptikos.models.subreddit.selectedSubreddits.length === 0) {
+	panoptikos.models.subreddit.selectedSubreddits = panoptikos.models.subreddit.getDefaultSubreddits();
 }
