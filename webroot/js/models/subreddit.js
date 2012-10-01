@@ -21,6 +21,12 @@ panoptikos.models.subreddit.defaultSubreddits = [
 ];
 
 /**
+ * @type {!Array.<string>}
+ * @private
+ */
+panoptikos.models.subreddit.selectedSubreddits = [];
+
+/**
  * getDefaultSubreddits returns the subreddits that are selected by default.
  * @return {!Array.<string>} Each string is the name of a subreddit.
  */
@@ -78,7 +84,7 @@ panoptikos.models.subreddit.addToSelectedSubreddits = function(subredditName) {
 
 	subredditNames.push(subredditName);
 	panoptikos.models.subreddit.setSelectedSubreddits(subredditNames);
-	panoptikos.models.subreddit.writeSelectedSubredditsToLocationHash();
+	panoptikos.models.subreddit.writeSubredditsToLocationHash(subredditNames);
 }
 
 /**
@@ -96,7 +102,7 @@ panoptikos.models.subreddit.removeFromSelectedSubreddits = function(subredditNam
 
 	subredditNames.splice(index, 1);
 	panoptikos.models.subreddit.setSelectedSubreddits(subredditNames);
-	panoptikos.models.subreddit.writeSelectedSubredditsToLocationHash();
+	panoptikos.models.subreddit.writeSubredditsToLocationHash(subredditNames);
 };
 
 /**
@@ -126,11 +132,11 @@ panoptikos.models.subreddit.haveSelectedSubredditsChanged = function(currentlySe
 };
 
 /**
- * readSelectedSubredditsFromLocationHash searches the location hash for
- * valid subreddit names and returns them.
+ * readSubredditsFromLocationHash searches the location hash for valid subreddit
+ * names and returns them.
  * @return {!Array.<string>} Each string is the name of a subreddit.
  */
-panoptikos.models.subreddit.readSelectedSubredditsFromLocationHash = function() {
+panoptikos.models.subreddit.readSubredditsFromLocationHash = function() {
 	// Remove "#" character from beginning of location hash and split location hash at "+" character
 	var names = location.hash.replace(/^#/, "").split("+");
 
@@ -146,11 +152,11 @@ panoptikos.models.subreddit.readSelectedSubredditsFromLocationHash = function() 
 };
 
 /**
- * writeSelectedSubredditsToLocationHash stores the selected subreddits in the
- * location hash.
+ * writeSubredditsToLocationHash stores subreddits in the location hash.
+ * @param {!Array.<string>} subreddits Each string is the name of a subreddit.
  */
-panoptikos.models.subreddit.writeSelectedSubredditsToLocationHash = function() {
-	location.hash = panoptikos.models.subreddit.getSelectedSubreddits(false).join("+");
+panoptikos.models.subreddit.writeSubredditsToLocationHash = function(subreddits) {
+	location.hash = subreddits.join("+");
 };
 
 /**
@@ -162,13 +168,3 @@ panoptikos.models.subreddit.writeSelectedSubredditsToLocationHash = function() {
 panoptikos.models.subreddit.isValidSubredditName = function(value) {
 	return typeof(value) === "string" && /^[0-9a-zA-Z_]+$/.test(value);
 };
-
-/**
- * @type {!Array.<string>}
- * @private
- */
-panoptikos.models.subreddit.selectedSubreddits = panoptikos.models.subreddit.readSelectedSubredditsFromLocationHash();
-
-if (panoptikos.models.subreddit.selectedSubreddits.length === 0) {
-	panoptikos.models.subreddit.selectedSubreddits = panoptikos.models.subreddit.getDefaultSubreddits();
-}

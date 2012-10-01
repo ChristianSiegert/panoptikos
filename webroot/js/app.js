@@ -13,6 +13,30 @@ goog.require("goog.events");
  * @constructor
  */
 panoptikos.Panoptikos = function() {
+	this.setSubreddits_();
+	this.createUi_();
+};
+goog.exportSymbol("panoptikos.Panoptikos", panoptikos.Panoptikos);
+
+/**
+ * setSubreddits_ determines what subreddits to use. If the user selected
+ * subreddits, they are used, otherwise the default subreddits are used.
+ * @private
+ */
+panoptikos.Panoptikos.prototype.setSubreddits_ = function() {
+	var subreddits = panoptikos.models.subreddit.readSubredditsFromLocationHash();
+
+	if (!subreddits.length) {
+		subreddits = panoptikos.models.subreddit.getDefaultSubreddits();
+	}
+
+	panoptikos.models.subreddit.setSelectedSubreddits(subreddits);
+}
+
+/**
+ * @private
+ */
+panoptikos.Panoptikos.prototype.createUi_ = function() {
 	var subredditPickerLauncherElement = new panoptikos.ui.SubredditPickerLauncher().toElement();
 	goog.dom.appendChild(document.body, subredditPickerLauncherElement);
 
@@ -56,7 +80,6 @@ panoptikos.Panoptikos = function() {
 
 	boardControls.dispatchEvent(new panoptikos.ui.BoardControlsEvent(panoptikos.ui.BoardControls.EventType.USER_DID_ASK_FOR_IMAGES));
 };
-goog.exportSymbol("panoptikos.Panoptikos", panoptikos.Panoptikos);
 
 /**
  * @private
