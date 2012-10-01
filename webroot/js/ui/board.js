@@ -15,19 +15,19 @@ goog.require("goog.userAgent");
 /**
  * Class Board manages the display of images as well as some delegated click
  * events.
- * @param {!Element} boardElement Root element where all other markup is placed to create the board.
+ * @param {!Element} parentElement Element that will contain the board element.
  * @param {number} columnMaxWidth Maximum width of columns in pixels.
  * @param {number} columnMarginLeft Margin between columns in pixels.
  * @param {number} maxThreadsPerRequest Maximum number of threads to retrieve from Reddit per request.
  * @constructor
  * @extends goog.events.EventTarget
  */
-panoptikos.ui.Board = function(boardElement, columnMaxWidth, columnMarginLeft, maxThreadsPerRequest) {
+panoptikos.ui.Board = function(parentElement, columnMaxWidth, columnMarginLeft, maxThreadsPerRequest) {
 	/**
 	 * @type {!Element}
 	 * @private
 	 */
-	this.boardElement_ = boardElement;
+	this.boardElement_ = this.createBoardElement_();
 
 	/**
 	 * @type {!Array.<panoptikos.ui.BoardItem>}
@@ -75,6 +75,7 @@ panoptikos.ui.Board = function(boardElement, columnMaxWidth, columnMarginLeft, m
 	/**
 	 * Whether at least one image has been loaded already.
 	 * @type {boolean}
+	 * @private
 	 */
 	this.hasLoadedFirstImage_ = false;
 
@@ -100,8 +101,15 @@ panoptikos.ui.Board = function(boardElement, columnMaxWidth, columnMarginLeft, m
 	this.maxThreadsPerRequest_ = maxThreadsPerRequest;
 
 	/**
+	 * @type {!Element}
+	 * @private
+	 */
+	this.parentElement_ = parentElement;
+
+	/**
 	 * Number of milliseconds until a request times out.
 	 * @type {number}
+	 * @private
 	 */
 	this.requestTimeout_ = 30000;
 
@@ -122,6 +130,7 @@ panoptikos.ui.Board = function(boardElement, columnMaxWidth, columnMarginLeft, m
 	 * <style> element that is injected into the document head with generated
 	 * CSS that changes the board column widths, among other things.
 	 * @type {Element}
+	 * @private
 	 */
 	this.styleElement_;
 
@@ -230,6 +239,25 @@ panoptikos.ui.Board.prototype.rebuild = function() {
 	for (var i = 0, boardItemCount = this.boardItems_.length; i < boardItemCount; i++) {
 		this.addBoardItemToBoard_(this.boardItems_[i]);
 	}
+};
+
+/**
+ * @return {!Element}
+ * @private
+ */
+panoptikos.ui.Board.prototype.createBoardElement_ = function() {
+	var element = goog.dom.createDom("div", {
+		id: "board"
+	});
+
+	return element;
+};
+
+/**
+ * @return {!Element} Board element.
+ */
+panoptikos.ui.Board.prototype.getElement = function() {
+	return this.boardElement_;
 };
 
 /**

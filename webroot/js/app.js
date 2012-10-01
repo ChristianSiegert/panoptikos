@@ -13,10 +13,8 @@ goog.require("goog.events");
  * @constructor
  */
 panoptikos.Panoptikos = function() {
-	var boardElement = goog.dom.getElement("board");
-
 	var subredditPickerLauncherElement = new panoptikos.ui.SubredditPickerLauncher().toElement();
-	goog.dom.insertSiblingBefore(subredditPickerLauncherElement, boardElement);
+	goog.dom.appendChild(document.body, subredditPickerLauncherElement);
 
 	goog.events.listen(
 		subredditPickerLauncherElement,
@@ -27,11 +25,12 @@ panoptikos.Panoptikos = function() {
 	);
 
 	this.board = new panoptikos.ui.Board(
-		boardElement,
+		document.body,
 		panoptikos.config.core.board.columnMaxWidth,
 		panoptikos.config.core.board.columnMarginLeft,
 		panoptikos.config.core.reddit.maxThreadsPerRequest
 	);
+	goog.dom.appendChild(document.body, this.board.getElement());
 	this.board.rebuild();
 
 	var boardControls = new panoptikos.ui.BoardControls();
