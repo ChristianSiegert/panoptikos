@@ -28,9 +28,10 @@ panoptikos.ui.BoardControls = function() {
 	/**
 	 * @type {string}
 	 */
+	this.loadMoreButtonTextActive = "Loading images…"
 	this.loadMoreButtonTextDefault1 = "Load images";
 	this.loadMoreButtonTextDefault2 = "Load more";
-	this.loadMoreButtonTextActive = "Loading images…"
+	this.loadMoreButtonTextDisabled = "You reached the end";
 
 	/**
 	 * Flag that indicates if at least one image has been loaded. Used to
@@ -39,6 +40,12 @@ panoptikos.ui.BoardControls = function() {
 	 * @private
 	 */
 	this.hasLoadedFirstImage_ = false;
+
+	/**
+	 * Whether Reddit can deliver more threads.
+	 * @private
+	 */
+	this.hasReachedEnd_ = false;
 }
 goog.inherits(panoptikos.ui.BoardControls, goog.events.EventTarget);
 
@@ -59,7 +66,15 @@ panoptikos.ui.BoardControls.prototype.toElement = function() {
  */
 panoptikos.ui.BoardControls.prototype.createLoadMoreButton_ = function() {
 	var button = goog.dom.createDom("button", null, this.loadMoreButtonTextActive);
-	goog.events.listen(button, goog.events.EventType.CLICK, this.handleLoadMoreButtonClickEvent_, false, this);
+
+	goog.events.listen(
+		button,
+		goog.events.EventType.CLICK,
+		this.handleLoadMoreButtonClickEvent_,
+		false,
+		this
+	);
+
 	return button;
 }
 
@@ -67,6 +82,10 @@ panoptikos.ui.BoardControls.prototype.createLoadMoreButton_ = function() {
  * @private
  */
 panoptikos.ui.BoardControls.prototype.handleLoadMoreButtonClickEvent_ = function() {
+	if (this.hasReachedEnd_) {
+		return;
+	}
+
 	goog.dom.setTextContent(this.loadMoreButton_, this.loadMoreButtonTextActive);
 	this.dispatchEvent(panoptikos.ui.BoardControls.EventType.USER_DID_ASK_FOR_IMAGES);
 };
@@ -75,6 +94,16 @@ panoptikos.ui.BoardControls.prototype.handleLoadMoreButtonClickEvent_ = function
  * @param {!panoptikos.ui.BoardEvent} event
  */
 panoptikos.ui.BoardControls.prototype.updateLoadMoreButtonText = function(event) {
+	if (this.hasReachedEnd_) {
+		return;
+	}
+
+	if (event.hasReachedEnd) {
+		this.hasReachedEnd_ = true;
+		goog.dom.setTextContent(this.loadMoreButton_, this.loadMoreButtonTextDisabled);
+		return;
+	}
+
 	if (event.runningRequestsCount > 0) {
 		goog.dom.setTextContent(this.loadMoreButton_, this.loadMoreButtonTextActive);
 		return;

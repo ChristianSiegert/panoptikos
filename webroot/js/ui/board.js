@@ -80,6 +80,13 @@ panoptikos.ui.Board = function(parentElement, columnMaxWidth, columnMarginLeft, 
 	this.hasLoadedFirstImage_ = false;
 
 	/**
+	 * Whether the last thread has been reached.
+	 * @type {boolean}
+	 * @private
+	 */
+	this.hasReachedEnd_ = false;
+
+	/**
 	 * ID of the last Reddit thread that the HTTP response contained. Used to
 	 * request threads that come afterwards.
 	 * @type {string}
@@ -279,6 +286,10 @@ panoptikos.ui.Board.prototype.getRedditRequestUri_ = function() {
 };
 
 panoptikos.ui.Board.prototype.retrieveThreadsFromReddit = function() {
+	if (this.hasReachedEnd_) {
+		return;
+	}
+
 	// Prevent parallel requests
 	if (this.runningRequestsCount_ > 0) {
 		return;
@@ -330,6 +341,11 @@ panoptikos.ui.Board.prototype.handleRedditRequestSuccessEvent_ = function(respon
 	}
 
 	this.lastThreadId_ = response.data.after;
+
+	if (!this.lastThreadId_) {
+		this.hasReachedEnd_ = true;
+	}
+
 	this.runningRequestsCount_--;
 	this.dispatchDidCompleteRequestEvent_();
 };
@@ -494,7 +510,8 @@ panoptikos.ui.Board.prototype.dispatchDidCompleteRequestEvent_ = function() {
 		panoptikos.ui.Board.EventType.DID_COMPLETE_REQUEST,
 		this,
 		this.runningRequestsCount_,
-		this.hasLoadedFirstImage_
+		this.hasLoadedFirstImage_,
+		this.hasReachedEnd_
 	));
 };
 
@@ -510,16 +527,22 @@ panoptikos.ui.Board.EventType = {
  * @param {!panoptikos.ui.Board} eventTarget
  * @param {number} runningRequestsCount
  * @param {boolean} hasLoadedFirstImage
+ * @param {boolean} hasReachedEnd
  * @constructor
  * @extends goog.events.Event
  */
-panoptikos.ui.BoardEvent = function(eventType, eventTarget, runningRequestsCount, hasLoadedFirstImage) {
+panoptikos.ui.BoardEvent = function(eventType, eventTarget, runningRequestsCount, hasLoadedFirstImage, hasReachedEnd) {
 	goog.base(this, eventType, eventTarget);
 
 	/**
 	 * @type {boolean}
 	 */
 	this.hasLoadedFirstImage = hasLoadedFirstImage;
+
+	/**
+	 * @type {boolean}
+	 */
+	this.hasReachedEnd = hasReachedEnd;
 
 	/**
 	 * @type {number}
