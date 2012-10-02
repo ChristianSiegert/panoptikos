@@ -3,8 +3,8 @@ goog.provide("panoptikos.ui.Board.EventType");
 goog.provide("panoptikos.ui.BoardEvent");
 
 goog.require("panoptikos.models.subreddit");
-goog.require("panoptikos.ui.BoardItem");
 goog.require("panoptikos.ui.BoardControls.EventType");
+goog.require("panoptikos.ui.BoardItem");
 goog.require("goog.debug.Logger");
 goog.require("goog.dom");
 goog.require("goog.events.EventTarget");
