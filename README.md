@@ -2,7 +2,9 @@
 
 ## Introduction
 
-Panoptikos is an image viewer for Reddit. This repo contains a new, experimental, version I'm working on. The server-side code is written in Go, the client-side heavily relies on JavaScript.
+Panoptikos is an image viewer for Reddit. This repository contains a new, experimental, version I'm working on. You can play around with it at http://experimental.panoptikos.com/.
+
+The server-side code is written in Go, the client-side heavily relies on JavaScript. The JavaScript library of my choice is Google's Closure Library.
 
 Once the biggest problems are fixed and the most requested features are added, this version will replace the current version of Panoptikos running at http://panoptikos.com/.
 
@@ -27,7 +29,7 @@ Once the biggest problems are fixed and the most requested features are added, t
 	$ cd ./panoptikos
 	$ go build -o panoptikos
 
-The executable can be found in the current directory under the name "panoptikos".
+The executable can be found in the working directory under the name "panoptikos".
 
 ## Running Panoptikos
 
@@ -49,7 +51,7 @@ To start the web server and make it listen to port 80:
 
 ## Development
 
-This project builds on top of [Closure Library](https://developers.google.com/closure/library/).
+This project uses [Closure Library](https://developers.google.com/closure/library/) as JavaScript library.
 
 ### Generating the Closure Library dependency tree
 
