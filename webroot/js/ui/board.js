@@ -394,10 +394,11 @@ panoptikos.ui.Board.prototype.handleImageErrorEvent_ = function() {
  */
 panoptikos.ui.Board.prototype.handleImageLoadEvent_ = function(thread, image, fullsizeImageUrl) {
 	// Ignore Imgur's "Image does not exist" image
-	// TODO: Find a way to make absolutely sure we are actually blocking Imgur's "Image does not exist" image and not a random image with the same dimensions.
+	// TODO: Find a way to make absolutely sure we are actually blocking Imgur's
+	// "Image does not exist" image and not a random image with the same dimensions.
 	if (image.height === 81
 			&& image.width === 161
-			&& image.src.match(/^https?:\/\/i\.imgur\.com\//)) {
+			&& /^https?:\/\/i\.imgur\.com\//.test(image.src)) {
 		this.logger_.fine('Ignoring Imgur’s “Image does not exist” image: ' + image.src);
 
 		this.runningRequestsCount_--;
