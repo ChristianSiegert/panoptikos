@@ -41,6 +41,7 @@ Simply execute the compiled file:
 
 Panoptikos supports these command-line arguments:
 
+* **--js-compilation-level** Either `WHITESPACE_ONLY`, `SIMPLE_OPTIMIZATIONS` or `ADVANCED_OPTIMIZATIONS`. See [Closure Compiler Compilation Levels](https://developers.google.com/closure/compiler/docs/compilation_levels). Advanced optimizations can break your code. Only used in production mode. Default is `SIMPLE_OPTIMIZATIONS`.
 * **--port** HTTP port the web server listens to. Default is `8080`.
 * **--production** Whether the server should run in production mode. Default is `false`.
 
