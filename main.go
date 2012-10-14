@@ -106,7 +106,7 @@ func compileJavaScript() {
 		workingDirectory+"/libraries/closure-library-20120710-r2029/closure/bin/build/closurebuilder.py",
 		"--compiler_flags=--compilation_level=ADVANCED_OPTIMIZATIONS",
 		// "--compiler_flags=--warning_level=VERBOSE",
-		"--compiler_jar=/Users/christian/Downloads/compiler-latest/compiler.jar",
+		"--compiler_jar="+workingDirectory+"/libraries/closure-compiler-20120917-r2180/compiler.jar",
 		"--namespace=panoptikos.Panoptikos",
 		"--output_file="+workingDirectory+"/webroot/js/compiled.js",
 		"--output_mode=compiled",

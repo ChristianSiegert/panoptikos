@@ -52,11 +52,11 @@ To start the web server in production mode and make it listen to port 80:
 
 ## Development
 
-This project uses [Closure Library](https://developers.google.com/closure/library/) as JavaScript library.
+This project uses [Closure Library](https://developers.google.com/closure/library/) as JavaScript library. Additionally, if the server is started in production mode, [Closure Compiler](https://developers.google.com/closure/compiler/) is used to compile all JavaScript code into a single JavaScript file.
 
 ### Generating the Closure Library dependency tree
 
-If you add or remove custom classes, i.e. any non-goog class, you have to generate the dependency tree again. You can do this by changing to the Panoptikos project directory and executing Closure Library's Dependency Writer:
+In development mode, if you add or remove custom classes, i.e. any non-goog class, you have to generate the dependency tree again. You can do this by changing to the Panoptikos project directory and executing Closure Library's Dependency Writer:
 
 	$ cd ./panoptikos
 	$ ./libraries/closure-library-20120710-r2029/closure/bin/build/depswriter.py \
