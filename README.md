@@ -2,11 +2,11 @@
 
 ## Introduction
 
-Panoptikos is an image viewer for Reddit. This repository contains a new, experimental, version I'm working on. You can play around with it at http://experimental.panoptikos.com/.
+Panoptikos is an image viewer for Reddit. This repository contains a new, experimental, version I'm working on. You can play around with it at [experimental.panoptikos.com](http://experimental.panoptikos.com/).
 
 The server-side code is written in Go, the client-side heavily relies on JavaScript. The JavaScript library of my choice is Google's Closure Library.
 
-Once the biggest problems are fixed and the most requested features are added, this version will replace the current version of Panoptikos running at http://panoptikos.com/.
+Once the biggest problems are fixed and the most requested features are added, this version will replace the current version of Panoptikos running at [panoptikos.com](http://panoptikos.com/).
 
 ## What’s different?
 
@@ -41,13 +41,14 @@ Simply execute the compiled file:
 
 Panoptikos supports these command-line arguments:
 
-* **--port** HTTP port the web server listens to. Default is "8080".
+* **--port** HTTP port the web server listens to. Default is `8080`.
+* **--production** Whether the server should run in production mode. Default is `false`.
 
 ## Example
 
-To start the web server and make it listen to port 80:
+To start the web server in production mode and make it listen to port 80:
 
-	$ ./panoptikos --port=80
+	$ ./panoptikos --port=80 --production
 
 ## Development
 
@@ -56,22 +57,10 @@ This project uses [Closure Library](https://developers.google.com/closure/librar
 ### Generating the Closure Library dependency tree
 
 If you add or remove custom classes, i.e. any non-goog class, you have to generate the dependency tree again. You can do this by changing to the Panoptikos project directory and executing Closure Library's Dependency Writer:
+
 	$ cd ./panoptikos
 	$ ./libraries/closure-library-20120710-r2029/closure/bin/build/depswriter.py \
 		--output_file=./webroot/js/dependencies.js \
 		--root_with_prefix="./webroot/js/ ../../"
 
 This overwrites the existing dependencies.js file.
-
-### Compiling JavaScript code for production
-
-	$ cd ./panoptikos
-	$ ./libraries/closure-library-20120710-r2029/closure/bin/build/closurebuilder.py \
-		--compiler_flags="--compilation_level=ADVANCED_OPTIMIZATIONS" \
-		--compiler_flags="--warning_level=VERBOSE" \
-		--compiler_jar=/Users/christian/Downloads/compiler-latest/compiler.jar \
-		--namespace="panoptikos.Panoptikos" \
-		--output_mode=compiled \
-		--root=. \
-		> webroot/js/compiled.js
-
