@@ -44,12 +44,25 @@ Panoptikos supports these command-line arguments:
 * **--js-compilation-level** Either `WHITESPACE_ONLY`, `SIMPLE_OPTIMIZATIONS` or `ADVANCED_OPTIMIZATIONS`. See [Closure Compiler Compilation Levels](https://developers.google.com/closure/compiler/docs/compilation_levels). Advanced optimizations can break your code. Only used in production mode. Default is `SIMPLE_OPTIMIZATIONS`.
 * **--port** HTTP port the web server listens to. Default is `8080`.
 * **--production** Whether the server should run in production mode. Default is `false`.
+* **--verbose** Whether additional information should be displayed. Default is `false`.
 
-## Example
+## Examples
+
+To start the web server in development mode with default settings:
+
+	$ ./panoptikos
 
 To start the web server in production mode and make it listen to port 80:
 
-	$ ./panoptikos --port=80 --production
+	$ ./panoptikos --production --port=80
+
+To display Closure Compiler warnings even if your JavaScript code compiled successfully:
+
+	$ ./panoptikos --production --verbose
+
+To compile your JavaScript code with advanced optimizations:
+
+	$ ./panoptikos --production --js-compilation-level=ADVANCED_OPTIMIZATIONS
 
 ## Development
 
@@ -57,7 +70,7 @@ This project uses [Closure Library](https://developers.google.com/closure/librar
 
 ### Generating the Closure Library dependency tree
 
-In development mode, if you add or remove custom classes, i.e. any non-goog class, you have to generate the dependency tree again. You can do this by changing to the Panoptikos project directory and executing Closure Library's Dependency Writer:
+In development mode, if you add or remove custom JavaScript classes, i.e. any non-goog class, you have to generate the dependency tree again. You can do this by changing to the Panoptikos project directory and executing Closure Library's Dependency Writer:
 
 	$ cd ./panoptikos
 	$ ./libraries/closure-library-20120710-r2029/closure/bin/build/depswriter.py \

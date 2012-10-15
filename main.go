@@ -29,6 +29,7 @@ var (
 	httpPort           = flag.String("port", "8080", "HTTP port the web server listens to.")
 	isProductionMode   = flag.Bool("production", false, "Whether the server should run in production mode.")
 	jsCompilationLevel = flag.String("js-compilation-level", JS_COMPILATION_LEVEL_SIMPLE_OPTIMIZATIONS, "Either WHITESPACE_ONLY, SIMPLE_OPTIMIZATIONS or ADVANCED_OPTIMIZATIONS. See https://developers.google.com/closure/compiler/docs/compilation_levels. Advanced optimizations can break your code. Only used in production mode.")
+	verbose            = flag.Bool("verbose", false, "Whether additional information should be displayed.")
 )
 
 // RegEx patterns
@@ -132,7 +133,7 @@ func compileJavaScript() {
 	command := exec.Command(
 		workingDirectory+"/libraries/closure-library-20120710-r2029/closure/bin/build/closurebuilder.py",
 		"--compiler_flags=--compilation_level="+*jsCompilationLevel,
-		// "--compiler_flags=--warning_level=VERBOSE",
+		"--compiler_flags=--warning_level=VERBOSE",
 		"--compiler_jar="+workingDirectory+"/libraries/closure-compiler-20120917-r2180/compiler.jar",
 		"--namespace=panoptikos.Panoptikos",
 		"--output_file="+workingDirectory+"/webroot/js/compiled.js",
@@ -149,15 +150,20 @@ func compileJavaScript() {
 		log.Fatal("Could not start Closure Builder: ", error)
 	}
 
-	stdErrOutput, error := ioutil.ReadAll(stderrPipe)
+	stderrOutput, error := ioutil.ReadAll(stderrPipe)
 
 	if error != nil {
 		log.Fatal("Could not read from Closure Builder's stderr pipe: ", error)
 	}
 
 	if error := command.Wait(); error != nil {
-		log.Println("Could not compile JavaScript:", string(stdErrOutput))
+		log.Println("Could not compile JavaScript:", string(stderrOutput))
 		log.Fatal("Closure Builder finished with: ", error)
+	}
+
+	if *verbose {
+		// All Closure Builder output runs over stderr, even if no error occurred
+		log.Println(string(stderrOutput))
 	}
 
 	log.Println("Compiled JavaScript.")
