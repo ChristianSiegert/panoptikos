@@ -2,7 +2,6 @@
 // Please do not edit.
 goog.addDependency('../../app.js', ['panoptikos.Panoptikos'], ['goog.dom', 'goog.events', 'panoptikos.config.core', 'panoptikos.ui.Board', 'panoptikos.ui.BoardControls', 'panoptikos.ui.SubredditPicker', 'panoptikos.ui.SubredditPickerLauncher']);
 goog.addDependency('../../config/core.js', ['panoptikos.config.core'], []);
-goog.addDependency('../../foo.js', ['Bar', 'Foo'], []);
 goog.addDependency('../../models/subreddit.js', ['panoptikos.models.subreddit'], []);
 goog.addDependency('../../ui/board-controls.js', ['panoptikos.ui.BoardControls', 'panoptikos.ui.BoardControls.EventType'], ['goog.dom', 'goog.events', 'goog.events.Event', 'goog.events.EventTarget']);
 goog.addDependency('../../ui/board-item.js', ['panoptikos.ui.BoardItem'], ['goog.dom']);
