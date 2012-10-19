@@ -7,34 +7,56 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"os/exec"
 	"regexp"
 	"runtime"
+	"strings"
 )
 
 type Page struct {
+	IsProductionMode bool
 }
 
+// Compilation levels supported by Closure Compiler
+const (
+	JS_COMPILATION_LEVEL_ADVANCED_OPTIMIZATIONS = "ADVANCED_OPTIMIZATIONS"
+	JS_COMPILATION_LEVEL_SIMPLE_OPTIMIZATIONS   = "SIMPLE_OPTIMIZATIONS"
+	JS_COMPILATION_LEVEL_WHITESPACE_ONLY        = "WHITESPACE_ONLY"
+)
+
 // Command-line flags
-var httpPort = flag.String("port", "8080", "HTTP port the web server listens to.")
+var (
+	httpPort           = flag.String("port", "8080", "HTTP port the web server listens to.")
+	isProductionMode   = flag.Bool("production", false, "Whether the server should run in production mode.")
+	jsCompilationLevel = flag.String("js-compilation-level", JS_COMPILATION_LEVEL_SIMPLE_OPTIMIZATIONS, "Either WHITESPACE_ONLY, SIMPLE_OPTIMIZATIONS or ADVANCED_OPTIMIZATIONS. See https://developers.google.com/closure/compiler/docs/compilation_levels. Advanced optimizations can break your code. Only used in production mode.")
+	verbose            = flag.Bool("verbose", false, "Whether additional information should be displayed.")
+)
 
 // RegEx patterns
-var assetUrlPattern = regexp.MustCompile("^/(?:css|images|js)/")
-var whitespacePattern = regexp.MustCompile(">[ \f\n\r\t]+<")
+var (
+	assetUrlPattern   = regexp.MustCompile("^/(?:css|images|js)/")
+	whitespacePattern = regexp.MustCompile(">[ \f\n\r\t]+<")
+)
 
 func main() {
-	// Set maximum number of processes to number of CPUs
+	// Set maximum number of CPUs that can be executing simultaneously
 	runtime.GOMAXPROCS(runtime.NumCPU())
 
-	// Parse command-line into defined flags
+	// Parse command-line flags
 	flag.Parse()
 
+	log.Println("Production mode:", *isProductionMode)
+
+	if *isProductionMode {
+		// compileCss()
+		compileJavaScript()
+	}
+
 	http.HandleFunc("/", handleRequest)
+	log.Println("Web server is running at 127.0.0.1:" + *httpPort + ".")
 
-	log.Println("Started web server at 127.0.0.1:" + *httpPort + ".")
-	error := http.ListenAndServe(":"+*httpPort, nil)
-
-	if error != nil {
-		log.Fatal("ListenAndServe: ", error)
+	if error := http.ListenAndServe(":"+*httpPort, nil); error != nil {
+		log.Fatal("Could not start web server: ", error)
 	}
 }
 
@@ -51,7 +73,7 @@ func handleRequest(responseWriter http.ResponseWriter, request *http.Request) {
 		cleanedFileContent := whitespacePattern.ReplaceAllString(string(fileContent), "><")
 		parsedTemplate, error := template.New("default").Parse(cleanedFileContent)
 
-		error = parsedTemplate.Execute(responseWriter, &Page{})
+		error = parsedTemplate.Execute(responseWriter, &Page{IsProductionMode: *isProductionMode})
 
 		if error != nil {
 			http.Error(responseWriter, error.Error(), http.StatusInternalServerError)
@@ -84,4 +106,65 @@ func handleRequest(responseWriter http.ResponseWriter, request *http.Request) {
 	}
 
 	http.NotFound(responseWriter, request)
+}
+
+func compileJavaScript() {
+	*jsCompilationLevel = strings.ToUpper(*jsCompilationLevel)
+
+	switch *jsCompilationLevel {
+	case JS_COMPILATION_LEVEL_ADVANCED_OPTIMIZATIONS:
+		log.Println("Compiling JavaScript with advanced optimizations ...")
+	case JS_COMPILATION_LEVEL_SIMPLE_OPTIMIZATIONS:
+		log.Println("Compiling JavaScript with simple optimizations ...")
+	case JS_COMPILATION_LEVEL_WHITESPACE_ONLY:
+		log.Println("Compiling JavaScript with whitespace-only optimizations ...")
+	default:
+		log.Printf("JavaScript compilation level '%s' not recognized. Using '%s'.\n", *jsCompilationLevel, JS_COMPILATION_LEVEL_SIMPLE_OPTIMIZATIONS)
+		log.Println("Compiling JavaScript with simple optimizations ...")
+		*jsCompilationLevel = JS_COMPILATION_LEVEL_SIMPLE_OPTIMIZATIONS
+	}
+
+	workingDirectory, error := os.Getwd()
+
+	if error != nil {
+		log.Fatal("Could not determine working directory: ", error)
+	}
+
+	command := exec.Command(
+		workingDirectory+"/libraries/closure-library-20120710-r2029/closure/bin/build/closurebuilder.py",
+		"--compiler_flags=--compilation_level="+*jsCompilationLevel,
+		"--compiler_flags=--warning_level=VERBOSE",
+		"--compiler_jar="+workingDirectory+"/libraries/closure-compiler-20120917-r2180/compiler.jar",
+		"--namespace=panoptikos.Panoptikos",
+		"--output_file="+workingDirectory+"/webroot/js/compiled.js",
+		"--output_mode=compiled",
+		"--root="+workingDirectory)
+
+	stderrPipe, error := command.StderrPipe()
+
+	if error != nil {
+		log.Fatal("Could not create stderr pipe for Closure Builder: ", error)
+	}
+
+	if error := command.Start(); error != nil {
+		log.Fatal("Could not start Closure Builder: ", error)
+	}
+
+	stderrOutput, error := ioutil.ReadAll(stderrPipe)
+
+	if error != nil {
+		log.Fatal("Could not read from Closure Builder's stderr pipe: ", error)
+	}
+
+	if error := command.Wait(); error != nil {
+		log.Println("Could not compile JavaScript:", string(stderrOutput))
+		log.Fatal("Closure Builder finished with: ", error)
+	}
+
+	if *verbose {
+		// All Closure Builder output runs over stderr, even if no error occurred
+		log.Println(string(stderrOutput))
+	}
+
+	log.Println("Compiled JavaScript.")
 }

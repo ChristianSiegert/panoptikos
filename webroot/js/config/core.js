@@ -1,30 +1,24 @@
-(function() {
-	var exports = app.namespace("app.config.core");
+goog.provide("panoptikos.config.core");
 
-	/**
-	 * Dimensions in pixels.
-	 * @var object
-	 */
-	exports.board = {
-		columnMarginLeft: 10,
-		columnMaxWidth: 328
-	};
+/**
+ * Dimensions in pixels.
+ * @type {!Object}
+ */
+panoptikos.config.core.board = {
+	columnMarginLeft: 10,
+	columnMaxWidth: 328
+};
 
-	exports.isProductionMode = true;
+/**
+ * @type {!Object}
+ */
+panoptikos.config.core.network = {
+	timeout: 30000 // in milliseconds
+};
 
-	/**
-	 * @var object
-	 */
-	exports.network = {
-		timeout: 30000 // in milliseconds
-	}
-
-	/**
-	 * You can overwrite the default subreddits by uncommenting the lines below
-	 * and adding subreddit names.
-	 */
-	// app.models.subreddit.setDefaultSubreddits([
-	// 	"adviceanimals",
-	// 	"aww"
-	// ]);
-})();
+/**
+ * @type {!Object}
+ */
+panoptikos.config.core.reddit = {
+	maxThreadsPerRequest: 25
+};

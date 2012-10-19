@@ -46,7 +46,6 @@ a:hover {
 }
 
 #board-controls {
-	cursor: pointer;
 	display: block;
 	font-size: 14px;
 	font-size: 0.875rem;
