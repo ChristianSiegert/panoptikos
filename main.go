@@ -46,9 +46,9 @@ func main() {
 	flag.Parse()
 
 	log.Println("Production mode:", *isProductionMode)
+	compileCss()
 
 	if *isProductionMode {
-		compileCss()
 		compileJavaScript()
 	}
 
