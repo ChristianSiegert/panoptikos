@@ -61,6 +61,17 @@ func main() {
 }
 
 func handleRequest(responseWriter http.ResponseWriter, request *http.Request) {
+	// Redirect legacy URLs to home page to prevent 404 Not Found errors
+	if strings.Index(request.URL.Path, "/feedback") == 0 ||
+		strings.Index(request.URL.Path, "/feeds") == 0 ||
+		strings.Index(request.URL.Path, "/pictures") == 0 ||
+		strings.Index(request.URL.Path, "/preferences") == 0 ||
+		strings.Index(request.URL.Path, "/referrals/by-source") == 0 ||
+		strings.Index(request.URL.Path, "/sources/select") == 0 {
+		http.Redirect(responseWriter, request, "/", http.StatusMovedPermanently)
+		return
+	}
+
 	if request.URL.Path == "/" {
 		fileContent, error := ioutil.ReadFile("views/layouts/default.html")
 
