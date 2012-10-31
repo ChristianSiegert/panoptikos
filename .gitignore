@@ -22,5 +22,6 @@ _testmain.go
 *.exe
 
 *.pyc
+panoptikos
 webroot/css/compiled.css
 webroot/js/compiled.js
