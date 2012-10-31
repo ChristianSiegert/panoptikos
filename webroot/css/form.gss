@@ -4,14 +4,14 @@ textarea {
 	-webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 	background-color: #F1F1F2;
 	border-radius: 4px;
-	border-radius: 0.25rem;
+	/* @alternate */ border-radius: 0.25rem;
 	border-width: 0;
 	color: #767676;
 	outline: none;
 	padding: 8px 8px 6px;
-	padding: 0.5rem 0.5rem 0.375rem;
+	/* @alternate */ padding: 0.5rem 0.5rem 0.375rem;
 	text-shadow: 1px 1px #FFF;
-	text-shadow: 0.0625rem 0.0625rem #FFF;
+	/* @alternate */ text-shadow: 0.0625rem 0.0625rem #FFF;
 	width: 100%;
 
 	-webkit-box-shadow: inset 0 1px 3px #CCC;
@@ -34,7 +34,7 @@ button {
 	-webkit-appearance: none;
 	-webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 	background: -webkit-gradient(linear, left top, left bottom, color-stop(0.05, #FFF), color-stop(1, #F6F6F6));
-	background: -moz-linear-gradient(center top, #FFF 5%, #F6F6F6 100%);
+	/* @alternate */ background: -moz-linear-gradient(center top, #FFF 5%, #F6F6F6 100%);
 	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFF', endColorstr='#F6F6F6');
 	background-color: #FFF;
 	border: 1px solid #DCDCDC;
@@ -43,10 +43,10 @@ button {
 	display: inline-block;
 	font-family: Arial, sans-serif;
 	font-size: 15px;
-	font-size: 0.9375rem;
+	/* @alternate */ font-size: 0.9375rem;
 	font-weight: bold;
 	margin: 0 0 10px;
-	margin: 0 0 0.625rem;
+	/* @alternate */ margin: 0 0 0.625rem;
 	padding: 6px 24px;
 	text-decoration: none;
 	text-shadow: 1px 1px 0px #FFF;
@@ -62,7 +62,7 @@ button {
 
 button:active {
 	background: -webkit-gradient(linear, left top, left bottom, color-stop(0.05, #F6F6F6), color-stop(1, #FFF));
-	background: -moz-linear-gradient(center top, #F6F6F6 5%, #FFF 100%);
+	/* @alternate */ background: -moz-linear-gradient(center top, #F6F6F6 5%, #FFF 100%);
 	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#F6F6F6', endColorstr='#FFF');
 	background-color: #F6F6F6;
 }

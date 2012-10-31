@@ -4,7 +4,7 @@
 	height: 100%;
 	left: 0;
 	padding: 10px;
-	padding: 0.625rem;
+	/* @alternate */ padding: 0.625rem;
 	position: absolute;
 	top: 0;
 	width: 100%;
@@ -73,11 +73,11 @@
 	background: #FFF;
 	border-radius: 3px;
 	margin: 10px auto;
-	margin: 0.625rem auto;
+	/* @alternate */ margin: 0.625rem auto;
 	max-width: 320px;
-	max-width: 30rem;
+	/* @alternate */ max-width: 30rem;
 	padding: 5px;
-	padding: 0.3125rem;
+	/* @alternate */ padding: 0.3125rem;
 	position: relative;
 
 	-webkit-box-shadow: 0 1px 3px rgba(34, 25, 25, 0.4);
@@ -93,18 +93,18 @@
 		.subreddit-picker-subreddit-remove-button {
 			display: block;
 			margin: 7px 0;
-			margin: 0.4375rem 0;
+			/* @alternate */ margin: 0.4375rem 0;
 			outline: none;
 			padding: 7px 12px;
-			padding: 0.4375rem 0.75rem;
+			/* @alternate */ padding: 0.4375rem 0.75rem;
 			text-align: left;
 			width: 100%;
 		}
 
 		.subreddit-picker-subreddit-add-button {
 			background: -webkit-gradient(linear, left top, left bottom, color-stop(0.05, #89C403), color-stop(1, #77A809));
-			background: -moz-linear-gradient(center top, #89C403 5%, #77A809 100%);
-			filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#89C403', endColorstr='#77A809');
+			/* @alternate */ background: -moz-linear-gradient(center top, #89C403 5%, #77A809 100%);
+			filter:progid:DXImageTransform.Microsoft.gradient(StartColorStr='#89C403', EndColorStr='#77A809');
 			background-color: #89C403;
 			border-color: #74B807;
 			color: #FFF;
@@ -117,15 +117,15 @@
 
 		.subreddit-picker-subreddit-add-button:active {
 			background: -webkit-gradient(linear, left top, left bottom, color-stop(0.05, #77A809), color-stop(1, #89C403));
-			background: -moz-linear-gradient(center top, #77A809 5%, #89C403 100%);
-			filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#77A809', endColorstr='#89C403');
+			/* @alternate */ background: -moz-linear-gradient(center top, #77A809 5%, #89C403 100%);
+			filter:progid:DXImageTransform.Microsoft.gradient(StartColorStr='#77A809', EndColorStr='#89C403');
 			background-color: #77A809;
 		}
 
 		.subreddit-picker-subreddit-remove-button {
 			background: -webkit-gradient(linear, left top, left bottom, color-stop(0.05, #F24537), color-stop(1, #C62D1F));
-			background: -moz-linear-gradient(center top, #F24537 5%, #C62D1F 100%);
-			filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#F24537', endColorstr='#C62D1F');
+			/* @alternate */ background: -moz-linear-gradient(center top, #F24537 5%, #C62D1F 100%);
+			filter:progid:DXImageTransform.Microsoft.gradient(StartColorStr='#F24537', EndColorStr='#C62D1F');
 			background-color: #F24537;
 			border-color: #D02718;
 			color: #FFF;
@@ -138,15 +138,15 @@
 
 		.subreddit-picker-subreddit-remove-button:active {
 			background: -webkit-gradient(linear, left top, left bottom, color-stop(0.05, #C62D1F), color-stop(1, #F24537));
-			background: -moz-linear-gradient(center top, #C62D1F 5%, #F24537 100%);
-			filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#C62D1F', endColorstr='#F24537');
+			/* @alternate */ background: -moz-linear-gradient(center top, #C62D1F 5%, #F24537 100%);
+			filter:progid:DXImageTransform.Microsoft.gradient(StartColorStr='#C62D1F', EndColorStr='#F24537');
 			background-color: #C62D1F;
 		}
 
 		.subreddit-picker-subreddit-add-button:before,
 		.subreddit-picker-subreddit-remove-button:before {
 			margin: 0 7px 0 0;
-			margin: 0 0.4375rem 0 0;
+			/* @alternate */ margin: 0 0.4375rem 0 0;
 		}
 
 		.subreddit-picker-subreddit-add-button:before {

@@ -3,7 +3,7 @@ html {
 	color: #211922;
 	font-family: "Droid Serif", "Ubuntu", "DejaVu Sans", "Lucida Grande", Georgia, sans-serif;
 	padding: 20px;
-	padding: 1.25rem;
+	/* @alternate */ padding: 1.25rem;
 
 	/* Show scrollbar right away so the available width for our board remains the same when images are added. */
 	overflow-y: scroll;
@@ -18,7 +18,7 @@ html {
 @media (max-width: 1024px) {
 	html {
 		padding: 10px;
-		padding: 0.625rem;
+		/* @alternate */ padding: 0.625rem;
 	}
 }
 
@@ -33,23 +33,23 @@ a:hover {
 
 #about {
 	font-size: 16px;
-	font-size: 1rem;
+	/* @alternate */ font-size: 1rem;
 	margin: 0 0 10px;
-	margin: 0 0 0.625rem;
+	/* @alternate */ margin: 0 0 0.625rem;
 }
 
 #about-hint {
 	font-size: 14px;
-	font-size: 0.875rem;
+	/* @alternate */ font-size: 0.875rem;
 	margin: 0 0 10px;
-	margin: 0 0 0.625rems;
+	/* @alternate */ margin: 0 0 0.625rem;
 }
 
 #board-controls {
 	display: block;
 	font-size: 14px;
-	font-size: 0.875rem;
+	/* @alternate */ font-size: 0.875rem;
 	padding: 10px 0;
-	padding: 0.625rem 0;
+	/* @alternate */ padding: 0.625rem 0;
 	text-align: center;
 }

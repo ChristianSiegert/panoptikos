@@ -48,7 +48,7 @@ func main() {
 	log.Println("Production mode:", *isProductionMode)
 
 	if *isProductionMode {
-		// compileCss()
+		compileCss()
 		compileJavaScript()
 	}
 
@@ -108,6 +108,57 @@ func handleRequest(responseWriter http.ResponseWriter, request *http.Request) {
 	http.NotFound(responseWriter, request)
 }
 
+func compileCss() {
+	log.Println("Compiling CSS ...")
+
+	workingDirectory, error := os.Getwd()
+
+	if error != nil {
+		log.Fatal("Could not determine working directory: ", error)
+	}
+
+	command := exec.Command(
+		"java",
+		"-jar", workingDirectory+"/libraries/closure-stylesheets-20111230/closure-stylesheets-20111230.jar",
+		"--allowed-non-standard-function", "color-stop",
+		"--allowed-non-standard-function", "progid:DXImageTransform.Microsoft.gradient",
+		"--allowed-unrecognized-property", "tap-highlight-color",
+		"--allowed-unrecognized-property", "text-size-adjust",
+		"--output-file", workingDirectory+"/webroot/css/compiled.css",
+
+		// Stylesheet order is important: Succeeding rules overwrite preceding ones
+		"./webroot/css/reset.gss",
+		"./webroot/css/general.gss",
+		"./webroot/css/form.gss",
+		"./webroot/css/subreddit-picker.gss",
+		"./webroot/css/board.gss",
+		"./webroot/css/board-item.gss",
+	)
+
+	stderrPipe, error := command.StderrPipe()
+
+	if error != nil {
+		log.Fatal("Could not create stderr pipe for Closure Stylesheets: ", error)
+	}
+
+	if error := command.Start(); error != nil {
+		log.Fatal("Could not start Closure Stylesheets: ", error)
+	}
+
+	stderrOutput, error := ioutil.ReadAll(stderrPipe)
+
+	if error != nil {
+		log.Fatal("Could not read from Closure Stylesheets' stderr pipe: ", error)
+	}
+
+	if error := command.Wait(); error != nil {
+		log.Println("Could not compile CSS:", string(stderrOutput))
+		log.Fatal("Closure Stylesheets finished with: ", error)
+	}
+
+	log.Println("Compiled CSS.")
+}
+
 func compileJavaScript() {
 	*jsCompilationLevel = strings.ToUpper(*jsCompilationLevel)
 
@@ -138,7 +189,8 @@ func compileJavaScript() {
 		"--namespace=panoptikos.Panoptikos",
 		"--output_file="+workingDirectory+"/webroot/js/compiled.js",
 		"--output_mode=compiled",
-		"--root="+workingDirectory)
+		"--root="+workingDirectory,
+	)
 
 	stderrPipe, error := command.StderrPipe()
 

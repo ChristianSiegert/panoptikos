@@ -22,4 +22,5 @@ _testmain.go
 *.exe
 
 *.pyc
+webroot/css/compiled.css
 webroot/js/compiled.js

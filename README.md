@@ -66,7 +66,7 @@ To compile your JavaScript code with advanced optimizations:
 
 ## Development
 
-This project uses [Closure Library](https://developers.google.com/closure/library/) as JavaScript library. Additionally, if the server is started in production mode, [Closure Compiler](https://developers.google.com/closure/compiler/) is used to compile all JavaScript code into a single JavaScript file.
+This project uses [Closure Library](https://developers.google.com/closure/library/) as JavaScript library. Stylesheets are compiled into a single file with [Closure Stylesheets](http://code.google.com/p/closure-stylesheets/). Additionally, if the server is started in production mode, [Closure Compiler](https://developers.google.com/closure/compiler/) is used to compile JavaScript files into a single file.
 
 ### Generating the Closure Library dependency tree
 
