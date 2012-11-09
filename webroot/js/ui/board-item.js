@@ -12,7 +12,7 @@ goog.require("goog.dom");
  */
 panoptikos.ui.BoardItem = function(thread, image, fullsizeImageUrl) {
 	/**
-	 * @type {?string}
+	 * @type {string|undefined}
 	 * @private
 	 */
 	this.fullsizeImageUrl_ = fullsizeImageUrl;
@@ -77,9 +77,9 @@ panoptikos.ui.BoardItem.prototype.createImageElement = function() {
 panoptikos.ui.BoardItem.prototype.createTitleAnchor = function() {
 	var titleAnchor = goog.dom.createDom("a", {
 		"class": "board-item-title-anchor",
-		href: "http://www.reddit.com" + this.thread_.permalink
+		href: "http://www.reddit.com" + this.thread_["permalink"]
 	});
-	titleAnchor.innerHTML = this.thread_.title;
+	titleAnchor.innerHTML = this.thread_["title"];
 
 	return titleAnchor;
 };

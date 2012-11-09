@@ -48,7 +48,6 @@ panoptikos.Panoptikos.prototype.createUi_ = function() {
 	);
 
 	this.board = new panoptikos.ui.Board(
-		document.body,
 		panoptikos.config.core.board.columnMaxWidth,
 		panoptikos.config.core.board.columnMarginLeft,
 		panoptikos.config.core.reddit.maxThreadsPerRequest

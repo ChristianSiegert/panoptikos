@@ -15,14 +15,13 @@ goog.require("goog.userAgent");
 /**
  * Class Board manages the display of images as well as some delegated click
  * events.
- * @param {!Element} parentElement Element that will contain the board element.
  * @param {number} columnMaxWidth Maximum width of columns in pixels.
  * @param {number} columnMarginLeft Margin between columns in pixels.
  * @param {number} maxThreadsPerRequest Maximum number of threads to retrieve from Reddit per request.
  * @constructor
  * @extends goog.events.EventTarget
  */
-panoptikos.ui.Board = function(parentElement, columnMaxWidth, columnMarginLeft, maxThreadsPerRequest) {
+panoptikos.ui.Board = function(columnMaxWidth, columnMarginLeft, maxThreadsPerRequest) {
 	/**
 	 * @type {!Element}
 	 * @private
@@ -30,7 +29,7 @@ panoptikos.ui.Board = function(parentElement, columnMaxWidth, columnMarginLeft, 
 	this.boardElement_ = this.createBoardElement_();
 
 	/**
-	 * @type {!Array.<panoptikos.ui.BoardItem>}
+	 * @type {!Array.<!Element>}
 	 * @private
 	 */
 	this.boardItems_ = [];
@@ -39,7 +38,7 @@ panoptikos.ui.Board = function(parentElement, columnMaxWidth, columnMarginLeft, 
 	 * @type {number}
 	 * @private
 	 */
-	this.columnCount_;
+	this.columnCount_ = 0;
 
 	/**
 	 * @type {!Array.<number>}
@@ -70,7 +69,7 @@ panoptikos.ui.Board = function(parentElement, columnMaxWidth, columnMarginLeft, 
 	 * @type {number}
 	 * @private
 	 */
-	this.columnWidth_;
+	this.columnWidth_ = 0;
 
 	/**
 	 * Whether at least one image has been loaded already.
@@ -106,12 +105,6 @@ panoptikos.ui.Board = function(parentElement, columnMaxWidth, columnMarginLeft, 
 	 * @private
 	 */
 	this.maxThreadsPerRequest_ = maxThreadsPerRequest;
-
-	/**
-	 * @type {!Element}
-	 * @private
-	 */
-	this.parentElement_ = parentElement;
 
 	/**
 	 * Number of milliseconds until a request times out.
@@ -154,8 +147,8 @@ goog.inherits(panoptikos.ui.Board, goog.events.EventTarget);
  * @private
  */
 panoptikos.ui.Board.prototype.reset_ = function() {
-	this.columnCount_ = null;
-	this.columnWidth_ = null;
+	this.columnCount_ = 0;
+	this.columnWidth_ = 0;
 
 	this.columns_ = [];
 	this.columnHeights_ = [];
@@ -311,11 +304,11 @@ panoptikos.ui.Board.prototype.retrieveThreadsFromReddit = function() {
  * @private
  */
 panoptikos.ui.Board.prototype.handleRedditRequestSuccessEvent_ = function(response) {
-	var threads = response.data.children;
+	var threads = response["data"]["children"];
 
 	for (var i = 0, threadCount = threads.length; i < threadCount; i++) {
-		var url = threads[i].data.url;
-		var imgurImageHash = threads[i].data.url.match(/^https?:\/\/(?:i\.)?imgur\.com\/([a-zA-Z0-9]+)/);
+		var url = threads[i]["data"]["url"];
+		var imgurImageHash = threads[i]["data"]["url"].match(/^https?:\/\/(?:i\.)?imgur\.com\/([a-zA-Z0-9]+)/);
 
 		// If image is hosted on Imgur, try to load large preview version of image
 		if (imgurImageHash) {
@@ -323,8 +316,8 @@ panoptikos.ui.Board.prototype.handleRedditRequestSuccessEvent_ = function(respon
 			var fullsizeImageUrl = "http://i.imgur.com/" + imgurImageHash[1] + ".jpg";
 
 			var image = new Image();
-			goog.events.listen(image, "error", goog.bind(this.handleImgurRequestErrorEvent_, this, [threads[i].data]), false, this);
-			goog.events.listen(image, "load", goog.bind(this.handleImgurRequestLoadEvent_, this, threads[i].data, image, fullsizeImageUrl), false, this);
+			goog.events.listen(image, "error", goog.bind(this.handleImgurRequestErrorEvent_, this, [threads[i]["data"]]), false, this);
+			goog.events.listen(image, "load", goog.bind(this.handleImgurRequestLoadEvent_, this, threads[i]["data"], image, fullsizeImageUrl), false, this);
 
 			this.runningRequestsCount_++;
 			image.src = url;
@@ -333,14 +326,14 @@ panoptikos.ui.Board.prototype.handleRedditRequestSuccessEvent_ = function(respon
 
 		// Load image
 		var image = new Image();
-		goog.events.listen(image, "error", goog.bind(this.handleImageErrorEvent_, this, threads[i].data));
-		goog.events.listen(image, "load", goog.bind(this.handleImageLoadEvent_, this, threads[i].data, image, image.src));
+		goog.events.listen(image, "error", goog.bind(this.handleImageErrorEvent_, this, threads[i]["data"]));
+		goog.events.listen(image, "load", goog.bind(this.handleImageLoadEvent_, this, threads[i]["data"], image, image.src));
 
 		this.runningRequestsCount_++;
 		image.src = url;
 	}
 
-	this.lastThreadId_ = response.data.after;
+	this.lastThreadId_ = response["data"]["after"];
 
 	if (!this.lastThreadId_) {
 		this.hasReachedEnd_ = true;
@@ -419,7 +412,7 @@ panoptikos.ui.Board.prototype.handleImageLoadEvent_ = function(thread, image, fu
 
 /**
  * addBoardItemToBoard_ adds the board item to the shortest column.
- * @param {panoptikos.ui.BoardItem} boardItemElement
+ * @param {!Element} boardItemElement
  * @private
  */
 panoptikos.ui.Board.prototype.addBoardItemToBoard_ = function(boardItemElement) {
