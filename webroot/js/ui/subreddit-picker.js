@@ -6,6 +6,7 @@ goog.require("goog.dom.classes");
 goog.require("goog.events");
 goog.require("goog.events.EventTarget");
 goog.require("goog.events.EventType");
+goog.require("goog.events.KeyCodes");
 goog.require("goog.style");
 
 /**
@@ -264,7 +265,8 @@ panoptikos.ui.SubredditPicker.prototype.createTextField_ = function() {
  * @private
  */
 panoptikos.ui.SubredditPicker.prototype.handleTextFieldKeyDownEvent_ = function(event) {
-	if (event.key !== "enter") {
+	if (event.keyCode !== goog.events.KeyCodes.ENTER
+			&& event.keyCode !== goog.events.KeyCodes.MAC_ENTER) {
 		return;
 	}
 

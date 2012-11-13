@@ -475,8 +475,8 @@ panoptikos.ui.Board.prototype.resizeColumns = function() {
 };
 
 /**
- * loadStylesheet_ injects a <link> element into the document head which
- * causes the browser to load the specified stylesheet.
+ * loadStylesheet_ injects a <link> element into the document head which causes
+ * the browser to load the specified stylesheet.
  * @param {string} url URL to the stylesheet to load.
  * @private
  */
