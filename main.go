@@ -28,7 +28,7 @@ const (
 var (
 	httpPort           = flag.String("port", "8080", "HTTP port the web server listens to.")
 	isProductionMode   = flag.Bool("production", false, "Whether the server should run in production mode.")
-	jsCompilationLevel = flag.String("js-compilation-level", JS_COMPILATION_LEVEL_SIMPLE_OPTIMIZATIONS, "Either WHITESPACE_ONLY, SIMPLE_OPTIMIZATIONS or ADVANCED_OPTIMIZATIONS. See https://developers.google.com/closure/compiler/docs/compilation_levels. Advanced optimizations can break your code. Only used in production mode.")
+	jsCompilationLevel = flag.String("js-compilation-level", JS_COMPILATION_LEVEL_ADVANCED_OPTIMIZATIONS, "Either WHITESPACE_ONLY, SIMPLE_OPTIMIZATIONS or ADVANCED_OPTIMIZATIONS. See https://developers.google.com/closure/compiler/docs/compilation_levels. Advanced optimizations can break your code. Only used in production mode.")
 	verbose            = flag.Bool("verbose", false, "Whether additional information should be displayed.")
 )
 
@@ -181,9 +181,9 @@ func compileJavaScript() {
 	case JS_COMPILATION_LEVEL_WHITESPACE_ONLY:
 		log.Println("Compiling JavaScript with whitespace-only optimizations ...")
 	default:
-		log.Printf("JavaScript compilation level '%s' not recognized. Using '%s'.\n", *jsCompilationLevel, JS_COMPILATION_LEVEL_SIMPLE_OPTIMIZATIONS)
-		log.Println("Compiling JavaScript with simple optimizations ...")
-		*jsCompilationLevel = JS_COMPILATION_LEVEL_SIMPLE_OPTIMIZATIONS
+		log.Printf("JavaScript compilation level '%s' not recognized. Using '%s'.\n", *jsCompilationLevel, JS_COMPILATION_LEVEL_ADVANCED_OPTIMIZATIONS)
+		log.Println("Compiling JavaScript with advanced optimizations ...")
+		*jsCompilationLevel = JS_COMPILATION_LEVEL_ADVANCED_OPTIMIZATIONS
 	}
 
 	workingDirectory, error := os.Getwd()

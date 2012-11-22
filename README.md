@@ -2,13 +2,11 @@
 
 ## Introduction
 
-Panoptikos is an image viewer for Reddit. This repository contains a new, experimental, version I'm working on. You can play around with it at [experimental.panoptikos.com](http://experimental.panoptikos.com/).
+Panoptikos is an image viewer for Reddit. You can see it in action at [panoptikos.com](http://panoptikos.com/).
 
-The server-side code is written in Go, the client-side heavily relies on JavaScript. The JavaScript library of my choice is Google's Closure Library.
+The server-side code is written in Go, the client-side heavily relies on JavaScript. The JavaScript library used is Google's Closure Library.
 
-Once the biggest problems are fixed and the most requested features are added, this version will replace the current version of Panoptikos running at [panoptikos.com](http://panoptikos.com/).
-
-## What’s different?
+## Features
 
 * You can select any subreddits you want.
 * You can save the URL to save your selection of subreddits.
@@ -16,8 +14,8 @@ Once the biggest problems are fixed and the most requested features are added, t
 
 ## Known Issues
 
-* High memory usage because images outside the visible screen area are not removed from the page. Possible browser crashes on 32-bit systems.
-* Jerky scrolling because sometimes I can only use the original high-resolution images in previews.
+* High memory usage on clients because images outside the visible screen area are not removed from the page. Possible browser crashes if browser runs out of memory.
+* Jerky scrolling because sometimes only high-resolution images can be used in previews.
 * There is no endless scrolling, you must click "Load more" all the time.
 * You can't switch between Reddit's "Hot", "New", "Controversial", "Top" sections. (Current default is "Hot".)
 
@@ -41,7 +39,7 @@ Simply execute the compiled file:
 
 Panoptikos supports these command-line arguments:
 
-* **--js-compilation-level** Either `WHITESPACE_ONLY`, `SIMPLE_OPTIMIZATIONS` or `ADVANCED_OPTIMIZATIONS`. See [Closure Compiler Compilation Levels](https://developers.google.com/closure/compiler/docs/compilation_levels). Advanced optimizations can break your code. Only used in production mode. Default is `SIMPLE_OPTIMIZATIONS`.
+* **--js-compilation-level** Either `WHITESPACE_ONLY`, `SIMPLE_OPTIMIZATIONS` or `ADVANCED_OPTIMIZATIONS`. See [Closure Compiler Compilation Levels](https://developers.google.com/closure/compiler/docs/compilation_levels). [Advanced optimizations can break your code](https://developers.google.com/closure/compiler/docs/api-tutorial3#dangers). Only used in production mode. Default is `ADVANCED_OPTIMIZATIONS`.
 * **--port** HTTP port the web server listens to. Default is `8080`.
 * **--production** Whether the server should run in production mode. Default is `false`.
 * **--verbose** Whether additional information should be displayed. Default is `false`.
@@ -60,9 +58,9 @@ To display Closure Compiler warnings even if your JavaScript code compiled succe
 
 	$ ./panoptikos --production --verbose
 
-To compile your JavaScript code with advanced optimizations:
+To compile your JavaScript code with [simple optimizations](https://developers.google.com/closure/compiler/docs/compilation_levels) (useful [should advanced optimizations break your code](https://developers.google.com/closure/compiler/docs/api-tutorial3#dangers)):
 
-	$ ./panoptikos --production --js-compilation-level=ADVANCED_OPTIMIZATIONS
+	$ ./panoptikos --production --js-compilation-level=SIMPLE_OPTIMIZATIONS
 
 ## Development
 
