@@ -23,5 +23,3 @@ _testmain.go
 
 *.pyc
 panoptikos
-webroot/css/compiled*.css
-webroot/js/compiled*.js

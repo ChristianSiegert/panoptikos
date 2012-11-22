@@ -10,7 +10,6 @@ import (
 	"os/exec"
 	"regexp"
 	"runtime"
-	"strconv"
 	"strings"
 	"time"
 )
@@ -40,11 +39,20 @@ var (
 
 // RegEx patterns
 var (
-	assetUrlPattern    = regexp.MustCompile("^/(?:css|images|js)/")
+	assetUrlPattern    = regexp.MustCompile("\\.(?:css|ico|js|png)$")
 	whitespacePattern1 = regexp.MustCompile(">[ \f\n\r\t]+<")
 	whitespacePattern2 = regexp.MustCompile(">[ \f\n\r\t]+\\{\\{")
 	whitespacePattern3 = regexp.MustCompile("\\}\\}[ \f\n\r\t]+<")
 )
+
+// Characters that can be safely used in any filesystem
+var characterMap = []string{
+	"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "a", "b", "c", "d", "e",
+	"f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t",
+	"u", "v", "w", "x", "y", "z", "A", "B", "C", "D", "E", "F", "G", "H", "I",
+	"J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X",
+	"Y", "Z",
+}
 
 func main() {
 	// Set maximum number of CPUs that can be executing simultaneously
@@ -141,6 +149,9 @@ func handleRequest(responseWriter http.ResponseWriter, request *http.Request) {
 	http.NotFound(responseWriter, request)
 }
 
+// compileCss executes Closure Stylesheets to merge and compile all CSS code
+// into a single file. The file is written to the webroot directory, its
+// filename is a Unix timestamp in base 62.
 func compileCss() (relativeFilename string) {
 	log.Println("Compiling CSS ...")
 
@@ -150,8 +161,7 @@ func compileCss() (relativeFilename string) {
 		log.Fatal("Could not determine working directory: ", error)
 	}
 
-	timestamp := strconv.FormatInt(time.Now().Unix(), 10)
-	relativeFilename = "css/compiled-" + timestamp + ".css"
+	relativeFilename = convertBase(time.Now().Unix(), characterMap) + ".css"
 	absoluteFilename := workingDirectory + "/webroot/" + relativeFilename
 
 	command := exec.Command(
@@ -197,6 +207,9 @@ func compileCss() (relativeFilename string) {
 	return
 }
 
+// compileJavaScript executes Closure Compiler to merge and compile all
+// JavaScript code into a single file. The file is written to the webroot
+// directory, its filename is a Unix timestamp in base 62.
 func compileJavaScript() (relativeFilename string) {
 	*jsCompilationLevel = strings.ToUpper(*jsCompilationLevel)
 
@@ -219,8 +232,7 @@ func compileJavaScript() (relativeFilename string) {
 		log.Fatal("Could not determine working directory: ", error)
 	}
 
-	timestamp := strconv.FormatInt(time.Now().Unix(), 10)
-	relativeFilename = "js/compiled-" + timestamp + ".js"
+	relativeFilename = convertBase(time.Now().Unix(), characterMap) + ".js"
 	absoluteFilename := workingDirectory + "/webroot/" + relativeFilename
 
 	command := exec.Command(
@@ -262,4 +274,19 @@ func compileJavaScript() (relativeFilename string) {
 
 	log.Println("Compiled JavaScript.")
 	return
+}
+
+// convertBase converts a base 10 number into another base. The target base is
+// determined by the length of the character map.
+func convertBase(number int64, characterMap []string) string {
+	s := ""
+	base := int64(len(characterMap))
+
+	for number > 0 {
+		remainder := number % base
+		s = characterMap[remainder] + s
+		number = (number - remainder) / base
+	}
+
+	return s
 }
