@@ -15,7 +15,7 @@ panoptikos.Panoptikos = function() {
 	this.setSubreddits_();
 	this.createUi_();
 };
-goog.exportSymbol("panoptikos.Panoptikos", panoptikos.Panoptikos);
+goog.exportSymbol("p", panoptikos.Panoptikos);
 
 /**
  * setSubreddits_ determines what subreddits to use. If the user selected
