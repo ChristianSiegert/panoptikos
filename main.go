@@ -40,8 +40,10 @@ var (
 
 // RegEx patterns
 var (
-	assetUrlPattern   = regexp.MustCompile("^/(?:css|images|js)/")
-	whitespacePattern = regexp.MustCompile(">[ \f\n\r\t]+<")
+	assetUrlPattern    = regexp.MustCompile("^/(?:css|images|js)/")
+	whitespacePattern1 = regexp.MustCompile(">[ \f\n\r\t]+<")
+	whitespacePattern2 = regexp.MustCompile(">[ \f\n\r\t]+\\{\\{")
+	whitespacePattern3 = regexp.MustCompile("\\}\\}[ \f\n\r\t]+<")
 )
 
 func main() {
@@ -93,9 +95,12 @@ func handleRequest(responseWriter http.ResponseWriter, request *http.Request) {
 			return
 		}
 
-		cleanedFileContent := whitespacePattern.ReplaceAllString(string(fileContent), "><")
-		parsedTemplate, error := template.New("default").Parse(cleanedFileContent)
+		// Remove unnecessary whitespace
+		cleanedFileContent := whitespacePattern1.ReplaceAllString(string(fileContent), "><")
+		cleanedFileContent = whitespacePattern2.ReplaceAllString(cleanedFileContent, ">{{")
+		cleanedFileContent = whitespacePattern3.ReplaceAllString(cleanedFileContent, "}}<")
 
+		parsedTemplate, error := template.New("default").Parse(cleanedFileContent)
 		error = parsedTemplate.Execute(responseWriter, page)
 
 		if error != nil {
