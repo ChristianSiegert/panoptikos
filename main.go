@@ -101,9 +101,14 @@ func handleRequest(responseWriter http.ResponseWriter, request *http.Request) {
 		cleanedFileContent = whitespacePattern3.ReplaceAllString(cleanedFileContent, "}}<")
 
 		parsedTemplate, error := template.New("default").Parse(cleanedFileContent)
-		error = parsedTemplate.Execute(responseWriter, page)
 
 		if error != nil {
+			http.Error(responseWriter, error.Error(), http.StatusInternalServerError)
+			log.Println("Error:", error)
+			return
+		}
+
+		if error := parsedTemplate.Execute(responseWriter, page); error != nil {
 			http.Error(responseWriter, error.Error(), http.StatusInternalServerError)
 			log.Println("Error:", error)
 			return
