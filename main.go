@@ -10,12 +10,18 @@ import (
 	"os/exec"
 	"regexp"
 	"runtime"
+	"strconv"
 	"strings"
+	"time"
 )
 
 type Page struct {
+	CssFilename      string
 	IsProductionMode bool
+	JsFilename       string
 }
+
+var page Page
 
 // Compilation levels supported by Closure Compiler
 const (
@@ -46,10 +52,16 @@ func main() {
 	flag.Parse()
 
 	log.Println("Production mode:", *isProductionMode)
-	compileCss()
+	page.IsProductionMode = *isProductionMode
+
+	page.CssFilename /*, error*/ = compileCss()
+
+	// if error != nil {
+	// 	log.Fatal("Error:", error);
+	// }
 
 	if *isProductionMode {
-		compileJavaScript()
+		page.JsFilename = compileJavaScript()
 	}
 
 	http.HandleFunc("/", handleRequest)
@@ -84,7 +96,7 @@ func handleRequest(responseWriter http.ResponseWriter, request *http.Request) {
 		cleanedFileContent := whitespacePattern.ReplaceAllString(string(fileContent), "><")
 		parsedTemplate, error := template.New("default").Parse(cleanedFileContent)
 
-		error = parsedTemplate.Execute(responseWriter, &Page{IsProductionMode: *isProductionMode})
+		error = parsedTemplate.Execute(responseWriter, page)
 
 		if error != nil {
 			http.Error(responseWriter, error.Error(), http.StatusInternalServerError)
@@ -119,7 +131,7 @@ func handleRequest(responseWriter http.ResponseWriter, request *http.Request) {
 	http.NotFound(responseWriter, request)
 }
 
-func compileCss() {
+func compileCss() (relativeFilename string) {
 	log.Println("Compiling CSS ...")
 
 	workingDirectory, error := os.Getwd()
@@ -128,6 +140,10 @@ func compileCss() {
 		log.Fatal("Could not determine working directory: ", error)
 	}
 
+	timestamp := strconv.FormatInt(time.Now().Unix(), 10)
+	relativeFilename = "css/compiled-" + timestamp + ".css"
+	absoluteFilename := workingDirectory + "/webroot/" + relativeFilename
+
 	command := exec.Command(
 		"java",
 		"-jar", workingDirectory+"/libraries/closure-stylesheets-20111230/closure-stylesheets-20111230.jar",
@@ -135,7 +151,7 @@ func compileCss() {
 		"--allowed-non-standard-function", "progid:DXImageTransform.Microsoft.gradient",
 		"--allowed-unrecognized-property", "tap-highlight-color",
 		"--allowed-unrecognized-property", "text-size-adjust",
-		"--output-file", workingDirectory+"/webroot/css/compiled.css",
+		"--output-file", absoluteFilename,
 
 		// Stylesheet order is important: Succeeding rules overwrite preceding ones
 		"./webroot/css/reset.gss",
@@ -168,9 +184,10 @@ func compileCss() {
 	}
 
 	log.Println("Compiled CSS.")
+	return
 }
 
-func compileJavaScript() {
+func compileJavaScript() (relativeFilename string) {
 	*jsCompilationLevel = strings.ToUpper(*jsCompilationLevel)
 
 	switch *jsCompilationLevel {
@@ -192,13 +209,17 @@ func compileJavaScript() {
 		log.Fatal("Could not determine working directory: ", error)
 	}
 
+	timestamp := strconv.FormatInt(time.Now().Unix(), 10)
+	relativeFilename = "js/compiled-" + timestamp + ".js"
+	absoluteFilename := workingDirectory + "/webroot/" + relativeFilename
+
 	command := exec.Command(
 		workingDirectory+"/libraries/closure-library-20120710-r2029/closure/bin/build/closurebuilder.py",
 		"--compiler_flags=--compilation_level="+*jsCompilationLevel,
 		"--compiler_flags=--warning_level=VERBOSE",
 		"--compiler_jar="+workingDirectory+"/libraries/closure-compiler-20120917-r2180/compiler.jar",
 		"--namespace=panoptikos.Panoptikos",
-		"--output_file="+workingDirectory+"/webroot/js/compiled.js",
+		"--output_file="+absoluteFilename,
 		"--output_mode=compiled",
 		"--root="+workingDirectory,
 	)
@@ -230,4 +251,5 @@ func compileJavaScript() {
 	}
 
 	log.Println("Compiled JavaScript.")
+	return
 }

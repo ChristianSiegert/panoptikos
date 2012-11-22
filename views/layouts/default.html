@@ -4,7 +4,7 @@
 		<meta charset="utf-8">
 		<meta name="viewport" content="initial-scale=1, width=device-width">
 		<title>Panoptikos</title>
-		<link href="css/compiled.css" rel="stylesheet" type="text/css">
+		<link href="{{.CssFilename}}" rel="stylesheet" type="text/css">
 		<link href="http://fonts.googleapis.com/css?family=Droid+Serif:400,700" rel="stylesheet" type="text/css">
 
 		<!-- Favicons. The first one is an .ico file because Internet Explorer can't handle anything else. -->
@@ -30,7 +30,7 @@
 		</noscript>
 
 		{{if .IsProductionMode}}
-			<script src="js/compiled.js"></script>
+			<script src="{{.JsFilename}}"></script>
 			<script>new panoptikos.Panoptikos()</script>
 		{{else}}
 			<script src="js/libraries/goog/base.js"></script>
