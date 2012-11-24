@@ -22,12 +22,7 @@
 
 	<body>
 		<p id="about">Panoptikos is an image viewer for Reddit.</p>
-		<p id="about-hint">This is an experimental version. Once all problems are fixed and the most requested features are added, it will replace the current Panoptikos. Make sure to tell me what you like or miss, I'm <a href="https://twitter.com/Panoptikos">@Panoptikos</a> on Twitter.</p>
-
-		<!-- Tell visitors who have JavaScript disabled how great the site is so they enable it again. -->
-		<noscript>
-			<div>If you enable JavaScript, you can view lots of images from any subreddits you like.</div>
-		</noscript>
+		<p id="about-hint">I'm discontinuing the old Panoptikos because I no longer have time to maintain it. ... What you now see is an experimental version I was working on. It is missing many of the features you have come to like, but it is better than nothing ... At least you now can choose any subreddits you want. Tell me what feature you miss the most and I try to add it. I'm <a href="https://twitter.com/Panoptikos">@Panoptikos</a> on Twitter.</p>
 
 		{{if .IsProductionMode}}
 			<script src="{{.JsFilename}}"></script>
@@ -41,5 +36,10 @@
 
 		<!-- Google Analytics -->
 		<script>var _gaq=_gaq||[];_gaq.push(["_setAccount","UA-10403694-7"]);_gaq.push(["_trackPageview"]);(function(){var ga=document.createElement("script");ga.type="text/javascript";ga.async=true;ga.src=("https:"==document.location.protocol?"https://ssl":"http://www")+".google-analytics.com/ga.js";var s=document.getElementsByTagName("script")[0];s.parentNode.insertBefore(ga,s);})();</script>
+
+		<!-- Tell visitors who have JavaScript disabled how great the site is so they enable it again. -->
+		<noscript>
+			<div>If you enable JavaScript, you can view lots of images from any subreddits you like.</div>
+		</noscript>
 	</body>
 </html>
