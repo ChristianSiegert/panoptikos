@@ -134,8 +134,21 @@ panoptikos.ui.Board = function(columnMaxWidth, columnMarginLeft, maxThreadsPerRe
 	 */
 	this.styleElement_;
 
-	goog.events.listen(window, goog.events.EventType.RESIZE, this.handleWindowResizeEvent_, false, this);
-	goog.events.listen(this.boardElement_, goog.events.EventType.CLICK, this.handleBoardClickEvent_, false, this);
+	goog.events.listen(
+		window,
+		goog.events.EventType.RESIZE,
+		this.handleWindowResizeEvent_,
+		false,
+		this
+	);
+
+	goog.events.listen(
+		this.boardElement_,
+		goog.events.EventType.CLICK,
+		this.handleBoardClickEvent_,
+		false,
+		this
+	);
 
 	if (goog.userAgent.IE) {
 		this.loadStylesheet_("css/board-item-ie.css");
@@ -163,6 +176,11 @@ panoptikos.ui.Board.prototype.reset_ = function() {
  * @private
  */
 panoptikos.ui.Board.prototype.handleBoardClickEvent_ = function(event) {
+	// If modified click, allow browser-specific behavior
+	if (event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) {
+		return;
+	}
+
 	event.preventDefault();
 
 	if (event.target.className === "board-item-title-anchor"
