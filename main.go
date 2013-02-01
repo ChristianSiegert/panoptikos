@@ -150,7 +150,7 @@ func handleRequest(responseWriter http.ResponseWriter, request *http.Request) {
 }
 
 // compileCss executes Closure Stylesheets to merge and compile all CSS code
-// into a single file. The file is written to the webroot directory, its
+// into a single file. The file is written to the webroot directory. The
 // filename is a Unix timestamp in base 62.
 func compileCss() (relativeFilename string) {
 	log.Println("Compiling CSS ...")
@@ -167,19 +167,27 @@ func compileCss() (relativeFilename string) {
 	command := exec.Command(
 		"java",
 		"-jar", workingDirectory+"/libraries/closure-stylesheets-20111230/closure-stylesheets-20111230.jar",
+		"--output-file", absoluteFilename,
+
+		// Ignore non-standard CSS functions and unrecognized CSS properties
+		// that we use or else Closure Stylesheets won't compile out CSS
 		"--allowed-non-standard-function", "color-stop",
 		"--allowed-non-standard-function", "progid:DXImageTransform.Microsoft.gradient",
 		"--allowed-unrecognized-property", "tap-highlight-color",
 		"--allowed-unrecognized-property", "text-size-adjust",
-		"--output-file", absoluteFilename,
 
-		// Stylesheet order is important: Succeeding rules overwrite preceding ones
+		// Stylesheet order is important: Succeeding stylesheet rules overwrite
+		// preceding ones
 		"./webroot/css/reset.gss",
 		"./webroot/css/general.gss",
 		"./webroot/css/form.gss",
 		"./webroot/css/subreddit-picker.gss",
 		"./webroot/css/board.gss",
 		"./webroot/css/board-item.gss",
+
+		// Also include the CSS of the Closure Library widgets we use
+		// "./libraries/closure-library-20120710-r2029/closure/goog/css/common.css",
+		// "./libraries/closure-library-20120710-r2029/closure/goog/css/custombutton.css",
 	)
 
 	stderrPipe, error := command.StderrPipe()

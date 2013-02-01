@@ -30,7 +30,7 @@ panoptikos.Panoptikos.prototype.setSubreddits_ = function() {
 	}
 
 	panoptikos.models.subreddit.setSelectedSubreddits(subreddits);
-}
+};
 
 /**
  * @private

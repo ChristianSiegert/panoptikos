@@ -68,11 +68,15 @@ This project uses [Closure Library](https://developers.google.com/closure/librar
 
 ### Generating the Closure Library dependency tree
 
-In development mode, if you add or remove custom JavaScript classes, i.e. any non-goog class, you have to generate the dependency tree again. You can do this by changing to the Panoptikos project directory and executing Closure Library's Dependency Writer:
+In development mode, if you add or remove custom JavaScript classes, i.e. any non-goog class, you have to generate the Closure Library dependency tree again. You can do this by changing to the Panoptikos project directory and executing Closure Library's Dependency Writer:
 
 	$ cd ./panoptikos
 	$ ./libraries/closure-library-20120710-r2029/closure/bin/build/depswriter.py \
 		--output_file=./webroot/js/dependencies.js \
 		--root_with_prefix="./webroot/js/ ../../"
 
-This overwrites the existing dependencies.js file.
+This overwrites the existing `./webroot/js/dependencies.js` file.
+
+### Adding / Removing CSS files
+
+When Panoptikos is started it always compiles all CSS files into a single file. Currently, the filenames are hard-coded in `compileCss()` in `main.go`. To add or remove a CSS file, simply add or remove the appropriate filepath.
