@@ -150,7 +150,7 @@ func handleRequest(responseWriter http.ResponseWriter, request *http.Request) {
 }
 
 // compileCss executes Closure Stylesheets to merge and compile all CSS code
-// into a single file. The file is written to the webroot directory. The
+// into a single file. The file is written to the webroot directory, its
 // filename is a Unix timestamp in base 62.
 func compileCss() (relativeFilename string) {
 	log.Println("Compiling CSS ...")
@@ -170,7 +170,7 @@ func compileCss() (relativeFilename string) {
 		"--output-file", absoluteFilename,
 
 		// Ignore non-standard CSS functions and unrecognized CSS properties
-		// that we use or else Closure Stylesheets won't compile out CSS
+		// that we use or else Closure Stylesheets won't compile our CSS
 		"--allowed-non-standard-function", "color-stop",
 		"--allowed-non-standard-function", "progid:DXImageTransform.Microsoft.gradient",
 		"--allowed-unrecognized-property", "tap-highlight-color",
