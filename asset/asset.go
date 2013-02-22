@@ -1,3 +1,4 @@
+// Package asset provides compression of CSS and JavaScript files.
 package asset
 
 import (
