@@ -25,6 +25,8 @@ The server-side code is written in Go, the client-side heavily relies on JavaScr
 
 	$ go get github.com/ChristianSiegert/panoptikos
 
+This operation may take a while.
+
 ## Running Panoptikos
 
 At the moment, Panoptikos only starts successfully if the current working directory is the project's root directory:
