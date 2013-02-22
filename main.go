@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"github.com/ChristianSiegert/panoptikos/base"
 	"html/template"
 	"io/ioutil"
 	"log"
@@ -44,15 +45,6 @@ var (
 	whitespacePattern2 = regexp.MustCompile(">[ \f\n\r\t]+\\{\\{")
 	whitespacePattern3 = regexp.MustCompile("\\}\\}[ \f\n\r\t]+<")
 )
-
-// Characters that can be safely used in any filesystem
-var characterMap = []string{
-	"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "a", "b", "c", "d", "e",
-	"f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t",
-	"u", "v", "w", "x", "y", "z", "A", "B", "C", "D", "E", "F", "G", "H", "I",
-	"J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X",
-	"Y", "Z",
-}
 
 func main() {
 	// Set maximum number of CPUs that can be executing simultaneously
@@ -161,7 +153,13 @@ func compileCss() (relativeFilename string) {
 		log.Fatal("Could not determine working directory: ", error)
 	}
 
-	relativeFilename = convertBase(time.Now().Unix(), characterMap) + ".css"
+	timestampInBase62, error := base.Convert(uint64(time.Now().Unix()), base.DefaultCharacters)
+
+	if error != nil {
+		log.Fatal("Failed to convert timestamp to base 62: ", error)
+	}
+
+	relativeFilename = timestampInBase62 + ".css"
 	absoluteFilename := workingDirectory + "/webroot/" + relativeFilename
 
 	command := exec.Command(
@@ -240,7 +238,13 @@ func compileJavaScript() (relativeFilename string) {
 		log.Fatal("Could not determine working directory: ", error)
 	}
 
-	relativeFilename = convertBase(time.Now().Unix(), characterMap) + ".js"
+	timestampInBase62, error := base.Convert(uint64(time.Now().Unix()), base.DefaultCharacters)
+
+	if error != nil {
+		log.Fatal("Failed to convert timestamp to base 62: ", error)
+	}
+
+	relativeFilename = timestampInBase62 + ".js"
 	absoluteFilename := workingDirectory + "/webroot/" + relativeFilename
 
 	command := exec.Command(
@@ -282,19 +286,4 @@ func compileJavaScript() (relativeFilename string) {
 
 	log.Println("Compiled JavaScript.")
 	return
-}
-
-// convertBase converts a base 10 number into another base. The target base is
-// determined by the length of the character map.
-func convertBase(number int64, characterMap []string) string {
-	s := ""
-	base := int64(len(characterMap))
-
-	for number > 0 {
-		remainder := number % base
-		s = characterMap[remainder] + s
-		number = (number - remainder) / base
-	}
-
-	return s
 }
