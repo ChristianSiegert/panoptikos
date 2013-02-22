@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"github.com/ChristianSiegert/panoptikos/asset"
+	"github.com/ChristianSiegert/panoptikos/html"
 	"html/template"
 	"io/ioutil"
 	"log"
@@ -29,13 +30,7 @@ var (
 	verbose            = flag.Bool("verbose", false, "Whether additional information should be displayed.")
 )
 
-// RegEx patterns
-var (
-	assetUrlPattern    = regexp.MustCompile("\\.(?:css|ico|js|png)$")
-	whitespacePattern1 = regexp.MustCompile(">[ \f\n\r\t]+<")
-	whitespacePattern2 = regexp.MustCompile(">[ \f\n\r\t]+\\{\\{")
-	whitespacePattern3 = regexp.MustCompile("\\}\\}[ \f\n\r\t]+<")
-)
+var assetUrlPattern = regexp.MustCompile("\\.(?:css|ico|js|png)$")
 
 func main() {
 	// Set maximum number of CPUs that can be executing simultaneously
@@ -86,11 +81,7 @@ func handleRequest(responseWriter http.ResponseWriter, request *http.Request) {
 			return
 		}
 
-		// Remove unnecessary whitespace
-		cleanedFileContent := whitespacePattern1.ReplaceAllString(string(fileContent), "><")
-		cleanedFileContent = whitespacePattern2.ReplaceAllString(cleanedFileContent, ">{{")
-		cleanedFileContent = whitespacePattern3.ReplaceAllString(cleanedFileContent, "}}<")
-
+		cleanedFileContent := html.RemoveWhitespace(string(fileContent))
 		parsedTemplate, error := template.New("default").Parse(cleanedFileContent)
 
 		if error != nil {
