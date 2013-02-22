@@ -44,9 +44,13 @@ func main() {
 	// Parse command-line flags
 	flag.Parse()
 
-	log.Println("Production mode:", *isProductionMode)
-	page.IsProductionMode = *isProductionMode
+	if *isProductionMode {
+		log.Println("Starting in production mode.")
+	} else {
+		log.Println("Starting in development mode.")
+	}
 
+	page.IsProductionMode = *isProductionMode
 	page.CssFilename = asset.CompileCss()
 
 	if *isProductionMode {
