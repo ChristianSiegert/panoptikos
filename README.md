@@ -80,4 +80,4 @@ This overwrites the existing `./webroot/js/dependencies.js` file.
 
 ### Adding / Removing CSS files
 
-When Panoptikos is started it always compiles all CSS files into a single file. Currently, the filenames are hard-coded in the `asset` package's `CompileCss()` function. To add or remove a CSS file, simply add or remove the appropriate filepath.
+When Panoptikos is started it always compiles all CSS files into a single file. Currently, the filenames are hard-coded in the `main` package's `mustCompileCssAndJs()` function. To add or remove a CSS file, simply add or remove the appropriate filepath there.

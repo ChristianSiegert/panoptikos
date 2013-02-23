@@ -56,6 +56,28 @@ func main() {
 // mustCompileCssAndJs compiles CSS and, only in production mode, JavaScript. If
 // there is an error, the program exits. Progress and error messages are logged.
 func mustCompileCssAndJs() {
+	var cssCompilerArguments = []string{
+		// Ignore non-standard CSS functions and unrecognized CSS properties
+		// that we use or else Closure Stylesheets won't compile our CSS
+		"--allowed-non-standard-function", "color-stop",
+		"--allowed-non-standard-function", "progid:DXImageTransform.Microsoft.gradient",
+		"--allowed-unrecognized-property", "tap-highlight-color",
+		"--allowed-unrecognized-property", "text-size-adjust",
+
+		// Stylesheet order is important: Succeeding stylesheet rules overwrite
+		// preceding ones
+		"./webroot/css/reset.gss",
+		"./webroot/css/general.gss",
+		"./webroot/css/form.gss",
+		"./webroot/css/subreddit-picker.gss",
+		"./webroot/css/board.gss",
+		"./webroot/css/board-item.gss",
+
+		// Also include the CSS of the Closure Library widgets we use
+		// "./libraries/closure-library-20120710-r2029/closure/goog/css/common.css",
+		// "./libraries/closure-library-20120710-r2029/closure/goog/css/custombutton.css",
+	}
+
 	cssResultChan := make(chan string)
 	cssProgressChan := make(chan string)
 	cssErrorChan := make(chan error)
@@ -64,7 +86,7 @@ func mustCompileCssAndJs() {
 	jsProgressChan := make(chan string)
 	jsErrorChan := make(chan error)
 
-	go asset.CompileCss(cssResultChan, cssProgressChan, cssErrorChan)
+	go asset.CompileCss(cssCompilerArguments, cssResultChan, cssProgressChan, cssErrorChan)
 
 	if *isProductionMode {
 		go asset.CompileJavaScript(*jsCompilationLevel, *verbose, jsResultChan, jsProgressChan, jsErrorChan)
