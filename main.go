@@ -33,10 +33,7 @@ var (
 var assetUrlPattern = regexp.MustCompile("\\.(?:css|ico|js|png)$")
 
 func main() {
-	// Set maximum number of CPUs that can be executing simultaneously
 	runtime.GOMAXPROCS(runtime.NumCPU())
-
-	// Parse command-line flags
 	flag.Parse()
 
 	if *isProductionMode {
@@ -46,11 +43,7 @@ func main() {
 	}
 
 	page.IsProductionMode = *isProductionMode
-	page.CssFilename = asset.CompileCss()
-
-	if *isProductionMode {
-		page.JsFilename = asset.CompileJavaScript(*jsCompilationLevel, *verbose)
-	}
+	mustCompileCssAndJs()
 
 	http.HandleFunc("/", handleRequest)
 	log.Println("Web server is running at 127.0.0.1:" + *httpPort + ".")
@@ -58,6 +51,50 @@ func main() {
 	if error := http.ListenAndServe(":"+*httpPort, nil); error != nil {
 		log.Fatal("Could not start web server: ", error)
 	}
+}
+
+// mustCompileCssAndJs compiles CSS and, only in production mode, JavaScript. If
+// there is an error, the program exits. Progress and error messages are logged.
+func mustCompileCssAndJs() {
+	cssResultChan := make(chan string)
+	cssProgressChan := make(chan string)
+	cssErrorChan := make(chan error)
+
+	jsResultChan := make(chan string)
+	jsProgressChan := make(chan string)
+	jsErrorChan := make(chan error)
+
+	go asset.CompileCss(cssResultChan, cssProgressChan, cssErrorChan)
+
+	if *isProductionMode {
+		go asset.CompileJavaScript(*jsCompilationLevel, *verbose, jsResultChan, jsProgressChan, jsErrorChan)
+	}
+
+	for isCompilingCss, isCompilingJs := true, *isProductionMode; isCompilingCss || isCompilingJs; {
+		select {
+		case page.CssFilename = <-cssResultChan:
+			isCompilingCss = false
+		case cssProgress := <-cssProgressChan:
+			log.Println(cssProgress)
+		case cssError := <-cssErrorChan:
+			log.Fatal("Compiling CSS failed: ", cssError)
+			isCompilingCss = false
+		case page.JsFilename = <-jsResultChan:
+			isCompilingJs = false
+		case jsProgress := <-jsProgressChan:
+			log.Println(jsProgress)
+		case jsError := <-jsErrorChan:
+			log.Fatal("Compiling JavaScript failed: ", jsError)
+		}
+	}
+
+	close(cssResultChan)
+	close(cssProgressChan)
+	close(cssErrorChan)
+
+	close(jsResultChan)
+	close(jsProgressChan)
+	close(jsErrorChan)
 }
 
 func handleRequest(responseWriter http.ResponseWriter, request *http.Request) {
