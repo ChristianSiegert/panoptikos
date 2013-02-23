@@ -74,15 +74,16 @@ func mustCompileCssAndJs() {
 		select {
 		case page.CssFilename = <-cssResultChan:
 			isCompilingCss = false
-		case cssProgress := <-cssProgressChan:
-			log.Println(cssProgress)
-		case cssError := <-cssErrorChan:
-			log.Fatal("Compiling CSS failed: ", cssError)
-			isCompilingCss = false
 		case page.JsFilename = <-jsResultChan:
 			isCompilingJs = false
+
+		case cssProgress := <-cssProgressChan:
+			log.Println(cssProgress)
 		case jsProgress := <-jsProgressChan:
 			log.Println(jsProgress)
+
+		case cssError := <-cssErrorChan:
+			log.Fatal("Compiling CSS failed: ", cssError)
 		case jsError := <-jsErrorChan:
 			log.Fatal("Compiling JavaScript failed: ", jsError)
 		}
