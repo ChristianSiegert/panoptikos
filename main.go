@@ -164,6 +164,7 @@ func handleRequest(responseWriter http.ResponseWriter, request *http.Request) {
 
 	if assetUrlPattern.MatchString(request.URL.Path) {
 		file, error := os.Open("webroot" + request.URL.Path)
+		defer file.Close()
 
 		if error != nil {
 			http.NotFound(responseWriter, request)
