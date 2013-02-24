@@ -21,6 +21,7 @@ type Page struct {
 }
 
 var page Page
+var cachedTemplate *template.Template
 
 // Command-line flags
 var (
@@ -133,24 +134,26 @@ func handleRequest(responseWriter http.ResponseWriter, request *http.Request) {
 	}
 
 	if request.URL.Path == "/" {
-		fileContent, error := ioutil.ReadFile("views/layouts/default.html")
+		if cachedTemplate == nil {
+			fileContent, error := ioutil.ReadFile("views/layouts/default.html")
 
-		if error != nil {
-			http.NotFound(responseWriter, request)
-			log.Println("Error:", error)
-			return
+			if error != nil {
+				http.NotFound(responseWriter, request)
+				log.Println("Error:", error)
+				return
+			}
+
+			cleanedFileContent := html.RemoveWhitespace(string(fileContent))
+			cachedTemplate, error = template.New("default").Parse(cleanedFileContent)
+
+			if error != nil {
+				http.Error(responseWriter, error.Error(), http.StatusInternalServerError)
+				log.Println("Error:", error)
+				return
+			}
 		}
 
-		cleanedFileContent := html.RemoveWhitespace(string(fileContent))
-		parsedTemplate, error := template.New("default").Parse(cleanedFileContent)
-
-		if error != nil {
-			http.Error(responseWriter, error.Error(), http.StatusInternalServerError)
-			log.Println("Error:", error)
-			return
-		}
-
-		if error := parsedTemplate.Execute(responseWriter, page); error != nil {
+		if error := cachedTemplate.Execute(responseWriter, page); error != nil {
 			http.Error(responseWriter, error.Error(), http.StatusInternalServerError)
 			log.Println("Error:", error)
 			return
