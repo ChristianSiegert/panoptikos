@@ -4,5 +4,24 @@ runtime: go
 api_version: go1
 
 handlers:
+- url: /css/
+  static_dir: webroot/compiled-css/
+
+- url: /dev-css/
+  static_dir: webroot/dev-css/
+
+- url: /dev-js/
+  static_dir: webroot/dev-js/
+
+- url: /favicon.ico
+  static_files: ./webroot/images/favicon-16.ico
+  upload: ./webroot/images/favicon-16.ico
+
+- url: /images/
+  static_dir: ./webroot/images/
+
+- url: /js/
+  static_dir: ./webroot/compiled-js/
+
 - url: /.*
   script: _go_app

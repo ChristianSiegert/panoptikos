@@ -4,7 +4,7 @@
 		<meta charset="utf-8">
 		<meta name="viewport" content="initial-scale=1, width=device-width">
 		<title>Panoptikos</title>
-		<link href="{{.CssFilename}}" rel="stylesheet" type="text/css">
+		<link href="css/{{.CssFilename}}" rel="stylesheet" type="text/css">
 		<link href="http://fonts.googleapis.com/css?family=Droid+Serif:400,700" rel="stylesheet" type="text/css">
 
 		<!-- Favicons. The first one is an .ico file because Internet Explorer can't handle anything else. -->
@@ -22,16 +22,16 @@
 
 	<body>
 		<p id="about">Panoptikos is an image viewer for Reddit.</p>
-		<p id="about-hint">I'm discontinuing the old Panoptikos because I no longer have time to maintain it. ... What you now see is an experimental version I was working on. It is missing many of the features you have come to like, but it is better than nothing ... At least you now can choose any subreddits you want. Tell me what feature you miss the most and I try to add it. I'm <a href="https://twitter.com/Panoptikos">@Panoptikos</a> on Twitter.</p>
+		<p id="about-hint">The <a href="https://github.com/ChristianSiegert/panoptikos">source code</a> is available on GitHub. I'm <a href="https://twitter.com/Panoptikos">@Panoptikos</a> on Twitter.</p>
 
-		{{if .IsProductionMode}}
-			<script src="{{.JsFilename}}"></script>
-			<script>new p()</script>
-		{{else}}
-			<script src="js/libraries/goog/base.js"></script>
-			<script src="js/dependencies.js"></script>
+		{{if .IsDevAppServer}}
+			<script src="dev-js/libraries/goog/base.js"></script>
+			<script src="dev-js/dependencies.js"></script>
 			<script>goog.require("panoptikos.Panoptikos")</script>
 			<script>new panoptikos.Panoptikos()</script>
+		{{else}}
+			<script src="js/{{.JsFilename}}"></script>
+			<script>new p()</script>
 		{{end}}
 
 		<!-- Google Analytics -->

@@ -39,7 +39,7 @@ func CompileCss(compilerArguments []string, resultChan, progressChan chan<- stri
 	}
 
 	relativeFilename := timestampInBase62 + ".css"
-	absoluteFilename := workingDirectory + "/webroot/" + relativeFilename
+	absoluteFilename := workingDirectory + "/webroot/compiled-css/" + relativeFilename
 
 	// Merge arguments
 	arguments := []string{
@@ -112,7 +112,7 @@ func CompileJavaScript(jsCompilationLevel string, verbose bool, resultChan, prog
 	}
 
 	relativeFilename := timestampInBase62 + ".js"
-	absoluteFilename := workingDirectory + "/webroot/" + relativeFilename
+	absoluteFilename := workingDirectory + "/webroot/compiled-js/" + relativeFilename
 
 	command := exec.Command(
 		workingDirectory+"/libraries/closure-library-20120710-r2029/closure/bin/build/closurebuilder.py",
