@@ -3,7 +3,7 @@ package main
 import (
 	"flag"
 	"github.com/ChristianSiegert/panoptikos/asset"
-	"github.com/ChristianSiegert/panoptikos/html"
+	"github.com/ChristianSiegert/panoptikos/sanitizer"
 	"html/template"
 	"io/ioutil"
 	"log"
@@ -143,7 +143,7 @@ func handleRequest(responseWriter http.ResponseWriter, request *http.Request) {
 				return
 			}
 
-			cleanedFileContent := html.RemoveWhitespace(string(fileContent))
+			cleanedFileContent := sanitizer.RemoveWhitespace(string(fileContent))
 			cachedTemplate, error = template.New("default").Parse(cleanedFileContent)
 
 			if error != nil {

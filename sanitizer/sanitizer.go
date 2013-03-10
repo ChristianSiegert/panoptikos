@@ -1,5 +1,6 @@
-// Package html provides a function for the removal of whitespace in HTML code.
-package html
+// Package sanitizer provides a function for the removal of whitespace in HTML
+// templates.
+package sanitizer
 
 import "regexp"
 
