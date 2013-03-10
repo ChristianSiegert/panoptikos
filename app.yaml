@@ -1,0 +1,8 @@
+application: panoptikos3
+version: 2013-03-10-0
+runtime: go
+api_version: go1
+
+handlers:
+- url: /.*
+  script: _go_app
