@@ -1,5 +1,5 @@
 application: panoptikos3
-version: 2013-03-10-0
+version: 2013-03-10-7
 runtime: go
 api_version: go1
 
@@ -14,14 +14,31 @@ handlers:
   static_dir: webroot/dev-js/
 
 - url: /favicon.ico
-  static_files: ./webroot/images/favicon-16.ico
-  upload: ./webroot/images/favicon-16.ico
+  static_files: webroot/images/favicon-16.ico
+  upload: webroot/images/favicon-16.ico
 
 - url: /images/
-  static_dir: ./webroot/images/
+  static_dir: webroot/images/
 
 - url: /js/
-  static_dir: ./webroot/compiled-js/
+  static_dir: webroot/compiled-js/
 
 - url: /.*
   script: _go_app
+
+skip_files:
+- ^(.*/)?app\.yaml
+- ^(.*/)?app\.yml
+- ^(.*/)?index\.yaml
+- ^(.*/)?index\.yml
+- ^(.*/)?#.*#
+- ^(.*/)?.*~
+- ^(.*/)?.*\.py[co]
+- ^(.*/)?.*/RCS/.*
+- ^(.*/)?\..*
+- ^(.*/)?assetcompiler
+- ^(.*/)?libraries/closure-compiler-20120917-r2180
+- ^(.*/)?libraries/closure-library-20120710-r2029
+- ^(.*/)?libraries/closure-stylesheets-20111230
+- ^(.*/)?webroot/dev-css
+- ^(.*/)?webroot/dev-js

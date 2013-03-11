@@ -22,12 +22,6 @@ var cachedTemplate *template.Template
 var isDevAppServer = appengine.IsDevAppServer()
 
 func init() {
-	if isDevAppServer {
-		log.Println("Starting in development mode.")
-	} else {
-		log.Println("Starting in production mode.")
-	}
-
 	page.IsDevAppServer = isDevAppServer
 	page.CssFilename = cssFilename
 	page.JsFilename = jsFilename
