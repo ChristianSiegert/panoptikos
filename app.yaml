@@ -3,6 +3,9 @@ version: 2013-03-13-0
 runtime: go
 api_version: go1
 
+# Default expiration for static files
+default_expiration: 5d
+
 handlers:
 # Any file ending with .css
 - url: /(.*\.css)
@@ -37,6 +40,7 @@ handlers:
 - url: /robots\.txt
   static_files: webroot/robots.txt
   upload: webroot/robots\.txt
+  expiration: 1h
 
 - url: /.*
   script: _go_app
