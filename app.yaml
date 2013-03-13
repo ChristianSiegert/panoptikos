@@ -13,7 +13,7 @@ handlers:
 - url: /dev-js/
   static_dir: webroot/dev-js/
 
-- url: /favicon.ico
+- url: /favicon\.ico
   static_files: webroot/images/favicon-16.ico
   upload: webroot/images/favicon-16.ico
 
@@ -22,6 +22,10 @@ handlers:
 
 - url: /js/
   static_dir: webroot/compiled-js/
+
+- url: /robots\.txt
+  static_files: webroot/robots.txt
+  upload: webroot/robots.txt
 
 - url: /.*
   script: _go_app
