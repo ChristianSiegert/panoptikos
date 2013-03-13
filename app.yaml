@@ -4,38 +4,33 @@ runtime: go
 api_version: go1
 
 # Default expiration for static files
-default_expiration: 5d
+default_expiration: 7d
 
 handlers:
-# Any file ending with .css
 - url: /(.*\.css)
   static_files: webroot/compiled-css/\1
   upload: webroot/compiled-css/.*\.css
 
-# Any file ending with .js
+- url: /dev-js/
+  static_dir: webroot/dev-js/
+
 - url: /(.*\.js)
   static_files: webroot/compiled-js/\1
   upload: webroot/compiled-js/.*\.js
 
-# Special case: apple-touch-icon.png does not exist in our directory, but some
-# browsers always ask for it.
+# Special case: File doesn't exist but some browsers request it.
 - url: /apple-touch-icon\.png
   static_files: webroot/images/apple-touch-icon-iphone.png
   upload: webroot/images/apple-touch-icon-iphone\.png
 
-# Special case: favicon.ico does not exist in our directory, but some browsers
-# always ask for it.
+# Special case: File doesn't exist but some browsers request it.
 - url: /favicon\.ico
   static_files: webroot/images/favicon-16.ico
   upload: webroot/images/favicon-16\.ico
 
-# Any file ending with .gif, .ico, .jpg or .png
 - url: /(.*\.(?:gif|ico|jpg|png))
   static_files: webroot/images/\1
   upload: webroot/images/.*\.(?:gif|ico|jpg|png)
-
-- url: /dev-js/
-  static_dir: webroot/dev-js/
 
 - url: /robots\.txt
   static_files: webroot/robots.txt
