@@ -1,5 +1,5 @@
 application: panoptikos3
-version: 2013-03-13-0
+version: 2013-03-14-0
 runtime: go
 api_version: go1
 
@@ -19,9 +19,9 @@ handlers:
   upload: webroot/compiled-js/.*\.js
 
 # Special case: File doesn't exist but some browsers request it.
-- url: /apple-touch-icon\.png
-  static_files: webroot/images/apple-touch-icon-iphone.png
-  upload: webroot/images/apple-touch-icon-iphone\.png
+- url: /apple-touch-icon-precomposed\.png
+  static_files: webroot/images/apple-touch-icon-iphone-2x.png
+  upload: webroot/images/apple-touch-icon-iphone-2x\.png
 
 # Special case: File doesn't exist but some browsers request it.
 - url: /favicon\.ico
