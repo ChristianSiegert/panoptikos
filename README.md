@@ -1,10 +1,8 @@
 # Panoptikos
 
-## Introduction
+Panoptikos is an image viewer for Reddit. You can see it in action at [panoptikos.com](http://www.panoptikos.com/).
 
-Panoptikos is an image viewer for Reddit. You can see it in action at [panoptikos.com](http://panoptikos.com/).
-
-The server-side code is written in Go, the client-side heavily relies on JavaScript. The JavaScript library used is Google's Closure Library.
+The server-side code is written in Go, the client-side heavily relies on JavaScript. The JavaScript library used is [Closure Library](https://developers.google.com/closure/library/). Panoptikos is hosted on [Google App Engine](https://developers.google.com/appengine/).
 
 ## Features
 
@@ -21,47 +19,40 @@ The server-side code is written in Go, the client-side heavily relies on JavaScr
 
 ## Installing Panoptikos
 
-[Install the Go tools](http://golang.org/doc/install) if you haven't done so already. Then:
+[Install the Google App Engine SDK for Go](https://developers.google.com/appengine/downloads#Google_App_Engine_SDK_for_Go) if you haven't done so already. Then:
 
 	$ go get github.com/ChristianSiegert/panoptikos
 
 This operation may take a while.
 
-## Running Panoptikos
+## Running Panoptikos locally
 
-At the moment, Panoptikos only starts successfully if the current working directory is the project's root directory:
+Start the App Engine development server and tell it to serve Panoptikos:
 
-	$ cd $GOPATH/src/github.com/ChristianSiegert/panoptikos
-	$ panoptikos
+	$ /path/to/google_appengine/dev_appserver.py $GOPATH/src/github.com/ChristianSiegert/panoptikos
 
-## Command-line flags
+Then, open your browser and go to `http://localhost:8080/`.
 
-Panoptikos supports these command-line flags:
+## Deploying Panoptikos to Google App Engine
 
-* **--js-compilation-level** Either `WHITESPACE_ONLY`, `SIMPLE_OPTIMIZATIONS` or `ADVANCED_OPTIMIZATIONS`. See [Closure Compiler Compilation Levels](https://developers.google.com/closure/compiler/docs/compilation_levels). [Advanced optimizations can break your code](https://developers.google.com/closure/compiler/docs/api-tutorial3#dangers). Only used in production mode. Default is `ADVANCED_OPTIMIZATIONS`.
-* **--port** HTTP port the web server listens to. Default is `8080`.
-* **--production** Whether the server should run in production mode. Default is `false`.
-* **--verbose** Whether additional information should be displayed. Default is `false`.
+1. Create a new application on [appengine.google.com](https://appengine.google.com/).
+2. Change the application id in `$GOPATH/src/github.com/ChristianSiegert/panoptikos/app.yaml` to the one you just used when you created the new application.
+3. Upload the app:
 
-## Examples
+	```
+	$ /path/to/google_appengine/appcfg.py update $GOPATH/src/github.com/ChristianSiegert/panoptikos
+	```
 
-All examples assume that the current working directory is the project's root directory. See "Running Panoptikos" above.
+4. You can now access Panoptikos at `http://your_app_id.appspot.com`.
 
-To start the web server in development mode with default settings:
+## Updating Panoptikos on Google App Engine
 
-	$ panoptikos
+Simply run:
 
-To start the web server in production mode and make it listen to port 80:
+	$ /path/to/google_appengine/appcfg.py update $GOPATH/src/github.com/ChristianSiegert/panoptikos
 
-	$ panoptikos --production --port=80
 
-To display Closure Compiler warnings even if your JavaScript code compiled successfully:
-
-	$ panoptikos --production --verbose
-
-To compile your JavaScript code with [simple optimizations](https://developers.google.com/closure/compiler/docs/compilation_levels) (useful [should advanced optimizations break your code](https://developers.google.com/closure/compiler/docs/api-tutorial3#dangers)):
-
-	$ panoptikos --production --js-compilation-level=SIMPLE_OPTIMIZATIONS
+This replaces your already deployed version. If you want to keep your deployed version, change the version string in `app.yaml` before you run the command.
 
 ## Development
 
@@ -73,11 +64,7 @@ In development mode, if you add or remove custom JavaScript classes, i.e. any no
 
 	$ cd $GOPATH/src/github.com/ChristianSiegert/panoptikos
 	$ ./libraries/closure-library-20120710-r2029/closure/bin/build/depswriter.py \
-		--output_file=./webroot/js/dependencies.js \
-		--root_with_prefix="./webroot/js/ ../../"
+		--output_file=./webroot/dev-js/dependencies.js \
+		--root_with_prefix="./webroot/dev-js/ ../../"
 
-This overwrites the existing `./webroot/js/dependencies.js` file.
-
-### Adding / Removing CSS files
-
-When Panoptikos is started it always compiles all CSS files into a single file. Currently, the filenames are hard-coded in the `main` package's `mustCompileCssAndJs()` function. To add or remove a CSS file, simply add or remove the appropriate filepath there.
+This overwrites the existing `./webroot/dev-js/dependencies.js` file.
