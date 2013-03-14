@@ -151,7 +151,7 @@ panoptikos.ui.Board = function(columnMaxWidth, columnMarginLeft, maxThreadsPerRe
 	);
 
 	if (goog.userAgent.IE) {
-		this.loadStylesheet_("css/board-item-ie.css");
+		this.loadStylesheet_("board-item-ie.css");
 	}
 };
 goog.inherits(panoptikos.ui.Board, goog.events.EventTarget);
