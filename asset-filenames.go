@@ -8,5 +8,5 @@ package panoptikos
 // file into the webroot directory and updating the filenames in this very file.
 const (
 	cssFilename = "1uePdv.css"
-	jsFilename  = "1uePdv.js"
+	jsFilename  = "1ugdFO.js"
 )
