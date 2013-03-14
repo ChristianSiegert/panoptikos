@@ -51,7 +51,7 @@ func main() {
 	flag.Parse()
 
 	if !*compileCss && !*compileJs {
-		fmt.Println("You must specify if you want to compile CSS and/or JS files.")
+		fmt.Println("You must use command-line flags to specify what you want to compile.")
 		fmt.Println("Command-line flags you can use:")
 		flag.PrintDefaults()
 		return
