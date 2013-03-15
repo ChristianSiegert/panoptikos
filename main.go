@@ -5,7 +5,6 @@ import (
 	"github.com/ChristianSiegert/panoptikos/sanitizer"
 	"html/template"
 	"io/ioutil"
-	"log"
 	"net/http"
 	"strings"
 )
@@ -26,10 +25,44 @@ func init() {
 	page.CssFilename = cssFilename
 	page.JsFilename = jsFilename
 
+	var error error
+	if cachedTemplate, error = loadTemplate(); error != nil {
+		http.HandleFunc("/", handleInitError(error))
+		return
+	}
+
 	http.HandleFunc("/", handleRequest)
 }
 
+func loadTemplate() (*template.Template, error) {
+	fileContent, error := ioutil.ReadFile("views/layouts/default.html")
+
+	if error != nil {
+		return nil, error
+	}
+
+	whitespaceStrippedFileContent := sanitizer.RemoveWhitespace(string(fileContent))
+	template_, error := template.New("default").Parse(whitespaceStrippedFileContent)
+
+	if error != nil {
+		return nil, error
+	}
+
+	return template_, nil
+}
+
 func handleRequest(responseWriter http.ResponseWriter, request *http.Request) {
+	if request.URL.Path == "/" {
+		if error := cachedTemplate.Execute(responseWriter, page); error != nil {
+			context := appengine.NewContext(request)
+			context.Errorf("panoptikos: Couldn't execute cached template: %s", error)
+			http.Error(responseWriter, error.Error(), http.StatusInternalServerError)
+			return
+		}
+
+		return
+	}
+
 	// Redirect legacy URLs to home page to prevent 404 Not Found errors
 	if request.URL.Path == "/feedback" ||
 		request.URL.Path == "/feeds" ||
@@ -41,34 +74,14 @@ func handleRequest(responseWriter http.ResponseWriter, request *http.Request) {
 		return
 	}
 
-	if request.URL.Path == "/" {
-		if cachedTemplate == nil {
-			fileContent, error := ioutil.ReadFile("views/layouts/default.html")
-
-			if error != nil {
-				http.NotFound(responseWriter, request)
-				log.Println("Error:", error)
-				return
-			}
-
-			cleanedFileContent := sanitizer.RemoveWhitespace(string(fileContent))
-			cachedTemplate, error = template.New("default").Parse(cleanedFileContent)
-
-			if error != nil {
-				http.Error(responseWriter, error.Error(), http.StatusInternalServerError)
-				log.Println("Error:", error)
-				return
-			}
-		}
-
-		if error := cachedTemplate.Execute(responseWriter, page); error != nil {
-			http.Error(responseWriter, error.Error(), http.StatusInternalServerError)
-			log.Println("Error:", error)
-			return
-		}
-
-		return
-	}
-
 	http.NotFound(responseWriter, request)
 }
+
+func handleInitError(error error) func(http.ResponseWriter, *http.Request) {
+	return func(responseWriter http.ResponseWriter, request *http.Request) {
+		context := appengine.NewContext(request)
+		context.Errorf("panoptikos: Initializing the app failed: %s", error)
+		http.Error(responseWriter, "Internal Server Error", http.StatusInternalServerError)
+	}
+}
+
