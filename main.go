@@ -32,6 +32,7 @@ func init() {
 	}
 
 	http.HandleFunc("/", handleRequest)
+	http.HandleFunc("/_ah/warmup", handleWarmUpRequest)
 }
 
 func loadTemplate() (*template.Template, error) {
@@ -77,6 +78,11 @@ func handleRequest(responseWriter http.ResponseWriter, request *http.Request) {
 	http.NotFound(responseWriter, request)
 }
 
+func handleWarmUpRequest(responseWriter http.ResponseWriter, request *http.Request) {
+	context := appengine.NewContext(request)
+	context.Debugf("panoptikos: Received warm-up request.")
+}
+
 func handleInitError(error error) func(http.ResponseWriter, *http.Request) {
 	return func(responseWriter http.ResponseWriter, request *http.Request) {
 		context := appengine.NewContext(request)
@@ -84,4 +90,3 @@ func handleInitError(error error) func(http.ResponseWriter, *http.Request) {
 		http.Error(responseWriter, "Internal Server Error", http.StatusInternalServerError)
 	}
 }
-

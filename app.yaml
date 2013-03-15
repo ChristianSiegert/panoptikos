@@ -1,5 +1,5 @@
 application: panoptikos3
-version: 2013-03-14-1
+version: 2013-03-15-1
 runtime: go
 api_version: go1
 
@@ -40,6 +40,10 @@ handlers:
 - url: /.*
   script: _go_app
 
+inbound_services:
+- warmup
+
+# Files to skip when uploading the app to Google App Engine
 skip_files:
 - ^(.*/)?app\.yaml
 - ^(.*/)?app\.yml
