@@ -13,6 +13,7 @@ handlers:
 
 - url: /dev-js/
   static_dir: webroot/dev-js/
+  expiration: 0s
 
 - url: /(.*\.js)
   static_files: webroot/compiled-js/\1
