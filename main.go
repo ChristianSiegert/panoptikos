@@ -32,7 +32,11 @@ func init() {
 	}
 
 	http.HandleFunc("/", handleRequest)
-	http.HandleFunc("/_ah/warmup", handleWarmUpRequest)
+
+	// The most requested URL that doesn't exist anymore. Handling it outside of
+	// handleRequest avoids expensing RegEx testing that is going on in
+	// handleRequest.
+	http.HandleFunc("/feeds/atom/", handleFeedRequest)
 }
 
 func loadTemplate() (*template.Template, error) {
@@ -78,9 +82,8 @@ func handleRequest(responseWriter http.ResponseWriter, request *http.Request) {
 	http.NotFound(responseWriter, request)
 }
 
-func handleWarmUpRequest(responseWriter http.ResponseWriter, request *http.Request) {
-	context := appengine.NewContext(request)
-	context.Debugf("panoptikos: Received warm-up request.")
+func handleFeedRequest(responseWriter http.ResponseWriter, request *http.Request) {
+	http.NotFound(responseWriter, request)
 }
 
 func handleInitError(err error) func(http.ResponseWriter, *http.Request) {
