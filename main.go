@@ -25,9 +25,9 @@ func init() {
 	page.CssFilename = cssFilename
 	page.JsFilename = jsFilename
 
-	var error error
-	if cachedTemplate, error = loadTemplate(); error != nil {
-		http.HandleFunc("/", handleInitError(error))
+	var err error
+	if cachedTemplate, err = loadTemplate(); err != nil {
+		http.HandleFunc("/", handleInitError(err))
 		return
 	}
 
@@ -36,17 +36,17 @@ func init() {
 }
 
 func loadTemplate() (*template.Template, error) {
-	fileContent, error := ioutil.ReadFile("views/layouts/default.html")
+	fileContent, err := ioutil.ReadFile("views/layouts/default.html")
 
-	if error != nil {
-		return nil, error
+	if err != nil {
+		return nil, err
 	}
 
 	whitespaceStrippedFileContent := sanitizer.RemoveWhitespace(string(fileContent))
-	template_, error := template.New("default").Parse(whitespaceStrippedFileContent)
+	template_, err := template.New("default").Parse(whitespaceStrippedFileContent)
 
-	if error != nil {
-		return nil, error
+	if err != nil {
+		return nil, err
 	}
 
 	return template_, nil
@@ -54,10 +54,10 @@ func loadTemplate() (*template.Template, error) {
 
 func handleRequest(responseWriter http.ResponseWriter, request *http.Request) {
 	if request.URL.Path == "/" {
-		if error := cachedTemplate.Execute(responseWriter, page); error != nil {
+		if err := cachedTemplate.Execute(responseWriter, page); err != nil {
 			context := appengine.NewContext(request)
-			context.Errorf("panoptikos: Couldn't execute cached template: %s", error)
-			http.Error(responseWriter, error.Error(), http.StatusInternalServerError)
+			context.Errorf("panoptikos: Couldn't execute cached template: %s", err)
+			http.Error(responseWriter, err.Error(), http.StatusInternalServerError)
 			return
 		}
 
@@ -83,10 +83,10 @@ func handleWarmUpRequest(responseWriter http.ResponseWriter, request *http.Reque
 	context.Debugf("panoptikos: Received warm-up request.")
 }
 
-func handleInitError(error error) func(http.ResponseWriter, *http.Request) {
+func handleInitError(err error) func(http.ResponseWriter, *http.Request) {
 	return func(responseWriter http.ResponseWriter, request *http.Request) {
 		context := appengine.NewContext(request)
-		context.Errorf("panoptikos: Initializing the app failed: %s", error)
+		context.Errorf("panoptikos: Initializing the app failed: %s", err)
 		http.Error(responseWriter, "Internal Server Error", http.StatusInternalServerError)
 	}
 }
