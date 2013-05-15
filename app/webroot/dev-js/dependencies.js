@@ -7,4 +7,4 @@ goog.addDependency('../../ui/board-controls.js', ['panoptikos.ui.BoardControls',
 goog.addDependency('../../ui/board-item.js', ['panoptikos.ui.BoardItem'], ['goog.dom']);
 goog.addDependency('../../ui/board.js', ['panoptikos.ui.Board', 'panoptikos.ui.Board.EventType', 'panoptikos.ui.BoardEvent'], ['goog.Uri', 'goog.debug.Logger', 'goog.dom', 'goog.events.EventTarget', 'goog.net.Jsonp', 'goog.userAgent', 'panoptikos.models.subreddit', 'panoptikos.ui.BoardControls.EventType', 'panoptikos.ui.BoardItem']);
 goog.addDependency('../../ui/subreddit-picker-launcher.js', ['panoptikos.ui.SubredditPickerLauncher'], ['goog.dom']);
-goog.addDependency('../../ui/subreddit-picker.js', ['panoptikos.ui.SubredditPicker', 'panoptikos.ui.SubredditPicker.EventType'], ['goog.dom', 'goog.dom.classes', 'goog.events', 'goog.events.EventTarget', 'goog.events.EventType', 'goog.style']);
+goog.addDependency('../../ui/subreddit-picker.js', ['panoptikos.ui.SubredditPicker', 'panoptikos.ui.SubredditPicker.EventType'], ['goog.dom', 'goog.dom.classes', 'goog.events', 'goog.events.EventTarget', 'goog.events.EventType', 'goog.events.KeyCodes', 'goog.style']);
