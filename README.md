@@ -29,18 +29,18 @@ This operation may take a while.
 
 Start the App Engine development server and tell it to serve Panoptikos:
 
-	$ /path/to/google_appengine/dev_appserver.py $GOPATH/src/github.com/ChristianSiegert/panoptikos
+	$ /path/to/google_appengine/dev_appserver.py $GOPATH/src/github.com/ChristianSiegert/panoptikos/app
 
 Then, open your browser and go to `http://localhost:8080/`.
 
 ## Deploying Panoptikos to Google App Engine
 
 1. Create a new application on [appengine.google.com](https://appengine.google.com/).
-2. Change the application id in `$GOPATH/src/github.com/ChristianSiegert/panoptikos/app.yaml` to the one you just used when you created the new application.
+2. Change the application id in `$GOPATH/src/github.com/ChristianSiegert/panoptikos/app/app.yaml` to the one you just used when you created the new application.
 3. Upload the app:
 
 	```
-	$ /path/to/google_appengine/appcfg.py update $GOPATH/src/github.com/ChristianSiegert/panoptikos
+	$ /path/to/google_appengine/appcfg.py update $GOPATH/src/github.com/ChristianSiegert/panoptikos/app
 	```
 
 4. You can now access Panoptikos at `http://your_app_id.appspot.com`.
@@ -49,22 +49,45 @@ Then, open your browser and go to `http://localhost:8080/`.
 
 Simply run:
 
-	$ /path/to/google_appengine/appcfg.py update $GOPATH/src/github.com/ChristianSiegert/panoptikos
-
+	$ /path/to/google_appengine/appcfg.py update $GOPATH/src/github.com/ChristianSiegert/panoptikos/app
 
 This replaces your already deployed version. If you want to keep your deployed version, change the version string in `app.yaml` before you run the command.
 
 ## Development
 
-This project uses [Closure Library](https://developers.google.com/closure/library/) as JavaScript library. Stylesheets are compiled into a single file with [Closure Stylesheets](http://code.google.com/p/closure-stylesheets/). Additionally, if the server is started in production mode, [Closure Compiler](https://developers.google.com/closure/compiler/) is used to compile JavaScript files into a single file.
+This project uses [Closure Library](https://developers.google.com/closure/library/) as JavaScript library. Stylesheets are compiled into a single file with [Closure Stylesheets](http://code.google.com/p/closure-stylesheets/). JavaScript is compiled into a single file with [Closure Compiler](https://developers.google.com/closure/compiler/).
 
 ### Generating the Closure Library dependency tree
 
-In development mode, if you add or remove custom JavaScript classes, i.e. any non-goog class, you have to generate the Closure Library dependency tree again. You can do this by changing to the Panoptikos project directory and executing Closure Library's Dependency Writer:
+If you add or remove custom JavaScript classes, i.e. any non-goog class, you have to generate the Closure Library dependency tree again. You can do this by changing to the Panoptikos project directory and executing Closure Library's Dependency Writer:
 
-	$ cd $GOPATH/src/github.com/ChristianSiegert/panoptikos
+	$ cd $GOPATH/src/github.com/ChristianSiegert/panoptikos/app
 	$ ./libraries/closure-library-20120710-r2029/closure/bin/build/depswriter.py \
 		--output_file=./webroot/dev-js/dependencies.js \
 		--root_with_prefix="./webroot/dev-js/ ../../"
 
-This overwrites the existing `./webroot/dev-js/dependencies.js` file.
+This overwrites the existing `$GOPATH/src/github.com/ChristianSiegert/panoptikos/app/webroot/dev-js/dependencies.js` file.
+
+### Compiling JavaScript and stylesheet files
+
+This repository contains two programs, _app_ and _assetcompiler_. _app_ is the actual Panoptikos app, and _assetcompiler_ is responsible for compiling JavaScript and stylesheet files into a single file each.
+
+In general, to compile assets, we have to call Java programs, namely Closure Stylesheets and Closure Compiler. Since Java programs can't be called in a Google App Engine Go sandbox, the asset compiler can't be a part of the actual Google App Engine Panoptikos app and had to be moved to a normal, standalone Go program.
+
+The asset compiler must be run manually. The rules are:
+
+* If you modify a CSS file, even if you just want to test the changes locally in your development environment, you must run the asset compiler to create a single, new CSS file that contains the updated code:
+
+	```
+	$ cd $GOPATH/src/github.com/ChristianSiegert/panoptikos
+	$ /usr/local/go/bin/go run assetcompiler/main.go -compile-css=true
+	```
+
+* If you modify a JavaScript file, you don't have to run the asset compiler as long as you test the code locally in your development environment. But before you deploy the app to Google App Engine, you must run the asset compiler to create a single, new JavaScript file that contains the updated code:
+
+	```
+	$ cd $GOPATH/src/github.com/ChristianSiegert/panoptikos
+	$ /usr/local/go/bin/go run assetcompiler/main.go -compile-js=true
+	```
+
+If you don't develop on a Mac, you may have to adjust the path to the normal Go binary.
