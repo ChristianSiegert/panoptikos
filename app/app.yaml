@@ -55,9 +55,6 @@ skip_files:
 - ^(.*/)?.*\.py[co]
 - ^(.*/)?.*/RCS/.*
 - ^(.*/)?\..*
-- ^(.*/)?assetcompiler
-- ^(.*/)?libraries/closure-compiler-20120917-r2180
 - ^(.*/)?libraries/closure-library-20120710-r2029
-- ^(.*/)?libraries/closure-stylesheets-20111230
 - ^(.*/)?webroot/dev-css
 - ^(.*/)?webroot/dev-js
