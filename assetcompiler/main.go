@@ -35,16 +35,16 @@ var cssCompilerArguments = []string{
 
 	// Stylesheet order is important: Succeeding stylesheet rules overwrite
 	// preceding ones
-	"./webroot/dev-css/reset.gss",
-	"./webroot/dev-css/general.gss",
-	"./webroot/dev-css/form.gss",
-	"./webroot/dev-css/subreddit-picker.gss",
-	"./webroot/dev-css/board.gss",
-	"./webroot/dev-css/board-item.gss",
+	"./app/webroot/dev-css/reset.gss",
+	"./app/webroot/dev-css/general.gss",
+	"./app/webroot/dev-css/form.gss",
+	"./app/webroot/dev-css/subreddit-picker.gss",
+	"./app/webroot/dev-css/board.gss",
+	"./app/webroot/dev-css/board-item.gss",
 
 	// Also include the CSS of the Closure Library widgets we use
-	// "./libraries/closure-library-20120710-r2029/closure/goog/css/common.css",
-	// "./libraries/closure-library-20120710-r2029/closure/goog/css/custombutton.css",
+	// "./app/libraries/closure-library-20120710-r2029/closure/goog/css/common.css",
+	// "./app/libraries/closure-library-20120710-r2029/closure/goog/css/custombutton.css",
 }
 
 func main() {
@@ -113,7 +113,7 @@ func compileCssJs() {
 }
 
 func updateFilenames(cssFilename, jsFilename string) {
-	filename := "./asset-filenames.go"
+	filename := "./app/asset-filenames.go"
 
 	content, error := ioutil.ReadFile(filename)
 	if error != nil {

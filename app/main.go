@@ -2,7 +2,7 @@ package panoptikos
 
 import (
 	"appengine"
-	"github.com/ChristianSiegert/panoptikos/sanitizer"
+	"github.com/ChristianSiegert/panoptikos/app/sanitizer"
 	"html/template"
 	"io/ioutil"
 	"net/http"
@@ -34,7 +34,7 @@ func init() {
 	http.HandleFunc("/", handleRequest)
 
 	// The most requested URL that doesn't exist anymore. Handling it outside of
-	// handleRequest avoids expensing RegEx testing that is going on in
+	// handleRequest avoids expensive RegEx testing that is going on in
 	// handleRequest.
 	http.HandleFunc("/feeds/atom/", handleFeedRequest)
 }

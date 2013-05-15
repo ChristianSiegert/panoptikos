@@ -3,7 +3,7 @@ package asset
 
 import (
 	"fmt"
-	"github.com/ChristianSiegert/panoptikos/base"
+	"github.com/ChristianSiegert/panoptikos/app/base"
 	"io/ioutil"
 	"os"
 	"os/exec"
@@ -39,11 +39,11 @@ func CompileCss(compilerArguments []string, resultChan, progressChan chan<- stri
 	}
 
 	relativeFilename := timestampInBase62 + ".css"
-	absoluteFilename := workingDirectory + "/webroot/compiled-css/" + relativeFilename
+	absoluteFilename := workingDirectory + "/app/webroot/compiled-css/" + relativeFilename
 
 	// Merge arguments
 	arguments := []string{
-		"-jar", workingDirectory + "/libraries/closure-stylesheets-20111230/closure-stylesheets-20111230.jar",
+		"-jar", workingDirectory + "/assetcompiler/libraries/closure-stylesheets-20111230/closure-stylesheets-20111230.jar",
 		"--output-file", absoluteFilename,
 	}
 	arguments = append(arguments, compilerArguments...)
@@ -112,13 +112,13 @@ func CompileJavaScript(jsCompilationLevel string, verbose bool, resultChan, prog
 	}
 
 	relativeFilename := timestampInBase62 + ".js"
-	absoluteFilename := workingDirectory + "/webroot/compiled-js/" + relativeFilename
+	absoluteFilename := workingDirectory + "/app/webroot/compiled-js/" + relativeFilename
 
 	command := exec.Command(
-		workingDirectory+"/libraries/closure-library-20120710-r2029/closure/bin/build/closurebuilder.py",
+		workingDirectory+"/app/libraries/closure-library-20120710-r2029/closure/bin/build/closurebuilder.py",
 		"--compiler_flags=--compilation_level="+jsCompilationLevel,
 		"--compiler_flags=--warning_level=VERBOSE",
-		"--compiler_jar="+workingDirectory+"/libraries/closure-compiler-20120917-r2180/compiler.jar",
+		"--compiler_jar="+workingDirectory+"/assetcompiler/libraries/closure-compiler-20120917-r2180/compiler.jar",
 		"--namespace=panoptikos.Panoptikos",
 		"--output_file="+absoluteFilename,
 		"--output_mode=compiled",
