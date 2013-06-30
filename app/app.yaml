@@ -7,13 +7,21 @@ api_version: go1
 default_expiration: 7d
 
 handlers:
-- url: /(.*\.css)
-  static_files: webroot/compiled-css/\1
-  upload: webroot/compiled-css/.*\.css
+# Allow access to development CSS files locally.
+# Development CSS files are not uploaded. See skip_files below.
+- url: /dev-css/
+  static_dir: webroot/dev-css/
+  expiration: 0s
 
+# Allow access to development JS files locally.
+# Development JS files are not uploaded. See skip_files below.
 - url: /dev-js/
   static_dir: webroot/dev-js/
   expiration: 0s
+
+- url: /(.*\.css)
+  static_files: webroot/compiled-css/\1
+  upload: webroot/compiled-css/.*\.css
 
 - url: /(.*\.js)
   static_files: webroot/compiled-js/\1
@@ -42,7 +50,7 @@ handlers:
   script: _go_app
 
 inbound_services:
-- warmup
+#- warmup
 
 # Files to skip when uploading the app to Google App Engine
 skip_files:

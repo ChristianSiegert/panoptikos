@@ -10,20 +10,28 @@ import (
 )
 
 type Page struct {
-	CssFilename    string
-	IsDevAppServer bool
-	JsFilename     string
+	CompiledCssFile string   // Filename of the compiled CSS file
+	CompiledJsFile  string   // Filename of the compiled JS file
+	DevCssFiles     []string // Filenames of the development CSS files
+	IsDevAppServer  bool
 }
 
-var page Page
 var cachedTemplate *template.Template
-
-var isDevAppServer = appengine.IsDevAppServer()
+var page Page
 
 func init() {
-	page.IsDevAppServer = isDevAppServer
-	page.CssFilename = cssFilename
-	page.JsFilename = jsFilename
+	page.DevCssFiles = []string{
+		"reset.css",
+		"general.css",
+		"form.css",
+		"subreddit-picker.css",
+		"board.css",
+		"board-item.css",
+	}
+
+	page.CompiledCssFile = "1uePdv.css"
+	page.CompiledJsFile = "1ugdFO.js"
+	page.IsDevAppServer = appengine.IsDevAppServer()
 
 	var err error
 	if cachedTemplate, err = loadTemplate(); err != nil {
