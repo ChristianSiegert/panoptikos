@@ -21,8 +21,8 @@ var (
 
 // Regular expressions for finding the CSS and JS filename in a .go file.
 var (
-	cssFilenamePattern = regexp.MustCompile("cssFilename = \"[^\"]*\"")
-	jsFilenamePattern  = regexp.MustCompile("jsFilename  = \"[^\"]*\"")
+	cssFilenamePattern = regexp.MustCompile("page.CompiledCssFile = \"[^\"]*\"")
+	jsFilenamePattern  = regexp.MustCompile("page.CompiledJsFile = \"[^\"]*\"")
 )
 
 var cssCompilerArguments = []string{
@@ -35,12 +35,12 @@ var cssCompilerArguments = []string{
 
 	// Stylesheet order is important: Succeeding stylesheet rules overwrite
 	// preceding ones
-	"./app/webroot/dev-css/reset.gss",
-	"./app/webroot/dev-css/general.gss",
-	"./app/webroot/dev-css/form.gss",
-	"./app/webroot/dev-css/subreddit-picker.gss",
-	"./app/webroot/dev-css/board.gss",
-	"./app/webroot/dev-css/board-item.gss",
+	"./app/webroot/dev-css/reset.css",
+	"./app/webroot/dev-css/general.css",
+	"./app/webroot/dev-css/form.css",
+	"./app/webroot/dev-css/subreddit-picker.css",
+	"./app/webroot/dev-css/board.css",
+	"./app/webroot/dev-css/board-item.css",
 
 	// Also include the CSS of the Closure Library widgets we use
 	// "./app/libraries/closure-library-20120710-r2029/closure/goog/css/common.css",
@@ -113,7 +113,7 @@ func compileCssJs() {
 }
 
 func updateFilenames(cssFilename, jsFilename string) {
-	filename := "./app/asset-filenames.go"
+	filename := "./app/main.go"
 
 	content, error := ioutil.ReadFile(filename)
 	if error != nil {
@@ -122,12 +122,12 @@ func updateFilenames(cssFilename, jsFilename string) {
 	}
 
 	if len(cssFilename) > 0 {
-		replacement := fmt.Sprintf("cssFilename = \"%s\"", cssFilename)
+		replacement := fmt.Sprintf("page.CompiledCssFile = \"%s\"", cssFilename)
 		content = cssFilenamePattern.ReplaceAll(content, []byte(replacement))
 	}
 
 	if len(jsFilename) > 0 {
-		replacement := fmt.Sprintf("jsFilename  = \"%s\"", jsFilename)
+		replacement := fmt.Sprintf("page.CompiledJsFile = \"%s\"", jsFilename)
 		content = jsFilenamePattern.ReplaceAll(content, []byte(replacement))
 	}
 
