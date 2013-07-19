@@ -74,20 +74,20 @@ This repository contains two programs, _app_ and _assetcompiler_. _app_ is the a
 
 In general, to compile assets, we have to call Java programs, namely Closure Stylesheets and Closure Compiler. Since Java programs can't be called in a Google App Engine Go sandbox, the asset compiler can't be a part of the actual Google App Engine Panoptikos app and had to be moved to a normal, standalone Go program.
 
-The asset compiler must be run manually. The rules are:
+The rules are for compiling assets are:
 
-* If you modify a CSS file, even if you just want to test the changes locally in your development environment, you must run the asset compiler to create a single, new CSS file that contains the updated code:
+* If you modify a CSS or JavaScript file, you don't have to run the asset compiler as long as you test the code in your development environment.
+
+* If you deploy the app to Google App Engine, you must run the asset compiler before deployment to create a single, new CSS or JavaScript file that contains the updated code:
 
 	```
 	$ cd $GOPATH/src/github.com/ChristianSiegert/panoptikos
 	$ /usr/local/go/bin/go run assetcompiler/main.go -compile-css=true
 	```
 
-* If you modify a JavaScript file, you don't have to run the asset compiler as long as you test the code locally in your development environment. But before you deploy the app to Google App Engine, you must run the asset compiler to create a single, new JavaScript file that contains the updated code:
-
 	```
 	$ cd $GOPATH/src/github.com/ChristianSiegert/panoptikos
 	$ /usr/local/go/bin/go run assetcompiler/main.go -compile-js=true
 	```
 
-If you don't develop on a Mac, you may have to adjust the path to the normal Go binary.
+You may have to adjust the path to the standard Go binary if you don't develop on a Mac.
