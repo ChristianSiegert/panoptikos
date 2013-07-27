@@ -1,5 +1,5 @@
 application: panoptikos3
-version: 2013-05-15-0
+version: 2013-07-27-0
 runtime: go
 api_version: go1
 

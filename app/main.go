@@ -30,7 +30,7 @@ func init() {
 	}
 
 	page.CompiledCssFile = "1uePdv.css"
-	page.CompiledJsFile = "1ugdFO.js"
+	page.CompiledJsFile = "1v32Iq.js"
 	page.IsDevAppServer = appengine.IsDevAppServer()
 
 	var err error

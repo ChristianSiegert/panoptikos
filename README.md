@@ -14,7 +14,6 @@ The server-side code is written in Go, the client-side heavily relies on JavaScr
 
 * High memory usage on clients because images outside the visible screen area are not removed from the page. Possible browser crashes if browser runs out of memory.
 * Jerky scrolling because sometimes only high-resolution images can be used in previews.
-* There is no endless scrolling, you must click "Load more" all the time.
 * You can't switch between Reddit's "Hot", "New", "Controversial", "Top" sections. (Current default is "Hot".)
 
 ## Installing Panoptikos
