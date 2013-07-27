@@ -31,11 +31,9 @@ panoptikos.ui.BoardItem = function(thread, image, fullsizeImageUrl) {
 };
 
 /**
- * toElement returns an HTML element that contains other markup that all
- * together creates a board item, e.g. an image and anchor elements.
  * @return {!Element}
  */
-panoptikos.ui.BoardItem.prototype.toElement = function() {
+panoptikos.ui.BoardItem.prototype.createDom = function() {
 	var element = goog.dom.createDom("div", "board-item");
 	goog.dom.appendChild(element, this.createImageAnchor());
 	goog.dom.appendChild(element, this.createTitleAnchor());

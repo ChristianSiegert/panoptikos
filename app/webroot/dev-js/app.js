@@ -7,6 +7,7 @@ goog.require("panoptikos.ui.SubredditPicker");
 goog.require("panoptikos.ui.SubredditPickerLauncher");
 goog.require("goog.dom");
 goog.require("goog.events");
+goog.require("goog.events.EventType");
 
 /**
  * @constructor
@@ -36,13 +37,13 @@ panoptikos.Panoptikos.prototype.setSubreddits_ = function() {
  * @private
  */
 panoptikos.Panoptikos.prototype.createUi_ = function() {
-	var subredditPickerLauncherElement = new panoptikos.ui.SubredditPickerLauncher().toElement();
+	var subredditPickerLauncherElement = new panoptikos.ui.SubredditPickerLauncher().createDom();
 	goog.dom.appendChild(document.body, subredditPickerLauncherElement);
 
 	goog.events.listen(
 		subredditPickerLauncherElement,
 		goog.events.EventType.CLICK,
-		this.openSubredditLauncher_,
+		this.openSubredditPicker_,
 		false,
 		this
 	);
@@ -55,37 +56,57 @@ panoptikos.Panoptikos.prototype.createUi_ = function() {
 	goog.dom.appendChild(document.body, this.board.getElement());
 	this.board.rebuild();
 
-	var boardControls = new panoptikos.ui.BoardControls();
+	this.boardControls = new panoptikos.ui.BoardControls();
 
 	goog.events.listen(
 		this.board,
 		panoptikos.ui.Board.EventType.DID_COMPLETE_REQUEST,
-		boardControls.updateLoadMoreButtonText,
+		this.boardControls.updateLoadMoreButtonText,
 		false,
-		boardControls
+		this.boardControls
 	);
 
 	goog.events.listen(
-		boardControls,
+		this.boardControls,
 		panoptikos.ui.BoardControls.EventType.USER_DID_ASK_FOR_IMAGES,
 		this.board.retrieveThreadsFromReddit,
 		false,
 		this.board
 	);
 
-	var boardControlsElement = boardControls.toElement();
+	var boardControlsElement = this.boardControls.createDom();
 	goog.dom.appendChild(document.body, boardControlsElement);
 
 	// Load images
-	boardControls.dispatchEvent(
+	this.boardControls.dispatchEvent(
 		panoptikos.ui.BoardControls.EventType.USER_DID_ASK_FOR_IMAGES
+	);
+
+	// Autoload images if page end is reached
+	goog.events.listen(
+		window,
+		goog.events.EventType.SCROLL,
+		this.appendImages_,
+		false,
+		this
 	);
 };
 
 /**
  * @private
  */
-panoptikos.Panoptikos.prototype.openSubredditLauncher_ = function(event) {
+panoptikos.Panoptikos.prototype.appendImages_ = function(event) {
+	if (window.scrollY + window.innerHeight + 500 >= document.body.scrollHeight) {
+		this.boardControls.dispatchEvent(
+			panoptikos.ui.BoardControls.EventType.USER_DID_ASK_FOR_IMAGES
+		);
+	}
+};
+
+/**
+ * @private
+ */
+panoptikos.Panoptikos.prototype.openSubredditPicker_ = function(event) {
 	event.preventDefault();
 	var subredditPicker = new panoptikos.ui.SubredditPicker();
 

@@ -49,7 +49,7 @@ panoptikos.ui.BoardControls = function() {
 }
 goog.inherits(panoptikos.ui.BoardControls, goog.events.EventTarget);
 
-panoptikos.ui.BoardControls.prototype.toElement = function() {
+panoptikos.ui.BoardControls.prototype.createDom = function() {
 	var boardControlsElement = goog.dom.createDom("div", {
 		id: "board-controls"
 	});

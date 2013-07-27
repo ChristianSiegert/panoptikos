@@ -418,7 +418,7 @@ panoptikos.ui.Board.prototype.handleImageLoadEvent_ = function(thread, image, fu
 	}
 
 	var boardItem = new panoptikos.ui.BoardItem(thread, image, fullsizeImageUrl);
-	var boardItemElement = boardItem.toElement();
+	var boardItemElement = boardItem.createDom();
 
 	this.boardItems_.push(boardItemElement);
 	this.addBoardItemToBoard_(boardItemElement);
