@@ -13,6 +13,7 @@ type Page struct {
 	CompiledCssFile string   // Filename of the compiled CSS file
 	CompiledJsFile  string   // Filename of the compiled JS file
 	DevCssFiles     []string // Filenames of the development CSS files
+	DevJsFiles      []string // Filenames of the development JS files
 	IsDevAppServer  bool
 }
 
@@ -21,16 +22,20 @@ var page Page
 
 func init() {
 	page.DevCssFiles = []string{
-		"reset.css",
-		"general.css",
-		"form.css",
-		"subreddit-picker.css",
-		"board.css",
-		"board-item.css",
+		"/dev-css/reset.css",
+		"/dev-css/general.css",
+		"/dev-css/form.css",
+		"/dev-css/subreddit-picker.css",
+		"/dev-css/board.css",
+		"/dev-css/board-item.css",
 	}
 
-	page.CompiledCssFile = "1uePdv.css"
-	page.CompiledJsFile = "1v32Iq.js"
+	page.DevJsFiles = []string{
+		"/dev-js/third-party/angular-1.0.7.js",
+	}
+
+	page.CompiledCssFile = ""
+	page.CompiledJsFile = ""
 	page.IsDevAppServer = appengine.IsDevAppServer()
 
 	var err error
@@ -41,9 +46,7 @@ func init() {
 
 	http.HandleFunc("/", handleRequest)
 
-	// The most requested URL that doesn't exist anymore. Handling it outside of
-	// handleRequest avoids expensive RegEx testing that is going on in
-	// handleRequest.
+	// The most requested URL that doesn't exist anymore. Handle case directly.
 	http.HandleFunc("/feeds/atom/", handleFeedRequest)
 }
 

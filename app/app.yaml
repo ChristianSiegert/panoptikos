@@ -13,8 +13,8 @@ handlers:
   static_dir: webroot/dev-css/
   expiration: 0s
 
-# Allow access to development JS files locally.
-# Development JS files are not uploaded. See skip_files below.
+# Allow access to development JavaScript files locally.
+# Development JavaScript files are not uploaded. See skip_files below.
 - url: /dev-js/
   static_dir: webroot/dev-js/
   expiration: 0s
@@ -44,7 +44,7 @@ handlers:
 - url: /robots\.txt
   static_files: webroot/robots.txt
   upload: webroot/robots\.txt
-  expiration: 1h
+  expiration: 1d
 
 - url: /.*
   script: _go_app
@@ -63,6 +63,5 @@ skip_files:
 - ^(.*/)?.*\.py[co]
 - ^(.*/)?.*/RCS/.*
 - ^(.*/)?\..*
-- ^(.*/)?libraries/closure-library-20120710-r2029
 - ^(.*/)?webroot/dev-css
 - ^(.*/)?webroot/dev-js

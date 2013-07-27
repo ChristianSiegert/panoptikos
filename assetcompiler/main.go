@@ -15,11 +15,11 @@ import (
 var (
 	compileCss         = flag.Bool("compile-css", false, "Whether to compile CSS files.")
 	compileJs          = flag.Bool("compile-js", false, "Whether to compile JavaScript files.")
-	jsCompilationLevel = flag.String("js-compilation-level", asset.JS_COMPILATION_LEVEL_ADVANCED_OPTIMIZATIONS, "Either WHITESPACE_ONLY, SIMPLE_OPTIMIZATIONS or ADVANCED_OPTIMIZATIONS. See https://developers.google.com/closure/compiler/docs/compilation_levels. Advanced optimizations can break your code. Only used in production mode.")
-	verbose            = flag.Bool("verbose", false, "Whether additional information should be displayed.")
+	jsCompilationLevel = flag.String("js-compilation-level", asset.JS_COMPILATION_LEVEL_SIMPLE_OPTIMIZATIONS, "Either WHITESPACE_ONLY, SIMPLE_OPTIMIZATIONS or ADVANCED_OPTIMIZATIONS. See https://developers.google.com/closure/compiler/docs/compilation_levels. Advanced optimizations can break your code. Only used in production mode.")
+	verbose            = flag.Bool("verbose", false, "Whether additional information should be displayed after compiling.")
 )
 
-// Regular expressions for finding the CSS and JS filename in a .go file.
+// Regular expressions for finding the CSS and JS filename in the ../app/main.go file.
 var (
 	cssFilenamePattern = regexp.MustCompile("page.CompiledCssFile = \"[^\"]*\"")
 	jsFilenamePattern  = regexp.MustCompile("page.CompiledJsFile = \"[^\"]*\"")
