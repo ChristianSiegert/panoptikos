@@ -14,8 +14,6 @@ app.provider("threadProcessor", function() {
 		return new ThreadProcessor();
 	};
 
-	window.images = [];
-
 	/**
 	 * Class ThreadProcessor.
 	 */
@@ -36,6 +34,7 @@ app.provider("threadProcessor", function() {
 		// Reddit's responses can contain threads that were received
 		// previously. Prevent adding duplicate threads.
 		if (this.threadDict[thread["id"]]) {
+			console.log("Item " + thread["id"] + " already exists.");
 			return;
 		}
 
@@ -119,6 +118,7 @@ app.provider("threadProcessor", function() {
 		this.processThreads();
 	};
 
+	// TODO: Cancel running requests.
 	ThreadProcessor.prototype.cancelRequests = function() {
 		for (var i = 0, requestCount = this.runningRequests.length; i < requestCount; i++) {
 			this.runningRequests[i].cancelme();

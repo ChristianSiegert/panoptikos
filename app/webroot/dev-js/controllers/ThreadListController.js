@@ -1,5 +1,7 @@
 app.controller("ThreadListController", ["$http", "$location", "$routeParams", "$scope", "$timeout", "threadProcessor", function($http, $location, $routeParams, $scope, $timeout, threadProcessor) {
-	var subredditIds = $routeParams.subredditIds;
+	// We may have used the threadProcessor previously. Since it is a singleton,
+	// clear any old state (e.g. queue).
+	threadProcessor.clear();
 
 	var sections = {
 		"controversial": true,
@@ -8,18 +10,23 @@ app.controller("ThreadListController", ["$http", "$location", "$routeParams", "$
 		"top": true
 	};
 
+	// If section is not "controversial", "hot", "new", "rising" or "top", redirect.
 	if ($routeParams.section && !sections[$routeParams.section]) {
-		$location.path("/r/" + subredditIds);
+		var url = "/r/" + $routeParams.subredditIds;
+		console.info("ThreadListController: Unknown section '%s'. Redirecting to '%s'.", $routeParams.section, url);
+		$location.path(url);
+		return;
 	}
 
 	var redditBaseUrl = "http://www.reddit.com/";
+	var section = $routeParams.section ? $routeParams.section : "";
+
 	var lastThreadId = "";
 	var maxThreadsPerRequest = 25;
 	var redditRequestIsRunning = false;
 
 	var boardItems = [];
-
-	hasReachedEnd = false;
+	var hasReachedEnd = false;
 
 	$scope.boardColumns = [];
 	var boardColumnCount = 3;
@@ -65,16 +72,15 @@ app.controller("ThreadListController", ["$http", "$location", "$routeParams", "$
 
 	$scope.retrieveThreadsFromReddit = function() {
 		if (redditRequestIsRunning) {
-			console.log("ThreadsController: redditRequestIsRunning");
+			console.info("ThreadListController: Reddit request is already running.");
 			return;
 		}
 
 		redditRequestIsRunning = true;
-		var section = $routeParams.section ? $routeParams.section : "";
 
 		var httpPromise = $http.jsonp(
 			redditBaseUrl +
-			"/r/" + subredditIds +
+			"/r/" + $routeParams.subredditIds +
 			"/" + section +
 			".json?jsonp=JSON_CALLBACK" +
 			"&after=" + lastThreadId +
@@ -112,7 +118,7 @@ app.controller("ThreadListController", ["$http", "$location", "$routeParams", "$
 	};
 
 	var handleRedditRequestError = function(responseData, status, headers, config) {
-		console.log("Error retrieving threads from Reddit.", responseData, status, headers, config);
+		console.info("ThreadListController: Error retrieving threads from Reddit.", responseData, status, headers, config);
 		redditRequestIsRunning = false;
 	};
 
@@ -121,7 +127,7 @@ app.controller("ThreadListController", ["$http", "$location", "$routeParams", "$
 			var index = getIndexOfShortestColumn();
 
 			if (index === null) {
-				console.debug("indexOfShortestColumn is null. Skipping adding of boardItem.");
+				console.warn("ThreadListController: indexOfShortestColumn is null. Skipping adding of boardItem.");
 				return;
 			}
 
@@ -157,10 +163,11 @@ app.controller("ThreadListController", ["$http", "$location", "$routeParams", "$
 	};
 
 	$scope.selectSection = function(section) {
-		$location.path("/r/" + subredditIds + "/" + section);
-
 		// TODO: Cancel running requests.
-		// reset();
-		// $scope.retrieveThreadsFromReddit();
+		$location.path("/r/" + $routeParams.subredditIds + "/" + section);
 	};
+
+	// If we get here, the Reddit section (e.g. "new" or "top"), exists and we
+	// didn't have to redirect. So let's build the board and make some requests!
+	$scope.rebuild(true);
 }]);
