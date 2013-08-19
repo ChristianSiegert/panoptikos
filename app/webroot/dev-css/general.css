@@ -53,3 +53,8 @@ a:hover {
 	/* @alternate */ padding: 0.625rem 0;
 	text-align: center;
 }
+
+/* AngularJS CSS */
+[ng-cloak], .ng-cloak {
+	display: none !important;
+}

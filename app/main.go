@@ -22,7 +22,7 @@ var page Page
 
 func init() {
 	page.DevCssFiles = []string{
-		"/dev-css/reset.css",
+		"/dev-css/third-party/reset.css",
 		"/dev-css/general.css",
 		"/dev-css/form.css",
 		"/dev-css/subreddit-picker.css",
@@ -31,7 +31,13 @@ func init() {
 	}
 
 	page.DevJsFiles = []string{
+		"/dev-js/third-party/jquery-1.10.2.js",
 		"/dev-js/third-party/angular-1.0.7.js",
+		"/dev-js/app.js",
+		"/dev-js/controllers/ThreadDetailController.js",
+		"/dev-js/controllers/ThreadListController.js",
+		"/dev-js/providers/threadProcessor.js",
+		"/dev-js/config.js",
 	}
 
 	page.CompiledCssFile = ""
@@ -68,17 +74,6 @@ func loadTemplate() (*template.Template, error) {
 }
 
 func handleRequest(responseWriter http.ResponseWriter, request *http.Request) {
-	if request.URL.Path == "/" {
-		if err := cachedTemplate.Execute(responseWriter, page); err != nil {
-			context := appengine.NewContext(request)
-			context.Errorf("panoptikos: Couldn't execute cached template: %s", err)
-			http.Error(responseWriter, err.Error(), http.StatusInternalServerError)
-			return
-		}
-
-		return
-	}
-
 	// Redirect legacy URLs to home page to prevent 404 Not Found errors
 	if request.URL.Path == "/feedback" ||
 		request.URL.Path == "/feeds" ||
@@ -90,7 +85,13 @@ func handleRequest(responseWriter http.ResponseWriter, request *http.Request) {
 		return
 	}
 
-	http.NotFound(responseWriter, request)
+	// For any other URL that is not an existing file, serve default.html
+	if err := cachedTemplate.Execute(responseWriter, page); err != nil {
+		context := appengine.NewContext(request)
+		context.Errorf("panoptikos: Couldn't execute cached template: %s", err)
+		http.Error(responseWriter, err.Error(), http.StatusInternalServerError)
+		return
+	}
 }
 
 func handleFeedRequest(responseWriter http.ResponseWriter, request *http.Request) {

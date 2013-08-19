@@ -1,0 +1,25 @@
+<div ng-init="rebuild(true)">
+	<button ng-click="selectSubreddits()">Select Subreddits</button>
+
+	<button ng-click="selectSection('hot')">Hot</button>
+	<button ng-click="selectSection('new')">New</button>
+	<button ng-click="selectSection('rising')">Rising</button>
+	<button ng-click="selectSection('controversial')">Controversial</button>
+	<button ng-click="selectSection('top')">Top</button>
+
+	<div id="board">
+		<ul class="board-column" ng-repeat="boardColumn in boardColumns" ng-cloak class="ng-cloak">
+			<div class="board-item" ng-repeat="boardItem in boardColumn">
+				<a class="board-item-image-anchor" href="{boardItem.thread['url']}" ng-show="boardItem.imageUrl">
+					<img class="board-item-image" ng-src="{boardItem.imageUrl}">
+				</a>
+				<a class="board-item-title-anchor" href="{boardItem.thread['url']}">{boardItem.thread['title']}</a>
+				<a class="board-item-comments-anchor" href="{'http://www.reddit.com' + boardItem.thread['permalink']}">{boardItem.thread['num_comments']} Comments</a>
+			</div>
+		</ul>
+	</div>
+
+	<div id="board-controls">
+		<button ng-click="retrieveThreadsFromReddit()">Load threads</button>
+	</div>
+</div>
