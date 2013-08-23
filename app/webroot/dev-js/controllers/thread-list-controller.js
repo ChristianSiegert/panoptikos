@@ -1,4 +1,4 @@
-app.controller("ThreadListController", ["$http", "$location", "$routeParams", "$scope", "$timeout", "threadProcessor", function($http, $location, $routeParams, $scope, $timeout, threadProcessor) {
+app.controller("ThreadListController", ["$http", "$location", "$routeParams", "$scope", "$timeout", "$window", "threadProcessor", function($http, $location, $routeParams, $scope, $timeout, $window, threadProcessor) {
 	// We may have used the threadProcessor previously. Since it is a singleton,
 	// clear any old state (e.g. queue).
 	threadProcessor.clear();
@@ -18,12 +18,13 @@ app.controller("ThreadListController", ["$http", "$location", "$routeParams", "$
 		return;
 	}
 
-	var redditBaseUrl = "http://www.reddit.com/";
+	var redditBaseUrl = "http://www.reddit.com";
 	var section = $routeParams.section ? $routeParams.section : "";
 
 	var lastThreadId = "";
 	var maxThreadsPerRequest = 25;
 	var redditRequestIsRunning = false;
+	var timeOfLastRedditRequest = 0;
 
 	var boardItems = [];
 	var hasReachedEnd = false;
@@ -72,11 +73,26 @@ app.controller("ThreadListController", ["$http", "$location", "$routeParams", "$
 
 	$scope.retrieveThreadsFromReddit = function() {
 		if (redditRequestIsRunning) {
-			console.info("ThreadListController: Reddit request is already running.");
+			console.info("ThreadListController: Request to Reddit is already running or queued.");
 			return;
 		}
 
+		var now = Date.now();
+		var minDelay = 2000;
+
+		var difference = now - timeOfLastRedditRequest;
+		var delay = difference > minDelay ? 0 : minDelay - difference;
+
+		if (difference < minDelay) {
+			console.info("ThreadListController: Last request to Reddit was less than %d ms ago. Waiting %d ms until sending request.", minDelay, delay);
+		}
+
 		redditRequestIsRunning = true;
+		$timeout(retrieveThreadsFromReddit_, delay);
+	};
+
+	function retrieveThreadsFromReddit_() {
+		timeOfLastRedditRequest = Date.now();
 
 		var httpPromise = $http.jsonp(
 			redditBaseUrl +
@@ -89,7 +105,7 @@ app.controller("ThreadListController", ["$http", "$location", "$routeParams", "$
 
 		httpPromise.success(handleRedditRequestSuccess);
 		httpPromise.error(handleRedditRequestError);
-	};
+	}
 
 	var handleRedditRequestSuccess = function(responseData, status, headers, config) {
 		var threads = responseData["data"]["children"];
@@ -167,7 +183,56 @@ app.controller("ThreadListController", ["$http", "$location", "$routeParams", "$
 		$location.path("/r/" + $routeParams.subredditIds + "/" + section);
 	};
 
-	// If we get here, the Reddit section (e.g. "new" or "top"), exists and we
-	// didn't have to redirect. So let's build the board and make some requests!
+	// If we get here, the selected Reddit section (e.g. "new" or "top"), exists
+	// and we didn't have to redirect. So let's build the board and make some
+	// requests!
 	$scope.rebuild(true);
+
+	$scope.handleScrollEvent = function(event) {
+		var boardColumnElements = $(".board-column");
+		var index = getIndexOfShortestColumn(boardColumnElements);
+
+		if (index === null) {
+			console.warn("onScroll: index is null.");
+			return;
+		}
+
+		$window = angular.element($window);
+		var column = $(boardColumnElements[index]);
+		var columnBottom = column.offset().top + column.height();
+		var windowBottom = $window.scrollTop() + $window.height();
+
+		if (columnBottom < windowBottom + 300) {
+			$scope.retrieveThreadsFromReddit();
+		}
+	}
+
+	function getIndexOfShortestColumn(boardColumnElements) {
+		var boardColumnElementsCount = boardColumnElements.length
+
+		if (boardColumnElementsCount === 0) {
+			return null;
+		}
+
+		if (boardColumnElementsCount === 1) {
+			return 0;
+		}
+
+		var shortestColumnHeight = null;
+		var shortestColumnIndex = null;
+
+		for (var i = 0; i < boardColumnElementsCount; i++) {
+			var columnHeight = boardColumnElements[i].offsetHeight;
+
+			if (shortestColumnHeight === null) {
+				shortestColumnHeight = columnHeight;
+				shortestColumnIndex = i;
+			} else if (shortestColumnHeight > columnHeight) {
+				shortestColumnHeight = columnHeight;
+				shortestColumnIndex = i;
+			}
+		}
+
+		return shortestColumnIndex;
+	};
 }]);

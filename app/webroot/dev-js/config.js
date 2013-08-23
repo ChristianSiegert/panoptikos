@@ -1,14 +1,18 @@
-app.config(["$interpolateProvider", function($interpolateProvider) {
-	$interpolateProvider.startSymbol("{");
-	$interpolateProvider.endSymbol("}");
-}]);
-
 app.config(["$locationProvider", function($locationProvider) {
 	$locationProvider.html5Mode(true);
 }]);
 
 app.config(["$routeProvider", function($routeProvider) {
 	$routeProvider
+		.when("/r/:subredditId/comments/:threadId", {
+			controller: "ThreadDetailController",
+			templateUrl: "/dev-partials/thread-detail.html"
+		})
+		.when("/r/:subredditId/comments/:threadId/:underscoredTitle", {
+			controller: "ThreadDetailController",
+			templateUrl: "/dev-partials/thread-detail.html"
+		})
+
 		.when("/r/:subredditIds", {
 			controller: "ThreadListController",
 			templateUrl: "/dev-partials/thread-list.html"
@@ -17,10 +21,7 @@ app.config(["$routeProvider", function($routeProvider) {
 			controller: "ThreadListController",
 			templateUrl: "/dev-partials/thread-list.html"
 		})
-		.when("/r/:subredditId/comments/:commentId", {
-			controller: "ThreadDetailController",
-			templateUrl: "/dev-partials/thread-detail.html"
-		})
+
 		.otherwise({
 			redirectTo: "/r/earthporn"
 		});

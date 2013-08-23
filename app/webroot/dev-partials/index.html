@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html ng-app="panoptikos">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="initial-scale=1, width=device-width">
+		<title>Panoptikos</title>
+
+		<!-- CSS -->
+		<link href="/dev-css/third-party/reset.css" rel="stylesheet" type="text/css">
+		<link href="/dev-css/general.css" rel="stylesheet" type="text/css">
+		<link href="/dev-css/form.css" rel="stylesheet" type="text/css">
+		<link href="/dev-css/subreddit-picker.css" rel="stylesheet" type="text/css">
+		<link href="/dev-css/board.css" rel="stylesheet" type="text/css">
+		<link href="/dev-css/board-item.css" rel="stylesheet" type="text/css">
+
+		<!-- Fonts -->
+		<link href="http://fonts.googleapis.com/css?family=Droid+Serif:400,700" rel="stylesheet" type="text/css">
+
+		<!-- Favicons. The first one is an .ico file because Internet Explorer can't handle anything else. -->
+		<link href="/favicon-16.ico" rel="shortcut icon" sizes="16x16" type="image/vnd.microsoft.icon">
+		<link href="/favicon-32.png" rel="icon" sizes="32x32" type="image/png">
+		<link href="/favicon-64.png" rel="icon" sizes="64x64" type="image/png">
+		<link href="/favicon-128.png" rel="icon" sizes="128x128" type="image/png">
+
+		<!-- Icons that are used when the website is added to the home screen on iOS. -->
+		<link href="/apple-touch-icon-ipad.png" rel="apple-touch-icon-precomposed" sizes="72x72" type="image/png">
+		<link href="/apple-touch-icon-ipad-2x.png" rel="apple-touch-icon-precomposed" sizes="144x144" type="image/png">
+		<link href="/apple-touch-icon-iphone.png" rel="apple-touch-icon-precomposed" sizes="57x57" type="image/png">
+		<link href="/apple-touch-icon-iphone-2x.png" rel="apple-touch-icon-precomposed" sizes="114x114" type="image/png">
+	</head>
+
+	<body>
+		<p id="about">Panoptikos is an image viewer for Reddit.</p>
+		<p id="about-hint">The <a href="https://github.com/ChristianSiegert/panoptikos">source code</a> is available on GitHub. I'm <a href="https://twitter.com/Panoptikos">@Panoptikos</a> on Twitter.</p>
+
+		<div ng-view></div>
+
+		<!-- JS -->
+		<script src="/dev-js/third-party/jquery-1.10.2.js"></script>
+		<script src="/dev-js/third-party/angular-1.0.7.js"></script>
+		<script src="/dev-js/app.js"></script>
+		<script src="/dev-js/controllers/thread-detail-controller.js"></script>
+		<script src="/dev-js/controllers/thread-list-controller.js"></script>
+		<script src="/dev-js/directives/on-scroll.js"></script>
+		<script src="/dev-js/providers/thread-processor.js"></script>
+		<script src="/dev-js/config.js"></script>
+
+		<!-- Tell visitors who have JavaScript disabled how great the site is so they enable it again. -->
+		<noscript>
+			<div>If you enable JavaScript, you can view lots of images from any subreddits you like.</div>
+		</noscript>
+	</body>
+</html>

@@ -34,9 +34,9 @@ func init() {
 		"/dev-js/third-party/jquery-1.10.2.js",
 		"/dev-js/third-party/angular-1.0.7.js",
 		"/dev-js/app.js",
-		"/dev-js/controllers/ThreadDetailController.js",
-		"/dev-js/controllers/ThreadListController.js",
-		"/dev-js/providers/threadProcessor.js",
+		"/dev-js/controllers/thread-detail-controller.js",
+		"/dev-js/controllers/thread-list-controller.js",
+		"/dev-js/providers/thread-processor.js",
 		"/dev-js/config.js",
 	}
 
