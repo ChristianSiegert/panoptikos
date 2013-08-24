@@ -52,32 +52,23 @@ app.provider("threadProcessor", function() {
 		while (this.queue.length > 0 && this.threadsBeingProcessedCount < maxThreadsToProcessSimultaneously) {
 			this.threadsBeingProcessedCount++;
 			var queueItem = this.queue.removeItemByIndex(0);
+			var url = queueItem.thread["url"];
 
-			var imgurUrlMatch = queueItem.thread["url"].match(/^(https?):\/\/imgur\.com\/([a-zA-Z0-9]+)$/);
-
-			if (imgurUrlMatch) {
-				var image = $(new Image());
-				image.on("error", {queueItem: queueItem}, angular.bind(this, this.handleImgurImageError));
-				image.on("load", {queueItem: queueItem, image: image[0]}, angular.bind(this, this.handleImgurImageSuccess));
-				image[0].src = imgurUrlMatch[1] + "://i.imgur.com/" + imgurUrlMatch[2] + "l.jpg";
-				continue;
-			}
-
-			var imgurUrlMatch = queueItem.thread["url"].match(/^(https?:\/\/i\.imgur\.com\/[a-zA-Z0-9]+)\.(.+)$/);
+			var imgurUrlMatch = url.match(/^(https?):\/\/(?:(?:i|m)\.)?imgur\.com\/([a-zA-Z0-9]+)(\..+)?$/);
 
 			if (imgurUrlMatch) {
 				var image = $(new Image());
 				image.on("error", {queueItem: queueItem}, angular.bind(this, this.handleImgurImageError));
 				image.on("load", {queueItem: queueItem, image: image[0]}, angular.bind(this, this.handleImgurImageSuccess));
-				image[0].src = imgurUrlMatch[1] + "l." + imgurUrlMatch[2];
+				image[0].src = imgurUrlMatch[1] + "://i.imgur.com/" + imgurUrlMatch[2] + "l" + (imgurUrlMatch[3] ? imgurUrlMatch[3] : ".jpg");
 				continue;
 			}
 
-			if (queueItem.thread["url"].match(/\.(?:gif|jpeg|jpg|png)$/)) {
+			if (url.match(/\.(?:gif|jpeg|jpg|png)$/i)) {
 				var image = $(new Image());
 				image.on("error", {queueItem: queueItem}, angular.bind(this, this.handleImageError));
 				image.on("load", {queueItem: queueItem, image: image[0]}, angular.bind(this, this.handleImageSuccess));
-				image[0].src = queueItem.thread["url"];
+				image[0].src = url;
 				continue;
 			}
 

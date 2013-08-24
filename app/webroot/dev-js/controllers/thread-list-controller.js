@@ -29,9 +29,12 @@ app.controller("ThreadListController", ["$http", "$location", "$routeParams", "$
 	var boardItems = [];
 	var hasReachedEnd = false;
 
-	$scope.boardColumns = [];
-	var boardColumnCount = 3;
+	var boardElement = $("#board");
 	var boardColumnElements = [];
+	var boardItemWidth = 328;
+
+	$scope.boardColumns = [];
+	var boardColumnCount = computeBoardColumnCount();
 	var indexOfShortestColumn = 0;
 
 	var loadMoreButtonTexts = {
@@ -160,9 +163,11 @@ app.controller("ThreadListController", ["$http", "$location", "$routeParams", "$
 		$scope.loadMoreButtonText = loadMoreButtonTexts.ERROR;
 	};
 
-	var addBoardItemToBoard = function(boardItem, delay) {
+	var addBoardItemToBoard = function(boardItem, delay, isResize) {
 		$timeout(function() {
-			boardItems.push(boardItem);
+			if (!isResize) {
+				boardItems.push(boardItem);
+			}
 
 			var index = getIndexOfShortestColumn();
 
@@ -173,8 +178,30 @@ app.controller("ThreadListController", ["$http", "$location", "$routeParams", "$
 
 			$scope.boardColumns[index].push(boardItem);
 			updateLoadMoreButtonLabel();
+
+			if (!isResize) {
+				loadMoreToFillPage();
+			}
 		}, delay);
 	};
+
+	function loadMoreToFillPage() {
+		// If there are further board items to add
+		if (boardItems.length !== threadProcessor.threadDict.length) {
+			return;
+		}
+
+		var index = getIndexOfShortestColumn(boardColumnElements);
+
+		var window = angular.element($window);
+		var shortestColumn = $(boardColumnElements[index]);
+		var columnBottom = shortestColumn.offset().top + shortestColumn.height();
+		var windowBottom = window.height();
+
+		if (columnBottom < windowBottom + Math.min(400, boardColumnCount * 100)) {
+			$scope.retrieveThreadsFromReddit();
+		}
+	}
 
 	function updateLoadMoreButtonLabel() {
 		// If a request to Reddit is running or queued
@@ -183,7 +210,7 @@ app.controller("ThreadListController", ["$http", "$location", "$routeParams", "$
 			return;
 		}
 
-		// If there are further board items to add
+		// If there are no further board items to add
 		if (boardItems.length === threadProcessor.threadDict.length) {
 			if (hasReachedEnd) {
 				if (threadProcessor.threadDict.length) {
@@ -248,7 +275,7 @@ app.controller("ThreadListController", ["$http", "$location", "$routeParams", "$
 		var columnBottom = column.offset().top + column.height();
 		var windowBottom = $window.scrollTop() + $window.height();
 
-		if (columnBottom < windowBottom + 300) {
+		if (columnBottom < windowBottom + Math.min(400, boardColumnCount * 100)) {
 			$scope.retrieveThreadsFromReddit();
 		}
 	}
@@ -280,5 +307,46 @@ app.controller("ThreadListController", ["$http", "$location", "$routeParams", "$
 		}
 
 		return shortestColumnIndex;
-	};
+	}
+
+	$scope.handleResizeEvent = function(event) {
+		var newBoardColumnCount = computeBoardColumnCount();
+
+		if (newBoardColumnCount === boardColumnCount) {
+			return;
+		}
+
+		boardColumnCount = newBoardColumnCount;
+
+		console.log(boardElement.width(), boardColumnCount);
+
+		$scope.boardColumns = [];
+
+		// Create new columns
+		for (var i = 0; i < boardColumnCount; i++) {
+			$scope.boardColumns.push([]);
+		}
+
+		$timeout(function() {
+			boardColumnElements = angular.element(".board-column");
+		}, 0);
+
+		for (var i = 0; i < boardItems.length; i++) {
+			addBoardItemToBoard(boardItems[i], 0, true);
+		}
+	}
+
+	function computeBoardColumnCount() {
+		if (!boardElement || !boardItemWidth) {
+			console.error("ThreadListController: Missing boardElement or boardItemWidth.");
+			return 0;
+		}
+
+		var boardWidth = boardElement.width();
+		var marginBetweenColumns = 10;
+		var newBoardColumnCount = 1;
+
+		newBoardColumnCount += Math.floor((boardWidth - boardItemWidth) / (boardItemWidth + marginBetweenColumns));
+		return newBoardColumnCount;
+	}
 }]);

@@ -6,7 +6,7 @@
 <button ng-click="selectSection('controversial')">Controversial</button>
 <button ng-click="selectSection('top')">Top</button>
 
-<div id="board" on-scroll="handleScrollEvent()">
+<div id="board" on-resize="handleResizeEvent()" on-scroll="handleScrollEvent()">
 	<ul class="board-column" ng-repeat="boardColumn in boardColumns" ng-cloak class="ng-cloak">
 		<div class="board-item" ng-repeat="boardItem in boardColumn">
 			<a class="board-item-image-anchor" href="{{boardItem.thread['url']}}" ng-show="boardItem.imageUrl">
