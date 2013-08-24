@@ -2,23 +2,25 @@ app.provider("threadProcessor", function() {
 	var imgurClientId = "";
 	var maxThreadsToProcessSimultaneously = 3;
 
-	this.setMaxThreadsToProcessSimultaneously = function(number) {
-		maxThreadsToProcessSimultaneously = number;
-	};
-
 	this.setImgurClientId = function(id) {
 		imgurClientId = id;
 	}
+
+	this.setMaxThreadsToProcessSimultaneously = function(number) {
+		maxThreadsToProcessSimultaneously = number;
+	};
 
 	this.$get = function() {
 		return new ThreadProcessor();
 	};
 
 	/**
-	 * Class ThreadProcessor.
+	 * Class ThreadProcessor takes Reddit thread objects and tries to find
+	 * preview images based on the URL. For every processed thread, the
+	 * corresponding callback is executed.
 	 */
 	var ThreadProcessor = function() {
-		this.threadDict = [];
+		this.threadDict = new ThreadDict();
 		this.queue = new Queue();
 		this.threadsBeingProcessedCount = 0;
 		this.runningRequests = [];
@@ -26,37 +28,38 @@ app.provider("threadProcessor", function() {
 
 	ThreadProcessor.prototype.clear = function() {
 		this.cancelRequests();
-		this.threadDict = [];
+		this.threadDict = new ThreadDict();
 		this.queue = new Queue();
 	};
 
 	ThreadProcessor.prototype.addToQueue = function(thread, onProcessedFunc) {
 		// Reddit's responses can contain threads that were received
 		// previously. Prevent adding duplicate threads.
-		if (this.threadDict[thread["id"]]) {
-			console.log("Item " + thread["id"] + " already exists.");
-			return;
+		if (this.threadDict.exists(thread["id"])) {
+			console.log("ThreadProcessor: Thread '%s' already exists in thread dictionary.", thread["id"]);
+			return false;
 		}
 
 		var queueItem = new QueueItem(thread, onProcessedFunc);
 		this.queue.addItem(queueItem);
 
-		this.threadDict[thread["id"]] = true;
+		this.threadDict.add(thread["id"]);
 		this.processThreads();
+		return true;
 	};
 
 	ThreadProcessor.prototype.processThreads = function() {
-		while (this.queue.getLength() > 0 && this.threadsBeingProcessedCount < maxThreadsToProcessSimultaneously) {
+		while (this.queue.length > 0 && this.threadsBeingProcessedCount < maxThreadsToProcessSimultaneously) {
 			this.threadsBeingProcessedCount++;
 			var queueItem = this.queue.removeItemByIndex(0);
 
-			var imgurUrlMatch = queueItem.thread["url"].match(/^https?:\/\/imgur\.com\/([a-zA-Z0-9]+)$/);
+			var imgurUrlMatch = queueItem.thread["url"].match(/^(https?):\/\/imgur\.com\/([a-zA-Z0-9]+)$/);
 
 			if (imgurUrlMatch) {
 				var image = $(new Image());
-				image.on("error", {queueItem: queueItem}, $.proxy(this.handleImgurImageError, this));
-				image.on("load", {queueItem: queueItem, image: image[0]}, $.proxy(this.handleImgurImageSuccess, this));
-				image[0].src = queueItem.thread["url"] + "l.jpg";
+				image.on("error", {queueItem: queueItem}, angular.bind(this, this.handleImgurImageError));
+				image.on("load", {queueItem: queueItem, image: image[0]}, angular.bind(this, this.handleImgurImageSuccess));
+				image[0].src = imgurUrlMatch[1] + "://i.imgur.com/" + imgurUrlMatch[2] + "l.jpg";
 				continue;
 			}
 
@@ -64,16 +67,16 @@ app.provider("threadProcessor", function() {
 
 			if (imgurUrlMatch) {
 				var image = $(new Image());
-				image.on("error", {queueItem: queueItem}, $.proxy(this.handleImgurImageError, this));
-				image.on("load", {queueItem: queueItem, image: image[0]}, $.proxy(this.handleImgurImageSuccess, this));
+				image.on("error", {queueItem: queueItem}, angular.bind(this, this.handleImgurImageError));
+				image.on("load", {queueItem: queueItem, image: image[0]}, angular.bind(this, this.handleImgurImageSuccess));
 				image[0].src = imgurUrlMatch[1] + "l." + imgurUrlMatch[2];
 				continue;
 			}
 
 			if (queueItem.thread["url"].match(/\.(?:gif|jpeg|jpg|png)$/)) {
 				var image = $(new Image());
-				image.on("error", {queueItem: queueItem}, $.proxy(this.handleImageError, this));
-				image.on("load", {queueItem: queueItem, image: image[0]}, $.proxy(this.handleImageSuccess, this));
+				image.on("error", {queueItem: queueItem}, angular.bind(this, this.handleImageError));
+				image.on("load", {queueItem: queueItem, image: image[0]}, angular.bind(this, this.handleImageSuccess));
 				image[0].src = queueItem.thread["url"];
 				continue;
 			}
@@ -130,14 +133,12 @@ app.provider("threadProcessor", function() {
 	 */
 	var Queue = function() {
 		this.queueItems = [];
+		this.length = 0;
 	};
 
 	Queue.prototype.addItem = function(queueItem) {
 		this.queueItems.push(queueItem);
-	};
-
-	Queue.prototype.getLength = function() {
-		return this.queueItems.length;
+		this.length++;
 	};
 
 	Queue.prototype.removeItemByIndex = function(index) {
@@ -145,6 +146,7 @@ app.provider("threadProcessor", function() {
 			return false;
 		}
 
+		this.length--;
 		return this.queueItems.splice(index, 1)[0];
 	};
 
@@ -154,5 +156,23 @@ app.provider("threadProcessor", function() {
 	var QueueItem = function(thread, successFunc) {
 		this.thread = thread;
 		this.successFunc = successFunc;
+	};
+
+	/**
+	 * Class ThreadDict is used to keep track of which Reddit threads have
+	 * already been added to the queue at one point in time.
+	 */
+	var ThreadDict = function() {
+		this.dict = {};
+		this.length = 0;
+	};
+
+	ThreadDict.prototype.add = function(threadId) {
+		this.dict[threadId] = true;
+		this.length++;
+	};
+
+	ThreadDict.prototype.exists = function(threadId) {
+		return !!this.dict[threadId];
 	};
 });

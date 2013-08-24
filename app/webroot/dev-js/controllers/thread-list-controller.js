@@ -34,6 +34,16 @@ app.controller("ThreadListController", ["$http", "$location", "$routeParams", "$
 	var boardColumnElements = [];
 	var indexOfShortestColumn = 0;
 
+	var loadMoreButtonTexts = {
+		ERROR: "There was a problem. Try again.",
+		LOAD_MORE: "Load more",
+		LOADING: "Loading threads…",
+		NO_THREADS: "There are no threads here :(",
+		REACHED_END: "You reached the end"
+	};
+
+	$scope.loadMoreButtonText = loadMoreButtonTexts.LOADING;
+
 	var reset = function() {
 		$scope.boardColumns = [];
 		// boardColumnCount = 3;
@@ -77,6 +87,13 @@ app.controller("ThreadListController", ["$http", "$location", "$routeParams", "$
 			return;
 		}
 
+		if (hasReachedEnd) {
+			console.info("ThreadListController: You reached the end.");
+			return;
+		}
+
+		$scope.loadMoreButtonText = loadMoreButtonTexts.LOADING;
+
 		var now = Date.now();
 		var minDelay = 2000;
 
@@ -109,37 +126,44 @@ app.controller("ThreadListController", ["$http", "$location", "$routeParams", "$
 
 	var handleRedditRequestSuccess = function(responseData, status, headers, config) {
 		var threads = responseData["data"]["children"];
+		var atLeastOneItemWasAddedToQueue = false;
 
 		for (var i = 0, threadCount = threads.length; i < threadCount; i++) {
 			var thread = threads[i]["data"];
 
-			threadProcessor.addToQueue(thread, function(thread, imageUrl) {
-				var boardItem = {
-					imageUrl: imageUrl,
-					thread: thread
-				};
-
-				addBoardItemToBoard(boardItem, 0);
-				boardItems.push(boardItem);
-			});
+			if (threadProcessor.addToQueue(thread, angular.bind(this, handleProcessedSuccess, i))) {
+				atLeastOneItemWasAddedToQueue = true;
+			}
 		}
 
 		lastThreadId = responseData["data"]["after"];
-
-		if (!lastThreadId) {
-			hasReachedEnd = true;
-		}
-
+		hasReachedEnd = !lastThreadId;
 		redditRequestIsRunning = false;
+
+		if (!atLeastOneItemWasAddedToQueue) {
+			updateLoadMoreButtonLabel();
+		}
 	};
+
+	function handleProcessedSuccess(i, thread, imageUrl) {
+		var boardItem = {
+			imageUrl: imageUrl,
+			thread: thread
+		};
+
+		addBoardItemToBoard(boardItem, i * 20);
+	}
 
 	var handleRedditRequestError = function(responseData, status, headers, config) {
 		console.info("ThreadListController: Error retrieving threads from Reddit.", responseData, status, headers, config);
 		redditRequestIsRunning = false;
+		$scope.loadMoreButtonText = loadMoreButtonTexts.ERROR;
 	};
 
 	var addBoardItemToBoard = function(boardItem, delay) {
 		$timeout(function() {
+			boardItems.push(boardItem);
+
 			var index = getIndexOfShortestColumn();
 
 			if (index === null) {
@@ -148,8 +172,30 @@ app.controller("ThreadListController", ["$http", "$location", "$routeParams", "$
 			}
 
 			$scope.boardColumns[index].push(boardItem);
+			updateLoadMoreButtonLabel();
 		}, delay);
 	};
+
+	function updateLoadMoreButtonLabel() {
+		// If a request to Reddit is running or queued
+		if (redditRequestIsRunning) {
+			$scope.loadMoreButtonText = loadMoreButtonTexts.LOADING;
+			return;
+		}
+
+		// If there are further board items to add
+		if (boardItems.length === threadProcessor.threadDict.length) {
+			if (hasReachedEnd) {
+				if (threadProcessor.threadDict.length) {
+					$scope.loadMoreButtonText = loadMoreButtonTexts.REACHED_END;
+				} else {
+					$scope.loadMoreButtonText = loadMoreButtonTexts.NO_THREADS;
+				}
+			} else {
+				$scope.loadMoreButtonText = loadMoreButtonTexts.LOAD_MORE;
+			}
+		}
+	}
 
 	var getIndexOfShortestColumn = function() {
 		if (boardColumnCount === 0) {
