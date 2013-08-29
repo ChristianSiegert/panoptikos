@@ -326,12 +326,16 @@ panoptikos.ui.Board.prototype.handleRedditRequestSuccessEvent_ = function(respon
 
 	for (var i = 0, threadCount = threads.length; i < threadCount; i++) {
 		var url = threads[i]["data"]["url"];
-		var imgurImageHash = threads[i]["data"]["url"].match(/^https?:\/\/(?:i\.)?imgur\.com\/([a-zA-Z0-9]+)/);
+		var imgurImageHash = threads[i]["data"]["url"].match(/^https?:\/\/(?:i\.)?imgur\.com\/([a-zA-Z0-9]+)\.?([a-zA-Z0-9]+)?/);
 
 		// If image is hosted on Imgur, try to load large preview version of image
 		if (imgurImageHash) {
-			url = "http://i.imgur.com/" + imgurImageHash[1] + "l.jpg";
-			var fullsizeImageUrl = "http://i.imgur.com/" + imgurImageHash[1] + ".jpg";
+			if (imgurImageHash[2] && imgurImageHash[2].indexOf("gif") == -1) {
+				url = "http://i.imgur.com/" + imgurImageHash[1] + "l.jpg";
+				var fullsizeImageUrl = "http://i.imgur.com/" + imgurImageHash[1] + ".jpg";
+			} else {
+				var fullsizeImageUrl = url;
+			}
 
 			var image = new Image();
 			goog.events.listen(image, "error", goog.bind(this.handleImgurRequestErrorEvent_, this, [threads[i]["data"]]), false, this);
