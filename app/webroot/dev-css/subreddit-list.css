@@ -1,0 +1,9 @@
+#subreddit-list {
+	margin: 16px 0 0;
+	margin: 1rem 0 0;
+}
+
+	.subreddit-list-item {
+		margin: 0 0 16px 0;
+		margin: 0 0 1rem 0;
+	}

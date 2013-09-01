@@ -1,1 +1,1 @@
-app = angular.module("panoptikos", []);
+app = angular.module("panoptikos", ["ngRoute", "ngSanitize"]);

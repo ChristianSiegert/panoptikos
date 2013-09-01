@@ -12,7 +12,7 @@
 			<a class="board-item-image-anchor" href="{{boardItem.thread['url']}}" ng-show="boardItem.imageUrl">
 				<img class="board-item-image" ng-src="{{boardItem.imageUrl}}">
 			</a>
-			<a class="board-item-title-anchor" href="{{boardItem.thread['url']}}" ng-bind-html-unsafe="boardItem.thread['title']"></a>
+			<a class="board-item-title-anchor" href="{{boardItem.thread['url']}}" ng-bind-html="boardItem.thread['title']"></a>
 			<a class="board-item-comments-anchor" href="{{'http://www.reddit.com' + boardItem.thread['permalink']}}" ng-pluralize count="boardItem.thread['num_comments']" when="{'one':'1 Comment','other':'{} Comments'}"></a>
 		</div>
 	</ul>

@@ -1,0 +1,9 @@
+<input ng-change="retrieveSubredditsFromReddit" ng-model="search.subredditName">
+
+<ul id="subreddit-list" ng-init="retrieveSubredditsFromReddit()">
+	<li class="subreddit-list-item" ng-repeat="subreddit in subreddits">
+		<a href="{{subreddit.data.url}}">/r/{{subreddit.data.display_name}}</a><br>
+		{{subreddit.data.public_description}}<br>
+		<span>{{subreddit.data.subscribers | number}} subscribers</span>
+	</li>
+</ul>

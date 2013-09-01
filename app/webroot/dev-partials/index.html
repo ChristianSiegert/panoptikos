@@ -12,6 +12,7 @@
 		<link href="/dev-css/subreddit-picker.css" rel="stylesheet" type="text/css">
 		<link href="/dev-css/board.css" rel="stylesheet" type="text/css">
 		<link href="/dev-css/board-item.css" rel="stylesheet" type="text/css">
+		<link href="/dev-css/subreddit-list.css" rel="stylesheet" type="text/css">
 
 		<!-- Fonts -->
 		<link href="http://fonts.googleapis.com/css?family=Droid+Serif:400,700" rel="stylesheet" type="text/css">
@@ -30,17 +31,20 @@
 	</head>
 
 	<body>
-		<p id="about">Panoptikos is an image viewer for Reddit.</p>
+		<p id="about"><a href="/">Panoptikos</a> is an image viewer for Reddit.</p>
 		<p id="about-hint">The <a href="https://github.com/ChristianSiegert/panoptikos">source code</a> is available on GitHub. I'm <a href="https://twitter.com/Panoptikos">@Panoptikos</a> on Twitter.</p>
 
 		<div ng-view></div>
 
 		<!-- JS -->
 		<script src="/dev-js/third-party/jquery-1.10.2.js"></script>
-		<script src="/dev-js/third-party/angular-1.0.7.js"></script>
+		<script src="/dev-js/third-party/angular-1.2.0rc1/angular.js"></script>
+		<script src="/dev-js/third-party/angular-1.2.0rc1/angular-route.js"></script>
+		<script src="/dev-js/third-party/angular-1.2.0rc1/angular-sanitize.js"></script>
 		<script src="/dev-js/app.js"></script>
 		<script src="/dev-js/controllers/thread-detail-controller.js"></script>
 		<script src="/dev-js/controllers/thread-list-controller.js"></script>
+		<script src="/dev-js/controllers/subreddit-list-controller.js"></script>
 		<script src="/dev-js/directives/on-resize.js"></script>
 		<script src="/dev-js/directives/on-scroll.js"></script>
 		<script src="/dev-js/providers/thread-processor.js"></script>

@@ -10,14 +10,14 @@ app.directive("onResize", ["$rootScope", "$timeout", "$window", function($rootSc
 				$window.off("resize", handleResizeEvent);
 			});
 
-			// handleResizeEvent calls executeCallback when 50 ms have passed
+			// handleResizeEvent calls executeCallback when 100 ms have passed
 			// after the last call of handleResizeEvent.
 			function handleResizeEvent() {
 				if (timeoutPromise) {
 					$timeout.cancel(timeoutPromise);
 				}
 
-				timeoutPromise = $timeout(executeCallback, 50);
+				timeoutPromise = $timeout(executeCallback, 100);
 			}
 
 			function executeCallback() {

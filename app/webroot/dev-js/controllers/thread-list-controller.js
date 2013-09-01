@@ -1,4 +1,42 @@
-app.controller("ThreadListController", ["$http", "$location", "$routeParams", "$scope", "$timeout", "$window", "threadProcessor", function($http, $location, $routeParams, $scope, $timeout, $window, threadProcessor) {
+app.controller("ThreadListController", ["$http", "$location", "$route", "$routeParams", "$scope", "$timeout", "$window", "threadProcessor", function($http, $location, $route, $routeParams, $scope, $timeout, $window, threadProcessor) {
+	var locationPath = $location.path();
+
+	var isDefaultPage = locationPath === "/"
+		|| locationPath === "/controversial"
+		|| locationPath === "/new"
+		|| locationPath === "/rising"
+		|| locationPath === "/top";
+
+
+	// Redirect empty subreddit URL "/r/" to "/"
+	if (locationPath === "/r" || locationPath === "/r/") {
+		$location.path("/");
+		return;
+	}
+
+	// Redirect legacy URL "/:subredditIds" to "/r/:subredditIds"
+	if (!isDefaultPage && !locationPath.match(/^\/r\//)) {
+		var url = $routeParams.subredditIds ? "/r/" + $routeParams.subredditIds : "/";
+		$location.path(url);
+		return;
+	}
+
+	var defaultSubredditIds = [
+		"1000words",
+		"beachporn",
+		"birdpics",
+		"cityporn",
+		"earthporn",
+		"eyecandy",
+		"joshuatree",
+		"lakeporn",
+		"wallpaper",
+		"wallpapers",
+		"windowshots"
+	];
+
+	var subredditIds = isDefaultPage ? defaultSubredditIds : $routeParams.subredditIds.split("+");
+
 	// We may have used the threadProcessor previously. Since it is a singleton,
 	// clear any old state (e.g. queue).
 	threadProcessor.clear();
@@ -10,16 +48,17 @@ app.controller("ThreadListController", ["$http", "$location", "$routeParams", "$
 		"top": true
 	};
 
+	var section = (isDefaultPage ? $routeParams.subredditIds : $routeParams.section) || "";
+
 	// If section is not "controversial", "hot", "new", "rising" or "top", redirect.
 	if ($routeParams.section && !sections[$routeParams.section]) {
-		var url = "/r/" + $routeParams.subredditIds;
+		var url = "/r/" + subredditIds.join("+");
 		console.info("ThreadListController: Unknown section '%s'. Redirecting to '%s'.", $routeParams.section, url);
 		$location.path(url);
 		return;
 	}
 
 	var redditBaseUrl = "http://www.reddit.com";
-	var section = $routeParams.section ? $routeParams.section : "";
 
 	var lastThreadId = "";
 	var maxThreadsPerRequest = 25;
@@ -116,7 +155,7 @@ app.controller("ThreadListController", ["$http", "$location", "$routeParams", "$
 
 		var httpPromise = $http.jsonp(
 			redditBaseUrl +
-			"/r/" + $routeParams.subredditIds +
+			"/r/" + subredditIds.join("+") +
 			"/" + section +
 			".json?jsonp=JSON_CALLBACK" +
 			"&after=" + lastThreadId +
@@ -253,7 +292,8 @@ app.controller("ThreadListController", ["$http", "$location", "$routeParams", "$
 
 	$scope.selectSection = function(section) {
 		// TODO: Cancel running requests.
-		$location.path("/r/" + $routeParams.subredditIds + "/" + section);
+		var url = (isDefaultPage ? "" : "/r/" + subredditIds.join("+")) + "/" + section
+		$location.path(url);
 	};
 
 	// If we get here, the selected Reddit section (e.g. "new" or "top"), exists
@@ -349,4 +389,8 @@ app.controller("ThreadListController", ["$http", "$location", "$routeParams", "$
 		newBoardColumnCount += Math.floor((boardWidth - boardItemWidth) / (boardItemWidth + marginBetweenColumns));
 		return newBoardColumnCount;
 	}
+
+	$scope.selectSubreddits = function() {
+		$location.path("/subreddits");
+	};
 }]);
