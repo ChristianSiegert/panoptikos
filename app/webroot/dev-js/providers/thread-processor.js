@@ -56,20 +56,43 @@ app.provider("threadProcessor", function() {
 			var queueItem = this.queue.removeItemByIndex(0);
 			var url = queueItem.thread["url"];
 
-			var imgurUrlMatch = url.match(/^(https?):\/\/(?:(?:i|m)\.)?imgur\.com\/([a-zA-Z0-9]+)(\..+)?$/);
+			var imgurUrlMatch = url.match(/^(https?):\/\/(?:(?:i|m)\.)?imgur\.com\/([a-zA-Z0-9]+)(\.[a-zA-Z0-9]+)?/);
 
+			// If url points to Imgur album (http://imgur.com/a/...)
+			if (imgurUrlMatch && imgurUrlMatch[2] === "a" && typeof(imgurUrlMatch[3]) === "undefined") {
+				this.handleNonImageSuccess(queueItem);
+				continue;
+			}
+
+			// If image is hosted on Imgur, try to load large preview version of
+			// image unless it is a gif, then load the gif. If image has no file
+			// extension, treat it as a jpeg image.
 			if (imgurUrlMatch) {
 				var image = $(new Image());
-				image.on("error", {queueItem: queueItem}, angular.bind(this, this.handleImgurImageError));
-				image.on("load", {queueItem: queueItem, image: image[0]}, angular.bind(this, this.handleImgurImageSuccess));
-				image[0].src = imgurUrlMatch[1] + "://i.imgur.com/" + imgurUrlMatch[2] + "l" + (imgurUrlMatch[3] ? imgurUrlMatch[3] : ".jpg");
+				image.on("error", {queueItem: queueItem}, angular.bind(this, this.handleImgurImageLoadError));
+				image.on("load", {queueItem: queueItem, image: image[0]}, angular.bind(this, this.handleImgurImageLoadSuccess));
+
+				var imageUrl = "";
+
+				if (imgurUrlMatch[3] && imgurUrlMatch[3] === ".gif") {
+					imageUrl = imgurUrlMatch[1] + "://i.imgur.com/" + imgurUrlMatch[2] + ".gif";
+				} else if (imgurUrlMatch[3] && imgurUrlMatch[3] !== ".gif") {
+					imageUrl = imgurUrlMatch[1] + "://i.imgur.com/" + imgurUrlMatch[2] + "l" + imgurUrlMatch[3];
+				} else {
+					imageUrl = imgurUrlMatch[1] + "://i.imgur.com/" + imgurUrlMatch[2] + "l.jpg";
+				}
+
+				// Start loading image
+				image[0].src = imageUrl;
 				continue;
 			}
 
 			if (url.match(/\.(?:gif|jpeg|jpg|png)$/i)) {
 				var image = $(new Image());
-				image.on("error", {queueItem: queueItem}, angular.bind(this, this.handleImageError));
-				image.on("load", {queueItem: queueItem, image: image[0]}, angular.bind(this, this.handleImageSuccess));
+				image.on("error", {queueItem: queueItem}, angular.bind(this, this.handleImageLoadError));
+				image.on("load", {queueItem: queueItem, image: image[0]}, angular.bind(this, this.handleImageLoadSuccess));
+
+				// Start loading image
 				image[0].src = url;
 				continue;
 			}
@@ -78,38 +101,41 @@ app.provider("threadProcessor", function() {
 		}
 	};
 
-	ThreadProcessor.prototype.handleImgurImageError = function(event) {
-		// console.log("Imgur image load error:", event.target.src, event);
-		event.data.queueItem.successFunc(event.data.queueItem.thread);
+	ThreadProcessor.prototype.handleImgurImageLoadError = function(event) {
+		event.data.queueItem.callback(event.data.queueItem.thread, "");
 		this.threadsBeingProcessedCount--;
 		this.processThreads();
 	};
 
-	ThreadProcessor.prototype.handleImgurImageSuccess = function(event) {
-		// console.log("Imgur image load success:", event);
-		event.data.queueItem.successFunc(event.data.queueItem.thread, event.data.image.src);
-		// console.log(event.data.image);
+	ThreadProcessor.prototype.handleImgurImageLoadSuccess = function(event) {
+		// Ignore Imgur's "Image does not exist" image
+		// TODO: Find a way to make absolutely sure we are actually blocking
+		// Imgur's "Image does not exist" image and not a random image with the
+		// same dimensions.
+		if (event.data.image.width === 161 && event.data.image.height === 81) {
+			this.handleNonImageSuccess(event.data.queueItem);
+			return;
+		}
+
+		event.data.queueItem.callback(event.data.queueItem.thread, event.data.image.src);
 		this.threadsBeingProcessedCount--;
 		this.processThreads();
 	};
 
-	ThreadProcessor.prototype.handleImageError = function(event) {
-		// console.log("Image load error:", event.target.src, event);
-		event.data.queueItem.successFunc(event.data.queueItem.thread);
+	ThreadProcessor.prototype.handleImageLoadError = function(event) {
+		event.data.queueItem.callback(event.data.queueItem.thread, "");
 		this.threadsBeingProcessedCount--;
 		this.processThreads();
 	};
 
-	ThreadProcessor.prototype.handleImageSuccess = function(event) {
-		// console.log("Image load success:", event);
-		event.data.queueItem.successFunc(event.data.queueItem.thread, event.data.image.src);
-		// console.log(event.data.image);
+	ThreadProcessor.prototype.handleImageLoadSuccess = function(event) {
+		event.data.queueItem.callback(event.data.queueItem.thread, event.data.image.src);
 		this.threadsBeingProcessedCount--;
 		this.processThreads();
 	};
 
 	ThreadProcessor.prototype.handleNonImageSuccess = function(queueItem) {
-		queueItem.successFunc(queueItem.thread, "");
+		queueItem.callback(queueItem.thread, "");
 		this.threadsBeingProcessedCount--;
 		this.processThreads();
 	};
@@ -146,9 +172,9 @@ app.provider("threadProcessor", function() {
 	/**
 	 * Class QueueItem.
 	 */
-	var QueueItem = function(thread, successFunc) {
+	var QueueItem = function(thread, callback) {
 		this.thread = thread;
-		this.successFunc = successFunc;
+		this.callback = callback;
 	};
 
 	/**
