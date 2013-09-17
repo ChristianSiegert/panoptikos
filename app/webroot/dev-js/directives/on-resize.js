@@ -1,4 +1,6 @@
 app.directive("onResize", ["$rootScope", "$timeout", "$window", function($rootScope, $timeout, $window) {
+	"use strict";
+
 	return {
 		link: function(scope, element, attributes) {
 			var timeoutPromise;

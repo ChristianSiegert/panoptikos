@@ -1,4 +1,6 @@
 app.controller("ThreadDetailController", ["$http", "$routeParams", "$scope", function($http, $routeParams, $scope) {
+	"use strict";
+
 	var redditBaseUrl = "http://www.reddit.com";
 
 	function retrieveThreadFromReddit() {

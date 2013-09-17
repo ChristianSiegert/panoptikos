@@ -1,4 +1,6 @@
 app.controller("SubredditListController", ["$http", "$scope", function($http, $scope) {
+	"use strict";
+
 	var redditBaseUrl = "http://www.reddit.com";
 	var lastSubredditId = "";
 	var maxSubredditsPerRequest = 25;

@@ -1,4 +1,6 @@
 app.controller("ThreadListController", ["$http", "$location", "$route", "$routeParams", "$scope", "$timeout", "$window", "threadProcessor", function($http, $location, $route, $routeParams, $scope, $timeout, $window, threadProcessor) {
+	"use strict";
+
 	var locationPath = $location.path();
 
 	var isDefaultPage = locationPath === "/"

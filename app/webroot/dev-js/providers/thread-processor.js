@@ -1,4 +1,6 @@
 app.provider("threadProcessor", function() {
+	"use strict";
+
 	var imgurClientId = "";
 	var maxThreadsToProcessSimultaneously = 3;
 
