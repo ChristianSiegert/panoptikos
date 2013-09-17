@@ -27,5 +27,5 @@ app.config(["$routeProvider", function($routeProvider) {
 
 app.config(["threadProcessorProvider", function(threadProcessor) {
 	threadProcessor.setImgurClientId("2cf931a0831396f");
-	threadProcessor.setMaxThreadsToProcessSimultaneously(3);
+	threadProcessor.setMaxThreadsToProcessSimultaneously(2);
 }]);
