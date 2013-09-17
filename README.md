@@ -1,3 +1,5 @@
+### This README is outdated as it still refers to the "master" branch version of Panoptikos which is built with Closure Library. You are currently on the "angularjs-port" branch. At the moment, this version of Panoptikos only runs locally -- Compiling assets is broken for now.
+
 # Panoptikos
 
 Panoptikos is an image viewer for Reddit. You can see it in action at [panoptikos.com](http://www.panoptikos.com/).
