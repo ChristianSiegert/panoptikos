@@ -1,20 +1,23 @@
-app.controller("ThreadListController", ["$http", "$location", "$route", "$routeParams", "$scope", "$timeout", "$window", "threadProcessor", function($http, $location, $route, $routeParams, $scope, $timeout, $window, threadProcessor) {
+app.controller("ThreadListController", ["$http", "$location", "$log", "$route", "$routeParams", "$scope", "$timeout", "$window", "threadProcessor", function($http, $location, $log, $route, $routeParams, $scope, $timeout, $window, threadProcessor) {
 	"use strict";
 
+	// We may have used threadProcessor previously. Clear any old state
+	// (e.g. queue).
+	threadProcessor.clear();
+
 	var locationPath = $location.path();
-
-	var isDefaultPage = locationPath === "/"
-		|| locationPath === "/controversial"
-		|| locationPath === "/new"
-		|| locationPath === "/rising"
-		|| locationPath === "/top";
-
 
 	// Redirect empty subreddit URL "/r/" to "/"
 	if (locationPath === "/r" || locationPath === "/r/") {
 		$location.path("/");
 		return;
 	}
+
+	var isDefaultPage = locationPath === "/"
+		|| locationPath === "/controversial"
+		|| locationPath === "/new"
+		|| locationPath === "/rising"
+		|| locationPath === "/top";
 
 	// Redirect legacy URL "/:subredditIds" to "/r/:subredditIds"
 	if (!isDefaultPage && !locationPath.match(/^\/r\//)) {
@@ -39,10 +42,7 @@ app.controller("ThreadListController", ["$http", "$location", "$route", "$routeP
 
 	var subredditIds = isDefaultPage ? defaultSubredditIds : $routeParams.subredditIds.split("+");
 
-	// We may have used the threadProcessor previously. Since it is a singleton,
-	// clear any old state (e.g. queue).
-	threadProcessor.clear();
-
+	// Sections that exist on Reddit, besides "hot", that we want to support.
 	var sections = {
 		"controversial": true,
 		"new": true,
@@ -55,13 +55,12 @@ app.controller("ThreadListController", ["$http", "$location", "$route", "$routeP
 	// If section is not "controversial", "hot", "new", "rising" or "top", redirect.
 	if ($routeParams.section && !sections[$routeParams.section]) {
 		var url = "/r/" + subredditIds.join("+");
-		console.info("ThreadListController: Unknown section '%s'. Redirecting to '%s'.", $routeParams.section, url);
+		$log.info("ThreadListController: Unknown section '%s'. Redirecting to '%s'.", $routeParams.section, url);
 		$location.path(url);
 		return;
 	}
 
 	var redditBaseUrl = "http://www.reddit.com";
-
 	var lastThreadId = "";
 	var maxThreadsPerRequest = 25;
 	var redditRequestIsRunning = false;
@@ -127,12 +126,12 @@ app.controller("ThreadListController", ["$http", "$location", "$route", "$routeP
 
 	$scope.retrieveThreadsFromReddit = function() {
 		if (redditRequestIsRunning) {
-			console.info("ThreadListController: Request to Reddit is already running or queued.");
+			$log.info("ThreadListController: Request to Reddit is already running or queued.");
 			return;
 		}
 
 		if (hasReachedEnd) {
-			console.info("ThreadListController: You reached the end.");
+			$log.info("ThreadListController: You reached the end.");
 			return;
 		}
 
@@ -145,7 +144,7 @@ app.controller("ThreadListController", ["$http", "$location", "$route", "$routeP
 		var delay = difference > minDelay ? 0 : minDelay - difference;
 
 		if (difference < minDelay) {
-			console.info("ThreadListController: Last request to Reddit was less than %d ms ago. Waiting %d ms until sending request.", minDelay, delay);
+			$log.info("ThreadListController: Last request to Reddit was less than %d ms ago. Waiting %d ms until sending request.", minDelay, delay);
 		}
 
 		redditRequestIsRunning = true;
@@ -199,7 +198,7 @@ app.controller("ThreadListController", ["$http", "$location", "$route", "$routeP
 	}
 
 	var handleRedditRequestError = function(responseData, status, headers, config) {
-		console.info("ThreadListController: Error retrieving threads from Reddit.", responseData, status, headers, config);
+		$log.info("ThreadListController: Error retrieving threads from Reddit.", responseData, status, headers, config);
 		redditRequestIsRunning = false;
 		$scope.loadMoreButtonText = loadMoreButtonTexts.ERROR;
 	};
@@ -213,7 +212,7 @@ app.controller("ThreadListController", ["$http", "$location", "$route", "$routeP
 			var index = getIndexOfShortestColumn();
 
 			if (index === null) {
-				console.warn("ThreadListController: indexOfShortestColumn is null. Skipping adding of boardItem.");
+				$log.warn("ThreadListController: indexOfShortestColumn is null. Skipping adding of boardItem.");
 				return;
 			}
 
@@ -265,6 +264,7 @@ app.controller("ThreadListController", ["$http", "$location", "$route", "$routeP
 		}
 	}
 
+	// TODO: Merge with duplicate function "getIndexOfShortestColumn" or remove one of the two functions.
 	var getIndexOfShortestColumn = function() {
 		if (boardColumnCount === 0) {
 			return null;
@@ -308,7 +308,7 @@ app.controller("ThreadListController", ["$http", "$location", "$route", "$routeP
 		var index = getIndexOfShortestColumn(boardColumnElements);
 
 		if (index === null) {
-			console.warn("onScroll: index is null.");
+			$log.warn("ThreadListController: handleScrollEvent: index is null.");
 			return;
 		}
 
@@ -322,6 +322,7 @@ app.controller("ThreadListController", ["$http", "$location", "$route", "$routeP
 		}
 	}
 
+	// TODO: Merge with duplicate function "getIndexOfShortestColumn" or remove one of the two functions.
 	function getIndexOfShortestColumn(boardColumnElements) {
 		var boardColumnElementsCount = boardColumnElements.length
 
@@ -360,7 +361,7 @@ app.controller("ThreadListController", ["$http", "$location", "$route", "$routeP
 
 		boardColumnCount = newBoardColumnCount;
 
-		console.log(boardElement.width(), boardColumnCount);
+		$log.log(boardElement.width(), boardColumnCount);
 
 		$scope.boardColumns = [];
 
@@ -380,7 +381,7 @@ app.controller("ThreadListController", ["$http", "$location", "$route", "$routeP
 
 	function computeBoardColumnCount() {
 		if (!boardElement || !boardItemWidth) {
-			console.error("ThreadListController: Missing boardElement or boardItemWidth.");
+			$log.error("ThreadListController: Missing boardElement or boardItemWidth.");
 			return 0;
 		}
 
