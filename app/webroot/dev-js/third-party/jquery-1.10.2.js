@@ -1,3 +1,9 @@
+/**
+ * @license jQuery JavaScript Library v1.10.2
+ * (c) 2005, 2013 jQuery Foundation, Inc. and other contributors http://jquery.com/
+ * License: MIT
+ */
+
 /*!
  * jQuery JavaScript Library v1.10.2
  * http://jquery.com/
