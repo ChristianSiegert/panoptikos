@@ -15,12 +15,12 @@ var (
 
 // RemoveWhitespace removes whitespace between tags, actions, and at the
 // beginning and end of the HTML code.
-func RemoveWhitespace(text string) string {
-	text = whitespaceBetweenTags.ReplaceAllString(text, "><")
-	text = whitespaceBetweenActions.ReplaceAllString(text, "}}{{")
-	text = whitespaceBetweenTagAndAction.ReplaceAllString(text, ">{{")
-	text = whitespaceBetweenActionAndTag.ReplaceAllString(text, "}}<")
-	text = whitespaceAtStart.ReplaceAllString(text, "")
-	text = whitespaceAtEnd.ReplaceAllString(text, "")
+func RemoveWhitespace(text []byte) []byte {
+	text = whitespaceBetweenTags.ReplaceAll(text, []byte("><"))
+	text = whitespaceBetweenActions.ReplaceAll(text, []byte("}}{{"))
+	text = whitespaceBetweenTagAndAction.ReplaceAll(text, []byte(">{{"))
+	text = whitespaceBetweenActionAndTag.ReplaceAll(text, []byte("}}<"))
+	text = whitespaceAtStart.ReplaceAll(text, []byte(""))
+	text = whitespaceAtEnd.ReplaceAll(text, []byte(""))
 	return text
 }
