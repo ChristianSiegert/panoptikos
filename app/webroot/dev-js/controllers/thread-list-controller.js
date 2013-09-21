@@ -292,9 +292,15 @@ app.controller("ThreadListController", ["$http", "$location", "$log", "$route", 
 		return shortestColumnIndex;
 	};
 
-	$scope.selectSection = function(section) {
+	$scope.selectSection = function(newSection) {
 		// TODO: Cancel running requests.
-		var url = (isDefaultPage ? "" : "/r/" + subredditIds.join("+")) + "/" + section
+
+		if (newSection === section) {
+			$route.reload();
+			return;
+		}
+
+		var url = (isDefaultPage ? "" : "/r/" + subredditIds.join("+")) + "/" + newSection
 		$location.path(url);
 	};
 
