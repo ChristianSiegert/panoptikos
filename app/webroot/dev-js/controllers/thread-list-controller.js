@@ -42,7 +42,9 @@ app.controller("ThreadListController", ["$http", "$location", "$log", "$route", 
 
 	var subredditIds = isDefaultPage ? defaultSubredditIds : $routeParams.subredditIds.split("+");
 
-	// Sections that exist on Reddit, besides "hot", that we want to support.
+	$scope.isMultiReddit = subredditIds.length > 1;
+
+	// Sections that exist on Reddit that we want to support, besides "hot".
 	var sections = {
 		"controversial": true,
 		"new": true,
