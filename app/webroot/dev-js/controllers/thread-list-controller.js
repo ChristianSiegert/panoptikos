@@ -1,4 +1,6 @@
-app.controller("ThreadListController", ["$http", "$location", "$log", "$route", "$routeParams", "$scope", "$timeout", "$window", "threadProcessor", function($http, $location, $log, $route, $routeParams, $scope, $timeout, $window, threadProcessor) {
+app.controller("ThreadListController", [
+		"$http", "$location", "$log", "$rootScope", "$route", "$routeParams", "$scope", "$timeout", "$window", "threadProcessor",
+		function($http, $location, $log, $rootScope, $route, $routeParams, $scope, $timeout, $window, threadProcessor) {
 	"use strict";
 
 	// We may have used threadProcessor previously. Clear any old state
@@ -43,6 +45,8 @@ app.controller("ThreadListController", ["$http", "$location", "$log", "$route", 
 	var subredditIds = isDefaultPage ? defaultSubredditIds : $routeParams.subredditIds.split("+");
 
 	$scope.isMultiReddit = subredditIds.length > 1;
+
+	$rootScope.pageTitle = isDefaultPage ? "" : "/r/" + subredditIds.join("+") + " - ";
 
 	// Sections that exist on Reddit that we want to support, besides "hot".
 	var sections = {
