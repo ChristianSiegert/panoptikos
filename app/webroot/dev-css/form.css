@@ -41,7 +41,7 @@ button {
 	color: #666;
 	cursor: pointer;
 	display: inline-block;
-	font-family: Arial, sans-serif;
+	font-family: "Ubuntu", "DejaVu Sans", "Arial", "sans-serif";
 	font-size: 15px; /* @alternate */
 	font-size: 0.9375rem;
 	font-weight: bold;
