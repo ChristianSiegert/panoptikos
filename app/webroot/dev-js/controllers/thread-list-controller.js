@@ -44,7 +44,7 @@ app.controller("ThreadListController", [
 
 	var subredditIds = isDefaultPage ? defaultSubredditIds : $routeParams.subredditIds.split("+");
 
-	$scope.isMultiReddit = subredditIds.length > 1;
+	$scope.isMultiReddit = subredditIds.length > 1 || subredditIds[0] === "all";
 
 	$rootScope.pageTitle = isDefaultPage ? "" : "/r/" + subredditIds.join("+") + " - ";
 
@@ -382,8 +382,6 @@ app.controller("ThreadListController", [
 		}
 
 		boardColumnCount = newBoardColumnCount;
-
-		$log.log(boardElement.width(), boardColumnCount);
 
 		$scope.boardColumns = [];
 
