@@ -47,7 +47,7 @@ button {
 	font-weight: bold;
 	margin: 0 0 10px; /* @alternate */
 	margin: 0 0 0.625rem;
-	padding: 6px 24px;
+	padding: 6px 18px;
 	text-decoration: none;
 	text-shadow: 1px 1px 0px #FFF;
 
@@ -65,4 +65,28 @@ button:active {
 	background: -moz-linear-gradient(center top, #F6F6F6 5%, #FFF 100%);
 	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#F6F6F6', endColorstr='#FFFFFF');
 	background-color: #F6F6F6;
+}
+
+.button-bar > button {
+	border-left-width: 0;
+
+	-webkit-border-radius: 0;
+	   -moz-border-radius: 0;
+	        border-radius: 0;
+}
+
+.button-bar > button:first-of-type {
+	border-left-width: 1px;
+
+	-webkit-border-radius: 6px 0 0 6px;
+	   -moz-border-radius: 6px 0 0 6px;
+	        border-radius: 6px 0 0 6px;
+}
+
+.button-bar > button:last-of-type {
+	border-left-width: 0;
+
+	-webkit-border-radius: 0 6px 6px 0;
+	   -moz-border-radius: 0 6px 6px 0;
+	        border-radius: 0 6px 6px 0;
 }

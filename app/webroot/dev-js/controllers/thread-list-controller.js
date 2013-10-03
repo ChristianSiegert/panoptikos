@@ -298,8 +298,18 @@ app.controller("ThreadListController", [
 		return shortestColumnIndex;
 	};
 
-	$scope.selectSection = function(newSection) {
+	$scope.selectSection = function(buttonIndex) {
 		// TODO: Cancel running requests.
+
+		var newSection = "";
+
+		switch (buttonIndex) {
+			case 0: newSection = ""; break;
+			case 1: newSection = "new"; break;
+			case 2: newSection = "rising"; break;
+			case 3: newSection = "controversial"; break;
+			case 4: newSection = "top"; break;
+		}
 
 		if (newSection === section) {
 			$route.reload();
