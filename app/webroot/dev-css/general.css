@@ -31,18 +31,19 @@ a:hover {
 	color: #4B81BD;
 }
 
-#about {
-	font-size: 18px; /* @alternate */
-	font-size: 1.125rem;
+p {
 	margin: 0 0 10px; /* @alternate */
 	margin: 0 0 0.625rem;
 }
 
-#about-hint {
+#about {
+	font-size: 18px; /* @alternate */
+	font-size: 1.125rem;
+}
+
+#about-subtitle {
 	font-size: 15px; /* @alternate */
 	font-size: 0.9375rem;
-	margin: 0 0 10px; /* @alternate */
-	margin: 0 0 0.625rem;
 }
 
 #board-controls {
