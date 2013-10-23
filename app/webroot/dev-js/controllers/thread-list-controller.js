@@ -86,7 +86,7 @@ app.controller("ThreadListController", [
 	var loadMoreButtonTexts = {
 		ERROR: "There was a problem. Try again.",
 		LOAD_MORE: "Load more",
-		LOADING: "Loading threads…",
+		LOADING: "Loading…",
 		NO_THREADS: "There are no threads here :(",
 		REACHED_END: "You reached the end"
 	};
@@ -399,6 +399,12 @@ app.controller("ThreadListController", [
 		}
 	}
 
+	/**
+	 * computeBoardColumnCount returns the number of columns that can be
+	 * displayed on the board.
+	 * @private
+	 * @return {number}
+	 */
 	function computeBoardColumnCount() {
 		if (!boardElement || !boardItemWidth) {
 			$log.error("ThreadListController: Missing boardElement or boardItemWidth.");
@@ -407,9 +413,8 @@ app.controller("ThreadListController", [
 
 		var boardWidth = boardElement.width();
 		var marginBetweenColumns = 10;
-		var newBoardColumnCount = 1;
+		var newBoardColumnCount = 1 + Math.max(Math.floor((boardWidth - boardItemWidth) / (boardItemWidth + marginBetweenColumns)), 0);
 
-		newBoardColumnCount += Math.floor((boardWidth - boardItemWidth) / (boardItemWidth + marginBetweenColumns));
 		return newBoardColumnCount;
 	}
 
