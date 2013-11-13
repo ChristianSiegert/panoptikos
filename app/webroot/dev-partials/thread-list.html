@@ -6,8 +6,8 @@
 
 <div id="board" on-resize="handleResizeEvent()" on-scroll="handleScrollEvent()">
 	<ul class="board-column" ng-repeat="boardColumn in boardColumns" ng-cloak class="ng-cloak">
-		<div class="board-item" ng-repeat="boardItem in boardColumn">
-			<a class="board-item-image-anchor" href="{{boardItem.thread.url}}" ng-show="boardItem.imageUrl">
+		<li class="board-item" ng-repeat="boardItem in boardColumn">
+			<a class="board-item-image-anchor" href="{{boardItem.thread.url}}" ng-if="boardItem.imageUrl">
 				<img class="board-item-image" ng-src="{{boardItem.imageUrl}}">
 			</a>
 			<a class="board-item-title-anchor" href="{{boardItem.thread.url}}" ng-bind-html="boardItem.thread.title"></a>
@@ -16,7 +16,7 @@
 				<a class="board-item-info-cell board-item-comments-anchor" href="{{'http://www.reddit.com' + boardItem.thread.permalink}}" ng-pluralize count="boardItem.thread.num_comments" when="{'one':'1 Comment','other':'{} Comments'}"></a>
 				<a class="board-item-info-cell board-item-info-cell-right board-item-subreddit-anchor" href="/r/{{boardItem.thread.subreddit}}" ng-if="isMultiReddit">/r/{{boardItem.thread.subreddit}}</a>
 			</div>
-		</div>
+		</li>
 	</ul>
 </div>
 
