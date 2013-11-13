@@ -22,6 +22,13 @@ html {
 	}
 }
 
+@media (max-width: 360px) {
+	html {
+		padding: 5px; /* @alternate */
+		padding: 0.3125rem;
+	}
+}
+
 a {
 	color: #0154A4;
 	text-decoration: none;

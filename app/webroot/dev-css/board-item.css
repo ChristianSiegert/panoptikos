@@ -1,9 +1,10 @@
 .board-item {
 	background-color: #FFF;
+	border-radius: 3px;
 	display: block;
 	margin: 0 0 10px; /* @alternate */
 	margin: 0 0 0.625rem;
-	padding: 4px;
+	overflow: hidden;
 	text-align: left;
 
 	-webkit-box-shadow: 0 0 0 1px rgba(34, 25, 25, 0.05), 0 1px 2px rgba(34, 25, 25, 0.4);
@@ -13,8 +14,6 @@
 
 	.board-item-image-anchor {
 		display: block;
-		margin: 0 0 4px; /* @alternate */
-		margin: 0 0 0.25rem;
 	}
 
 		.board-item-image {
@@ -29,8 +28,8 @@
 		font-size: 0.8125rem;
 		line-height: 20px; /* @alternate */
 		line-height: 1.25rem;
-		padding: 2px 0; /* @alternate */
-		padding: 0.125rem 0;
+		padding: 6px 4px 4px; /* @alternate */
+		padding: 0.375rem 0.25rem 0.25rem;
 		text-align: center;
 		text-decoration: none;
 	}
@@ -50,14 +49,15 @@
 
 		.board-item-info-cell {
 			color: #333;
+			display: table-cell;
 			font-size: 12px; /* @alternate */
 			font-size: 0.75rem;
-			line-height: 16px; /* @alternate */
-			line-height: 1rem;
-
-			display: table-cell;
 			height: 16px; /* @alternate */
 			height: 1rem;
+			line-height: 16px; /* @alternate */
+			line-height: 1rem;
+			padding: 0 4px 4px; /* @alternate */
+			padding: 0 0.25rem 0.25rem;
 			width: 50%;
 		}
 
