@@ -10,8 +10,6 @@ html {
 
 	/* Prevent Webkit on iOS from scaling text up when orientation is changed to landscape. */
 	-webkit-text-size-adjust: 100%;
-	   -moz-text-size-adjust: 100%;
-	    -ms-text-size-adjust: 100%;
 	        text-size-adjust: 100%;
 }
 
