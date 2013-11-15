@@ -9,8 +9,8 @@ app.directive("buttonBar", function() {
 		replace: true,
 		restrict: "EA",
 		template:
-			'<span class="button-bar">' +
+			'<div class="button-bar">' +
 				'<button ng-click="{{callback}}({{index}})" ng-repeat="(index, label) in labels">{{label}}</button>' +
-			'</span>'
+			'</div>'
 	};
 });

@@ -2,7 +2,7 @@
 
 <button ng-click="selectSubreddits()">Select Subreddits&hellip;</button>
 
-<span button-bar button-bar-callback="selectSection" button-bar-labels='["Hot", "New", "Rising", "Controversial", "Top"]'></span>
+<div button-bar button-bar-callback="selectSection" button-bar-labels='["Hot", "New", "Rising", "Controversial", "Top"]'></div>
 
 <div id="board" on-resize="handleResizeEvent()" on-scroll="handleScrollEvent()">
 	<ul class="board-column" ng-repeat="boardColumn in boardColumns" ng-cloak class="ng-cloak">
