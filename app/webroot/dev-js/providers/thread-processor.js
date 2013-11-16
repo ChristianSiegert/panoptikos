@@ -26,7 +26,7 @@ app.provider("threadProcessor", function() {
 		this.queue = new Queue();
 		this.threadsBeingProcessedCount = 0;
 		this.runningRequests = [];
-	}
+	};
 
 	ThreadProcessor.prototype.clear = function() {
 		this.cancelRequests();
