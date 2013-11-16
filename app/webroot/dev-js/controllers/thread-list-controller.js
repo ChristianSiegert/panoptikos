@@ -323,6 +323,7 @@ app.controller("ThreadListController", [
 	// If we get here, the selected Reddit section (e.g. "new" or "top"), exists
 	// and we didn't have to redirect. So let's build the board and make some
 	// requests!
+	// TODO: Move line to a better place.
 	$scope.rebuild(true);
 
 	$scope.handleScrollEvent = function(event) {
@@ -419,6 +420,6 @@ app.controller("ThreadListController", [
 	}
 
 	$scope.selectSubreddits = function() {
-		$location.path("/subreddits");
+		$location.path("/subreddits/" + subredditIds.join("+"));
 	};
 }]);

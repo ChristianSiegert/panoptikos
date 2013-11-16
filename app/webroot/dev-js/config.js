@@ -4,7 +4,7 @@ app.config(["$locationProvider", function($locationProvider) {
 
 app.config(["$routeProvider", function($routeProvider) {
 	$routeProvider
-		.when("/subreddits", {
+		.when("/subreddits/:subredditIds?", {
 			controller: "SubredditListController",
 			templateUrl: "/dev-partials/subreddit-list.html"
 		})

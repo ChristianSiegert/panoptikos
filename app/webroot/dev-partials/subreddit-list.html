@@ -1,3 +1,17 @@
+<ul id="subreddit-list">
+	<li class="subreddit-list-item" ng-repeat="subreddit in subreddits">
+		<input type="checkbox" id="subreddit-{{subreddit.id}}" name="{{subreddit.name}}" value="/r/{{subreddit.id}}" ng-checked="subreddit.isChecked" ng-model="subreddit.isChecked">
+		<label for="subreddit-{{subreddit.id}}">{{subreddit.name}}</label>
+	</li>
+
+	<li ng-if="!subreddits.length">Please add one or more subreddits.</li>
+</ul>
+
+<input ng-keyup="addSubreddit($event)" placeholder="Enter subreddit and press return">
+
+<button ng-click="viewSubreddits()">View subreddits</button>
+
+<!--
 <input ng-change="retrieveSubredditsFromReddit" ng-model="search.subredditName">
 
 <ul id="subreddit-list" ng-init="retrieveSubredditsFromReddit()">
@@ -7,3 +21,4 @@
 		<span>{{subreddit.data.subscribers | number}} subscribers</span>
 	</li>
 </ul>
+-->
