@@ -1,5 +1,5 @@
 application: panoptikos3
-version: 2013-08-22-0
+version: 2013-11-16-0
 runtime: go
 api_version: go1
 
@@ -33,6 +33,10 @@ handlers:
   static_files: webroot/compiled-js/\1
   upload: webroot/compiled-js/.*\.js
 
+- url: /(.*\.html)
+  static_files: webroot/compiled-partials/\1
+  upload: webroot/compiled-partials/.*\.html
+
 # File doesn't exist but some browsers request it, so serve an equivalent one.
 - url: /apple-touch-icon-precomposed\.png
   static_files: webroot/images/apple-touch-icon-iphone-2x.png
@@ -43,9 +47,9 @@ handlers:
   static_files: webroot/images/favicon-16.ico
   upload: webroot/images/favicon-16\.ico
 
-- url: /(.*\.(?:ico|jpg|png))
+- url: /(.*\.(?:gif|ico|jpg|png))
   static_files: webroot/images/\1
-  upload: webroot/images/.*\.(?:ico|jpg|png)
+  upload: webroot/images/.*\.(?:gif|ico|jpg|png)
 
 - url: /robots\.txt
   static_files: webroot/robots.txt
@@ -61,13 +65,6 @@ handlers:
 # - url: /.*
 #   static_files: webroot/compiled-partials/index.html
 #   upload: webroot/compiled-partials/index\.html
-
-# Serve default.html, processed on-the-fly by Go
-# - url: /.*
-#   script: _go_app
-
-inbound_services:
-#- warmup
 
 # Files to skip when uploading the app to Google App Engine
 skip_files:
