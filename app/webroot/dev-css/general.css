@@ -1,7 +1,7 @@
 html {
 	background-color: #F7F5F5;
 	color: #333;
-	font-family: "Ubuntu", "DejaVu Sans", "Droid Serif", "Lucida Grande", "Georgia", "sans-serif";
+	font-family: "Ubuntu", "DejaVu Sans", "Droid Serif", "Lucida Grande", "Georgia", sans-serif;
 	padding: 20px; /* @alternate */
 	padding: 1.25rem;
 
