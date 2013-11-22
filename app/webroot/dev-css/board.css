@@ -6,10 +6,16 @@
 	.board-column {
 		display: inline-block;
 		margin: 0 0 0 10px;
-		max-width: 320px;
 		vertical-align: top;
+		width: 320px;
 	}
 
 	.board-column:first-of-type {
 		margin-left: 0;
 	}
+
+@media (max-width: 685px) {
+	.board-column {
+		width: 100%;
+	}
+}
