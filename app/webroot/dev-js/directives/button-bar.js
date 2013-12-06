@@ -7,8 +7,9 @@
  * Customizable attributes of the button bar:
  * - "button-bar-callback": Its value is the name of the callback function that
  * should be called when a button was clicked.
- * - "button-bar-labels": Its value is a stringified JSON object. The number of
- * provided labels determines the number of buttons created.
+ * - "button-bar-labels": Its value is a stringified JSON object of a string
+ * array. The number of provided labels determines the number of buttons
+ * created.
 */
 app.directive("buttonBar", function() {
 	"use strict";
