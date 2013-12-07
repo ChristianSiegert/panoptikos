@@ -13,8 +13,8 @@
 			<a class="board-item-title-anchor" href="{{boardItem.thread.url}}" ng-bind-html="boardItem.thread.title"></a>
 
 			<div class="board-item-info">
-				<a class="board-item-info-cell board-item-comments-anchor" href="{{'http://www.reddit.com' + boardItem.thread.permalink}}" ng-pluralize count="boardItem.thread.num_comments" when="{'one':'1 Comment','other':'{} Comments'}"></a>
-				<a class="board-item-info-cell board-item-info-cell-right board-item-subreddit-anchor" href="/r/{{boardItem.thread.subreddit}}" ng-if="isMultiReddit">/r/{{boardItem.thread.subreddit}}</a>
+				<a class="board-item-info-cell board-item-comments-anchor" href="{{'http://www.reddit.com' + boardItem.thread.commentLink}}" ng-pluralize count="boardItem.thread.commentCount" when="{'one':'1 Comment','other':'{} Comments'}"></a>
+				<a class="board-item-info-cell board-item-info-cell-right board-item-subreddit-anchor" href="/r/{{boardItem.thread.subredditName}}" ng-if="isMultiReddit">/r/{{boardItem.thread.subredditName}}</a>
 			</div>
 		</li>
 	</ul>

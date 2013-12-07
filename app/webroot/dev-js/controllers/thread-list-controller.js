@@ -1,6 +1,6 @@
 app.controller("ThreadListController", [
-		"$http", "$location", "$log", "$rootScope", "$route", "$routeParams", "$scope", "$timeout", "$window", "threadProcessor",
-		function($http, $location, $log, $rootScope, $route, $routeParams, $scope, $timeout, $window, threadProcessor) {
+		"$http", "$location", "$log", "$rootScope", "$route", "$routeParams", "$scope", "$timeout", "$window", "ThreadList", "threadProcessor",
+		function($http, $location, $log, $rootScope, $route, $routeParams, $scope, $timeout, $window, ThreadList, threadProcessor) {
 	"use strict";
 
 	// We may have used threadProcessor previously. Clear any old state
@@ -174,18 +174,17 @@ app.controller("ThreadListController", [
 	}
 
 	var handleRedditRequestSuccess = function(responseData, status, headers, config) {
-		var threads = responseData["data"]["children"];
+		var threadList = ThreadList.fromRedditThreadList(responseData) || new ThreadList();
+		var threadListItems = threadList.items;
 		var atLeastOneItemWasAddedToQueue = false;
 
-		for (var i = 0, threadCount = threads.length; i < threadCount; i++) {
-			var thread = threads[i]["data"];
-
-			if (threadProcessor.addToQueue(thread, angular.bind(this, handleProcessedSuccess, i))) {
+		for (var i = 0, count = threadListItems.length; i < count; i++) {
+			if (threadProcessor.addToQueue(threadListItems[i], angular.bind(this, handleProcessedSuccess, i))) {
 				atLeastOneItemWasAddedToQueue = true;
 			}
 		}
 
-		lastThreadId = responseData["data"]["after"];
+		lastThreadId = threadList.lastThreadId;
 		hasReachedEnd = !lastThreadId;
 		redditRequestIsRunning = false;
 
