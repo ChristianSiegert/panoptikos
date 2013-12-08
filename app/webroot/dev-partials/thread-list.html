@@ -5,15 +5,15 @@
 <div button-bar button-bar-callback="selectSection" button-bar-labels='["Hot", "New", "Rising", "Controversial", "Top"]'></div>
 
 <div id="board" on-resize="handleResizeEvent()" on-scroll="handleScrollEvent()">
-	<ul class="board-column" ng-repeat="boardColumn in boardColumns" ng-cloak class="ng-cloak">
-		<li class="board-item" ng-repeat="boardItem in boardColumn">
+	<ul class="board-column" ng-repeat="boardColumn in board.columns track by $index" ng-cloak class="ng-cloak">
+		<li class="board-item" ng-repeat="boardItem in boardColumn track by $index">
 			<a class="board-item-image-anchor" href="{{boardItem.thread.url}}" ng-if="boardItem.imageUrl">
 				<img class="board-item-image" ng-src="{{boardItem.imageUrl}}">
 			</a>
 			<a class="board-item-title-anchor" href="{{boardItem.thread.url}}" ng-bind-html="boardItem.thread.title"></a>
 
 			<div class="board-item-info">
-				<a class="board-item-info-cell board-item-comments-anchor" href="{{'http://www.reddit.com' + boardItem.thread.commentLink}}" ng-pluralize count="boardItem.thread.commentCount" when="{'one':'1 Comment','other':'{} Comments'}"></a>
+				<a class="board-item-info-cell board-item-comments-anchor" href="{{'http://www.reddit.com' + boardItem.thread.commentUrl}}" ng-pluralize count="boardItem.thread.commentCount" when="{'one':'1 Comment','other':'{} Comments'}"></a>
 				<a class="board-item-info-cell board-item-info-cell-right board-item-subreddit-anchor" href="/r/{{boardItem.thread.subredditName}}" ng-if="isMultiReddit">/r/{{boardItem.thread.subredditName}}</a>
 			</div>
 		</li>

@@ -59,7 +59,7 @@ app.factory("ThreadListItem", function() {
 		threadListItem.url = redditThreadListItemData.url;
 
 		return threadListItem;
-	}
+	};
 
 	return ThreadListItem;
 });

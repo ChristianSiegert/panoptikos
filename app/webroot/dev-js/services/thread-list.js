@@ -1,5 +1,5 @@
 app.factory("ThreadList", ["$log", "ThreadListItem", function($log, ThreadListItem) {
-	function ThreadList(redditThreadList) {
+	function ThreadList() {
 		this.items = [];
 		this.lastThreadId = "";
 	}
@@ -32,7 +32,7 @@ app.factory("ThreadList", ["$log", "ThreadListItem", function($log, ThreadListIt
 		threadList.lastThreadId = redditThreadList.data.after;
 
 		return threadList;
-	}
+	};
 
 	return ThreadList;
 }]);

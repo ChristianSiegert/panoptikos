@@ -1,6 +1,6 @@
 app.controller("ThreadListController", [
-		"$http", "$location", "$log", "$rootScope", "$route", "$routeParams", "$scope", "$timeout", "$window", "ThreadList", "threadProcessor",
-		function($http, $location, $log, $rootScope, $route, $routeParams, $scope, $timeout, $window, ThreadList, threadProcessor) {
+		"$http", "$location", "$log", "$rootScope", "$route", "$routeParams", "$scope", "$timeout", "$window", "defaultSubredditIds", "Board", "BoardItem", "ThreadList", "threadProcessor",
+		function($http, $location, $log, $rootScope, $route, $routeParams, $scope, $timeout, $window, defaultSubredditIds, Board, BoardItem, ThreadList, threadProcessor) {
 	"use strict";
 
 	// We may have used threadProcessor previously. Clear any old state
@@ -27,20 +27,6 @@ app.controller("ThreadListController", [
 		$location.path(url);
 		return;
 	}
-
-	var defaultSubredditIds = [
-		"1000words",
-		"beachporn",
-		"birdpics",
-		"cityporn",
-		"earthporn",
-		"eyecandy",
-		"joshuatree",
-		"lakeporn",
-		"wallpaper",
-		"wallpapers",
-		"windowshots"
-	];
 
 	var subredditIds = isDefaultPage ? defaultSubredditIds : $routeParams.subredditIds.split("+");
 
@@ -72,16 +58,7 @@ app.controller("ThreadListController", [
 	var redditRequestIsRunning = false;
 	var timeOfLastRedditRequest = 0;
 
-	var boardItems = [];
 	var hasReachedEnd = false;
-
-	var boardElement = $("#board");
-	var boardColumnElements = [];
-	var boardItemWidth = 328;
-
-	$scope.boardColumns = [];
-	var boardColumnCount = computeBoardColumnCount();
-	var indexOfShortestColumn = 0;
 
 	var loadMoreButtonTexts = {
 		ERROR: "There was a problem. Try again.",
@@ -93,41 +70,15 @@ app.controller("ThreadListController", [
 
 	$scope.loadMoreButtonText = loadMoreButtonTexts.LOADING;
 
-	var reset = function() {
-		$scope.boardColumns = [];
-		// boardColumnCount = 3;
-		// boardColumnElements = [];
+	function main() {
+		$scope.board = new Board("#board", ".board-column");
 
-		threadProcessor.clear();
-		boardItems = [];
-		lastThreadId = "";
-
-		// Create new columns
-		for (var i = 0; i < boardColumnCount; i++) {
-			$scope.boardColumns.push([]);
+		if (!$scope.board) {
+			$log.error("ThreadListController: Couldn't create board.");
+			return;
 		}
 
-		$timeout(function() {
-			boardColumnElements = angular.element(".board-column");
-		}, 0);
-	};
-
-	$scope.rebuild = function(doRetrieveThreadsFromReddit) {
-		// Reset variables
-		$scope.boardColumns = [];
-
-		// Create new columns
-		for (var i = 0; i < boardColumnCount; i++) {
-			$scope.boardColumns.push([]);
-		}
-
-		$timeout(function() {
-			boardColumnElements = angular.element(".board-column");
-		}, 0);
-
-		if (doRetrieveThreadsFromReddit) {
-			$scope.retrieveThreadsFromReddit();
-		}
+		$scope.board.rebuild($scope.retrieveThreadsFromReddit);
 	};
 
 	$scope.retrieveThreadsFromReddit = function() {
@@ -178,7 +129,7 @@ app.controller("ThreadListController", [
 		var threadListItems = threadList.items;
 		var atLeastOneItemWasAddedToQueue = false;
 
-		for (var i = 0, count = threadListItems.length; i < count; i++) {
+		for (var i = 0, threadListItemCount = threadListItems.length; i < threadListItemCount; i++) {
 			if (threadProcessor.addToQueue(threadListItems[i], angular.bind(this, handleProcessedSuccess, i))) {
 				atLeastOneItemWasAddedToQueue = true;
 			}
@@ -194,12 +145,13 @@ app.controller("ThreadListController", [
 	};
 
 	function handleProcessedSuccess(i, thread, imageUrl) {
-		var boardItem = {
-			imageUrl: imageUrl,
-			thread: thread
-		};
+		var boardItem = new BoardItem(thread, imageUrl);
+		var onCompleteCallback = function() {
+			updateLoadMoreButtonLabel();
+			loadMoreToFillPage();
+		}
 
-		addBoardItemToBoard(boardItem, i * 20);
+		$scope.board.addItem(boardItem, i * 20, false, onCompleteCallback);
 	}
 
 	var handleRedditRequestError = function(responseData, status, headers, config) {
@@ -207,46 +159,6 @@ app.controller("ThreadListController", [
 		redditRequestIsRunning = false;
 		$scope.loadMoreButtonText = loadMoreButtonTexts.ERROR;
 	};
-
-	var addBoardItemToBoard = function(boardItem, delay, isResize) {
-		$timeout(function() {
-			if (!isResize) {
-				boardItems.push(boardItem);
-			}
-
-			var index = getIndexOfShortestColumn();
-
-			if (index === null) {
-				$log.warn("ThreadListController: indexOfShortestColumn is null. Skipping adding of boardItem.");
-				return;
-			}
-
-			$scope.boardColumns[index].push(boardItem);
-			updateLoadMoreButtonLabel();
-
-			if (!isResize) {
-				loadMoreToFillPage();
-			}
-		}, delay);
-	};
-
-	function loadMoreToFillPage() {
-		// If there are further board items to add
-		if (boardItems.length !== threadProcessor.threadDict.length) {
-			return;
-		}
-
-		var index = getIndexOfShortestColumn(boardColumnElements);
-
-		var window = angular.element($window);
-		var shortestColumn = $(boardColumnElements[index]);
-		var columnBottom = shortestColumn.offset().top + shortestColumn.height();
-		var windowBottom = window.height();
-
-		if (columnBottom < windowBottom + Math.min(400, boardColumnCount * 100)) {
-			$scope.retrieveThreadsFromReddit();
-		}
-	}
 
 	function updateLoadMoreButtonLabel() {
 		// If a request to Reddit is running or queued
@@ -256,7 +168,7 @@ app.controller("ThreadListController", [
 		}
 
 		// If there are no further board items to add
-		if (boardItems.length === threadProcessor.threadDict.length) {
+		if ($scope.board.items.length === threadProcessor.threadDict.length) {
 			if (hasReachedEnd) {
 				if (threadProcessor.threadDict.length) {
 					$scope.loadMoreButtonText = loadMoreButtonTexts.REACHED_END;
@@ -268,34 +180,6 @@ app.controller("ThreadListController", [
 			}
 		}
 	}
-
-	// TODO: Merge with duplicate function "getIndexOfShortestColumn" or remove one of the two functions.
-	var getIndexOfShortestColumn = function() {
-		if (boardColumnCount === 0) {
-			return null;
-		}
-
-		if (boardColumnCount === 1) {
-			return 0;
-		}
-
-		var shortestColumnHeight = null;
-		var shortestColumnIndex = null;
-
-		for (var i = 0, boardColumnElementsCount = boardColumnElements.length; i < boardColumnElementsCount; i++) {
-			var columnHeight = boardColumnElements[i].offsetHeight;
-
-			if (shortestColumnHeight === null) {
-				shortestColumnHeight = columnHeight;
-				shortestColumnIndex = i;
-			} else if (shortestColumnHeight > columnHeight) {
-				shortestColumnHeight = columnHeight;
-				shortestColumnIndex = i;
-			}
-		}
-
-		return shortestColumnIndex;
-	};
 
 	$scope.selectSection = function(buttonIndex) {
 		// TODO: Cancel running requests.
@@ -319,106 +203,42 @@ app.controller("ThreadListController", [
 		$location.path(url);
 	};
 
-	// If we get here, the selected Reddit section (e.g. "new" or "top"), exists
-	// and we didn't have to redirect. So let's build the board and make some
-	// requests!
-	// TODO: Move line to a better place.
-	$scope.rebuild(true);
-
 	$scope.handleScrollEvent = function(event) {
-		var boardColumnElements = $(".board-column");
-		var index = getIndexOfShortestColumn(boardColumnElements);
+		loadMoreToFillPage();
+	};
 
-		if (index === null) {
-			$log.warn("ThreadListController: handleScrollEvent: index is null.");
+	function loadMoreToFillPage() {
+		// Don't load any more threads from Reddit unless the last queued board
+		// item has been added to the board.
+		if ($scope.board.items.length !== threadProcessor.threadDict.length) {
 			return;
 		}
 
-		$window = angular.element($window);
-		var column = $(boardColumnElements[index]);
-		var columnBottom = column.offset().top + column.height();
-		var windowBottom = $window.scrollTop() + $window.height();
+		var index = $scope.board.getIndexOfShortestColumn();
 
-		if (columnBottom < windowBottom + Math.min(400, boardColumnCount * 100)) {
+		if (index === null) {
+			$log.warn("ThreadListController: handleScrollEvent: Index of shortest column is null.");
+			return;
+		}
+
+		var windowElement = angular.element($window);
+		var windowBottom = windowElement.scrollTop() + windowElement.height();
+
+		var columnElement = jQuery($scope.board.columnElements[index]);
+		var columnBottom = columnElement.offset().top + columnElement.height();
+
+		if (columnBottom < windowBottom + Math.min(400, $scope.board.columns.length * 100)) {
 			$scope.retrieveThreadsFromReddit();
 		}
 	}
 
-	// TODO: Merge with duplicate function "getIndexOfShortestColumn" or remove one of the two functions.
-	function getIndexOfShortestColumn(boardColumnElements) {
-		var boardColumnElementsCount = boardColumnElements.length
-
-		if (boardColumnElementsCount === 0) {
-			return null;
-		}
-
-		if (boardColumnElementsCount === 1) {
-			return 0;
-		}
-
-		var shortestColumnHeight = null;
-		var shortestColumnIndex = null;
-
-		for (var i = 0; i < boardColumnElementsCount; i++) {
-			var columnHeight = boardColumnElements[i].offsetHeight;
-
-			if (shortestColumnHeight === null) {
-				shortestColumnHeight = columnHeight;
-				shortestColumnIndex = i;
-			} else if (shortestColumnHeight > columnHeight) {
-				shortestColumnHeight = columnHeight;
-				shortestColumnIndex = i;
-			}
-		}
-
-		return shortestColumnIndex;
-	}
-
-	$scope.handleResizeEvent = function(event) {
-		var newBoardColumnCount = computeBoardColumnCount();
-
-		if (newBoardColumnCount === boardColumnCount) {
-			return;
-		}
-
-		boardColumnCount = newBoardColumnCount;
-
-		$scope.boardColumns = [];
-
-		// Create new columns
-		for (var i = 0; i < boardColumnCount; i++) {
-			$scope.boardColumns.push([]);
-		}
-
-		$timeout(function() {
-			boardColumnElements = angular.element(".board-column");
-		}, 0);
-
-		for (var i = 0; i < boardItems.length; i++) {
-			addBoardItemToBoard(boardItems[i], 0, true);
-		}
-	}
-
-	/**
-	 * computeBoardColumnCount returns the number of columns that can be
-	 * displayed on the board.
-	 * @private
-	 * @return {number}
-	 */
-	function computeBoardColumnCount() {
-		if (!boardElement || !boardItemWidth) {
-			$log.error("ThreadListController: Missing boardElement or boardItemWidth.");
-			return 0;
-		}
-
-		var boardWidth = boardElement.width();
-		var marginBetweenColumns = 10;
-		var newBoardColumnCount = 1 + Math.max(Math.floor((boardWidth - boardItemWidth) / (boardItemWidth + marginBetweenColumns)), 0);
-
-		return newBoardColumnCount;
-	}
+	$scope.handleResizeEvent = function() {
+		$scope.board.rebuild();
+	};
 
 	$scope.selectSubreddits = function() {
 		$location.path("/subreddits/" + subredditIds.join("+"));
 	};
+
+	main();
 }]);
