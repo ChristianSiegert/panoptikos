@@ -199,8 +199,6 @@ app.controller("ThreadListController", [
 	};
 
 	$scope.loadMoreToFillPage = function(boardIsScrolledToBottom) {
-		$log.debug($scope.board.items.length, threadProcessor.threadDict.length);
-
 		// Don't load more threads from Reddit unless all but one board item
 		// have been added to the board.
 		if (!boardIsScrolledToBottom
