@@ -71,14 +71,14 @@ app.controller("ThreadListController", [
 	$scope.loadMoreButtonText = loadMoreButtonTexts.LOADING;
 
 	function main() {
-		$scope.board = new Board("#board", ".board-column");
+		$scope.board = Board.New();
 
 		if (!$scope.board) {
-			$log.error("ThreadListController: Couldn't create board.");
+			$log.error("ThreadListController: Couldn't create Board.");
 			return;
 		}
 
-		$scope.board.rebuild($scope.retrieveThreadsFromReddit);
+		$scope.retrieveThreadsFromReddit();
 	};
 
 	$scope.retrieveThreadsFromReddit = function() {
@@ -124,37 +124,32 @@ app.controller("ThreadListController", [
 		httpPromise.error(handleRedditRequestError);
 	}
 
-	var handleRedditRequestSuccess = function(responseData, status, headers, config) {
+	function handleRedditRequestSuccess(responseData, status, headers, config) {
+		redditRequestIsRunning = false;
 		var threadList = ThreadList.fromRedditThreadList(responseData) || new ThreadList();
 		var threadListItems = threadList.items;
 		var atLeastOneItemWasAddedToQueue = false;
 
 		for (var i = 0, threadListItemCount = threadListItems.length; i < threadListItemCount; i++) {
-			if (threadProcessor.addToQueue(threadListItems[i], angular.bind(this, handleProcessedSuccess, i))) {
+			if (threadProcessor.addToQueue(threadListItems[i], handleProcessedSuccess)) {
 				atLeastOneItemWasAddedToQueue = true;
 			}
 		}
 
 		lastThreadId = threadList.lastThreadId;
 		hasReachedEnd = !lastThreadId;
-		redditRequestIsRunning = false;
 
 		if (!atLeastOneItemWasAddedToQueue) {
 			updateLoadMoreButtonLabel();
 		}
 	};
 
-	function handleProcessedSuccess(i, thread, imageUrl) {
+	function handleProcessedSuccess(thread, imageUrl) {
 		var boardItem = new BoardItem(thread, imageUrl);
-		var onCompleteCallback = function() {
-			updateLoadMoreButtonLabel();
-			loadMoreToFillPage();
-		}
-
-		$scope.board.addItem(boardItem, i * 20, false, onCompleteCallback);
+		$scope.board.addItems([boardItem]);
 	}
 
-	var handleRedditRequestError = function(responseData, status, headers, config) {
+	function handleRedditRequestError(responseData, status, headers, config) {
 		$log.info("ThreadListController: Error retrieving threads from Reddit.", responseData, status, headers, config);
 		redditRequestIsRunning = false;
 		$scope.loadMoreButtonText = loadMoreButtonTexts.ERROR;
@@ -203,38 +198,19 @@ app.controller("ThreadListController", [
 		$location.path(url);
 	};
 
-	$scope.handleScrollEvent = function(event) {
-		loadMoreToFillPage();
-	};
+	$scope.loadMoreToFillPage = function(boardIsScrolledToBottom) {
+		$log.debug($scope.board.items.length, threadProcessor.threadDict.length);
 
-	function loadMoreToFillPage() {
-		// Don't load any more threads from Reddit unless the last queued board
-		// item has been added to the board.
-		if ($scope.board.items.length !== threadProcessor.threadDict.length) {
+		// Don't load more threads from Reddit unless all but one board item
+		// have been added to the board.
+		if (!boardIsScrolledToBottom
+				|| !$scope.board.items.length
+				|| $scope.board.items.length < threadProcessor.threadDict.length - 1) {
 			return;
 		}
 
-		var index = $scope.board.getIndexOfShortestColumn();
-
-		if (index === null) {
-			$log.warn("ThreadListController: handleScrollEvent: Index of shortest column is null.");
-			return;
-		}
-
-		var windowElement = angular.element($window);
-		var windowBottom = windowElement.scrollTop() + windowElement.height();
-
-		var columnElement = jQuery($scope.board.columnElements[index]);
-		var columnBottom = columnElement.offset().top + columnElement.height();
-
-		if (columnBottom < windowBottom + Math.min(400, $scope.board.columns.length * 100)) {
-			$scope.retrieveThreadsFromReddit();
-		}
+		$scope.retrieveThreadsFromReddit();
 	}
-
-	$scope.handleResizeEvent = function() {
-		$scope.board.rebuild();
-	};
 
 	$scope.selectSubreddits = function() {
 		$location.path("/subreddits/" + subredditIds.join("+"));

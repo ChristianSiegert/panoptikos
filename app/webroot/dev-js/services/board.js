@@ -1,111 +1,59 @@
-app.factory("Board", ["$log", "$timeout", function($log, $timeout) {
+app.factory("Board", ["$log", "BoardEventTypes", function($log, BoardEventTypes) {
 	function Board(boardSelector, columnSelector) {
-		// Board id and column class used in the template so we can select the
-		// right DOM elements.
-		this.boardSelector = boardSelector;
-		this.columnSelector = columnSelector;
-
-		this.boardElement = angular.element(this.boardSelector);
-		this.columnElements = [];
-
-		this.columns = [];
 		this.items = [];
-		this.itemWidth = 328;
+		this.listeners = {};
+		this.newlyAddedItems = [];
 	}
 
-	Board.prototype.addItem = function(boardItem, delay, isResize, onCompleteCallback) {
-		$timeout(angular.bind(this, function() {
-			if (!isResize) {
-				this.items.push(boardItem);
-			}
+	Board.New = function() {
+		return new Board();
+	}
 
-			var index = this.getIndexOfShortestColumn();
-
-			if (index === null) {
-				$log.warn("Board service: Index of shortest column is null. Skipping adding of boardItem.");
-				return;
-			}
-
-			this.columns[index].push(boardItem);
-
-			if (angular.isFunction(onCompleteCallback)) {
-				onCompleteCallback();
-			}
-		}), delay);
+	Board.prototype.addItems = function(boardItems) {
+		this.items = this.items.concat(boardItems);
+		this.newlyAddedItems = this.newlyAddedItems.concat(boardItems);
+		this.fireEvent(BoardEventTypes.DID_ADD_ITEMS);
 	};
 
-	Board.prototype.getIndexOfShortestColumn = function() {
-		var columnElementCount = this.columnElements.length;
+	Board.prototype.getNewlyAddedItems = function() {
+		return this.newlyAddedItems.splice(0, this.newlyAddedItems.length);
+	};
 
-		if (columnElementCount === 0) {
-			return null;
-		}
-
-		if (columnElementCount === 1) {
-			return 0;
-		}
-
-		var shortestColumnHeight = null;
-		var shortestColumnIndex = null;
-
-		for (var i = 0; i < columnElementCount; i++) {
-			var columnHeight = this.columnElements[i].offsetHeight;
-
-			if (shortestColumnIndex === null || columnHeight < shortestColumnHeight) {
-				shortestColumnHeight = columnHeight;
-				shortestColumnIndex = i;
-			}
-		}
-
-		return shortestColumnIndex;
-	}
-
-	/**
-	 * computeBoardColumnCount returns the number of columns that can be
-	 * displayed on the board.
-	 * @private
-	 * @return {number}
-	 */
-	Board.prototype.getOptimalColumnCount = function() {
-		if (!this.boardElement || !this.itemWidth) {
-			$log.error("Board service: Missing board element or itemWidth.");
-			return 0;
-		}
-
-		var boardWidth = this.boardElement.width();
-		var marginBetweenColumns = 10;
-		var optimalBoardColumnCount = 1 + Math.max(Math.floor((boardWidth - this.itemWidth) / (this.itemWidth + marginBetweenColumns)), 0);
-
-		return optimalBoardColumnCount;
-	}
-
-	Board.prototype.rebuild = function(onCompleteCallback) {
-		var optimalColumnCount = this.getOptimalColumnCount();
-
-		if (optimalColumnCount === this.columns.length) {
+	Board.prototype.addEventListener = function(eventType, callback) {
+		if (!BoardEventTypes.isEventType(eventType) || !angular.isFunction(callback)) {
 			return;
 		}
 
-		// Delete columns
-		this.columns = [];
-
-		// Create new columns
-		for (var i = 0; i < optimalColumnCount; i++) {
-			this.columns.push([]);
+		if (!this.listeners[eventType]) {
+			this.listeners[eventType] = [];
 		}
 
-		// Trigger new cycle so the DOM elements are created and can be selected
-		$timeout(angular.bind(this, function() {
-			this.columnElements = angular.element(this.columnSelector);
+		this.listeners[eventType].push(callback);
+	};
 
-			for (var i = 0, itemCount = this.items.length; i < itemCount; i++) {
-				this.addItem(this.items[i], 0, true);
-			}
+	Board.prototype.removeEventListener = function(eventType, callback) {
+		if (!this.listeners[eventType] || !angular.isFunction(callback)) {
+			return;
+		}
 
-			if (angular.isFunction(onCompleteCallback)) {
-				onCompleteCallback();
+		for (var i = 0, listenerCount = this.listeners[eventType].length; i < listenerCount; i++) {
+			if (this.listeners[eventType][i] === callback) {
+				this.listeners[eventType].splice(i, 1);
+				return;
 			}
-		}), 0);
+		}
+	};
+
+	Board.prototype.fireEvent = function(eventType) {
+		var listeners = this.listeners[eventType];
+
+		if (!listeners) {
+			return;
+		}
+
+		for (var i = 0, listenerCount = listeners.length; i < listenerCount; i++) {
+			listeners[i]();
+		}
 	};
 
 	return Board;

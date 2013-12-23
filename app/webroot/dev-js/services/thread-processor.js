@@ -38,7 +38,6 @@ app.provider("threadProcessor", function() {
 		// Reddit's responses can contain threads that were received
 		// previously. Prevent adding duplicate threads.
 		if (this.threadDict.exists(thread["id"])) {
-			console.log("ThreadProcessor: Thread '%s' already exists in thread dictionary.", thread["id"]);
 			return false;
 		}
 
