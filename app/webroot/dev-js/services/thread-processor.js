@@ -12,20 +12,21 @@ app.provider("threadProcessor", function() {
 		maxThreadsToProcessSimultaneously = number;
 	};
 
-	this.$get = function() {
-		return new ThreadProcessor();
-	};
+	this.$get = ["$timeout", function($timeout) {
+			return new ThreadProcessor($timeout);
+		}];
 
 	/**
 	 * Class ThreadProcessor takes Reddit thread objects and tries to find
 	 * preview images based on the URL. For every processed thread, the
 	 * corresponding callback is executed.
 	 */
-	var ThreadProcessor = function() {
+	function ThreadProcessor($timeout) {
 		this.threadDict = new ThreadDict();
 		this.queue = new Queue();
 		this.threadsBeingProcessedCount = 0;
 		this.runningRequests = [];
+		this.$timeout = $timeout;
 	};
 
 	ThreadProcessor.prototype.clear = function() {
@@ -68,8 +69,17 @@ app.provider("threadProcessor", function() {
 			// extension, treat it as a jpeg image.
 			if (imgurUrlMatch) {
 				var image = $(new Image());
-				image.on("error", {queueItem: queueItem}, angular.bind(this, this.handleImgurImageLoadError));
-				image.on("load", {queueItem: queueItem, image: image[0]}, angular.bind(this, this.handleImgurImageLoadSuccess));
+
+				var errorCallback = angular.bind(this, this.handleImgurImageLoadError);
+				var successCallback = angular.bind(this, this.handleImgurImageLoadSuccess);
+
+				var timeout = this.$timeout(angular.bind(this, function() {
+					image.off();
+					this.handleNonImageSuccess(queueItem);
+				}), 30 * 1000, true);
+
+				image.on("error", null, {queueItem: queueItem, timeout: timeout}, errorCallback);
+				image.on("load", null, {queueItem: queueItem, timeout: timeout, image: image[0]}, successCallback);
 
 				var imageUrl = "";
 
@@ -88,8 +98,17 @@ app.provider("threadProcessor", function() {
 
 			if (url.match(/\.(?:gif|jpeg|jpg|png)$/i)) {
 				var image = $(new Image());
-				image.on("error", {queueItem: queueItem}, angular.bind(this, this.handleImageLoadError));
-				image.on("load", {queueItem: queueItem, image: image[0]}, angular.bind(this, this.handleImageLoadSuccess));
+
+				var errorCallback = angular.bind(this, this.handleImageLoadError);
+				var successCallback = angular.bind(this, this.handleImageLoadSuccess);
+
+				var timeout = this.$timeout(angular.bind(this, function() {
+					image.off();
+					this.handleNonImageSuccess(queueItem);
+				}), 30 * 1000, true);
+
+				image.on("error", null, {queueItem: queueItem, timeout: timeout}, errorCallback);
+				image.on("load", null, {queueItem: queueItem, timeout: timeout, image: image[0]}, successCallback);
 
 				// Start loading image
 				image[0].src = url;
@@ -101,12 +120,15 @@ app.provider("threadProcessor", function() {
 	};
 
 	ThreadProcessor.prototype.handleImgurImageLoadError = function(event) {
+		this.$timeout.cancel(event.data.timeout);
 		event.data.queueItem.callback(event.data.queueItem.thread, "");
 		this.threadsBeingProcessedCount--;
 		this.processThreads();
 	};
 
 	ThreadProcessor.prototype.handleImgurImageLoadSuccess = function(event) {
+		this.$timeout.cancel(event.data.timeout);
+
 		// Ignore Imgur's "Image does not exist" image
 		// TODO: Find a way to make absolutely sure we are actually blocking
 		// Imgur's "Image does not exist" image and not a random image with the
@@ -122,12 +144,14 @@ app.provider("threadProcessor", function() {
 	};
 
 	ThreadProcessor.prototype.handleImageLoadError = function(event) {
+		this.$timeout.cancel(event.data.timeout);
 		event.data.queueItem.callback(event.data.queueItem.thread, "");
 		this.threadsBeingProcessedCount--;
 		this.processThreads();
 	};
 
 	ThreadProcessor.prototype.handleImageLoadSuccess = function(event) {
+		this.$timeout.cancel(event.data.timeout);
 		event.data.queueItem.callback(event.data.queueItem.thread, event.data.image.src);
 		this.threadsBeingProcessedCount--;
 		this.processThreads();
@@ -142,14 +166,14 @@ app.provider("threadProcessor", function() {
 	// TODO: Cancel running requests.
 	ThreadProcessor.prototype.cancelRequests = function() {
 		for (var i = 0, requestCount = this.runningRequests.length; i < requestCount; i++) {
-			this.runningRequests[i].cancelme();
+			// this.runningRequests[i].cancelme();
 		}
 	};
 
 	/**
 	 * Class Queue.
 	 */
-	var Queue = function() {
+	function Queue() {
 		this.queueItems = [];
 		this.length = 0;
 	};
@@ -171,7 +195,7 @@ app.provider("threadProcessor", function() {
 	/**
 	 * Class QueueItem.
 	 */
-	var QueueItem = function(thread, callback) {
+	function QueueItem(thread, callback) {
 		this.thread = thread;
 		this.callback = callback;
 	};
@@ -180,7 +204,7 @@ app.provider("threadProcessor", function() {
 	 * Class ThreadDict is used to keep track of which Reddit threads have
 	 * already been added to the queue at one point in time.
 	 */
-	var ThreadDict = function() {
+	function ThreadDict() {
 		this.dict = {};
 		this.length = 0;
 	};
