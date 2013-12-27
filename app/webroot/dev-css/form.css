@@ -1,4 +1,5 @@
 input[type="checkbox"] {
+	-webkit-appearance: checkbox;
 	width: auto;
 }
 
