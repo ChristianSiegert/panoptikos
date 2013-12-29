@@ -76,7 +76,7 @@ app.provider("threadProcessor", function() {
 				var timeout = this.$timeout(angular.bind(this, function() {
 					image.off();
 					this.handleNonImageSuccess(queueItem);
-				}), 30 * 1000, true);
+				}), 30 * 1000, false);
 
 				image.on("error", null, {queueItem: queueItem, timeout: timeout}, errorCallback);
 				image.on("load", null, {queueItem: queueItem, timeout: timeout, image: image[0]}, successCallback);
@@ -105,7 +105,7 @@ app.provider("threadProcessor", function() {
 				var timeout = this.$timeout(angular.bind(this, function() {
 					image.off();
 					this.handleNonImageSuccess(queueItem);
-				}), 30 * 1000, true);
+				}), 30 * 1000, false);
 
 				image.on("error", null, {queueItem: queueItem, timeout: timeout}, errorCallback);
 				image.on("load", null, {queueItem: queueItem, timeout: timeout, image: image[0]}, successCallback);
