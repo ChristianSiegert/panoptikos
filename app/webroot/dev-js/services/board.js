@@ -1,5 +1,5 @@
 app.factory("Board", ["$log", "BoardEventTypes", function($log, BoardEventTypes) {
-	function Board(boardSelector, columnSelector) {
+	function Board() {
 		this.items = [];
 		this.listeners = {};
 		this.newlyAddedItems = [];
