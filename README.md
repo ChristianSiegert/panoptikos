@@ -4,6 +4,17 @@ Panoptikos is an image viewer for Reddit. You can see it in action at [panoptiko
 
 The server-side code is written in Go, the client-side in JavaScript with [AngularJS](http://angularjs.org/). Panoptikos is hosted on [Google App Engine](https://developers.google.com/appengine/).
 
+## Table of Contents
+
+* [Features](#features)
+* [Known issues](#known-issues)
+* [Installing Panoptikos](#installing-panoptikos)
+* [Running Panoptikos locally](#running-panoptikos-locally)
+* [Deploying Panoptikos to Google App Engine](#deploying-panoptikos-to-google-app-engine)
+* [Updating Panoptikos on Google App Engine](#updating-panoptikos-on-google-app-engine)
+* [Development](#development)
+	* [Compiling JavaScript and stylesheet files](#compiling-javascript-and-stylesheet-files)
+
 ## Features
 
 * **Preview images.** No need to open dozens of tabs to view images.
@@ -12,7 +23,7 @@ The server-side code is written in Go, the client-side in JavaScript with [Angul
 * **Supports all screensizes.** Works on mobile phones equally as well as on widescreens.
 * **Supports all common platforms and browsers.** It’s a web-app. There’s nothing to install, not even a browser extension.
 
-## Known Issues
+## Known issues
 
 * High memory usage on clients because images outside the visible screen area are not removed from the page. Possible browser crashes if browser runs out of memory.
 * Jerky scrolling because sometimes only high-resolution images can be used as preview images.
@@ -60,7 +71,7 @@ This replaces your already deployed version. If you want to keep your deployed v
 
 This project uses [AngularJS](https://developers.google.com/closure/library/) as JavaScript library. Once the port of Panoptikos from [Closure Library](https://developers.google.com/closure/library/) to AngularJS is complete, asset compression can be used again.
 
-For now, before you update an already deployed version of Panoptikos, change the URLs of the CSS, Javascript and template files being loaded to avoid problems due to browser caching. Simply attach a `?v=TIMESTAMP` to the URLs, where `TIMESTAMP` should be replaced by an unused timestamp string. You need to change URLs in:
+For now, before you update an already deployed version of Panoptikos, change the URLs of the CSS, Javascript and template files being loaded to avoid problems due to browser caching. Simply attach `?v=TIMESTAMP` to the URLs, where `TIMESTAMP` should be replaced by an unused timestamp string. You need to change URLs in:
 
 * `$GOPATH/src/github.com/ChristianSiegert/panoptikos/app/webroot/dev-partials/index.html` and
 * `$GOPATH/src/github.com/ChristianSiegert/panoptikos/app/webroot/dev-js/config.js`.
