@@ -69,7 +69,7 @@ This replaces your already deployed version. If you want to keep your deployed v
 
 ## Development
 
-This project uses [AngularJS](https://developers.google.com/closure/library/) as JavaScript library. Once the port of Panoptikos from [Closure Library](https://developers.google.com/closure/library/) to AngularJS is complete, asset compression can be used again.
+This project uses [AngularJS](http://angularjs.org/) as JavaScript library. Once the port of Panoptikos from [Closure Library](https://developers.google.com/closure/library/) to AngularJS is complete, asset compression can be used again.
 
 For now, before you update an already deployed version of Panoptikos, change the URLs of the CSS, Javascript and template files being loaded to avoid problems due to browser caching. Simply attach `?v=TIMESTAMP` to the URLs, where `TIMESTAMP` should be replaced by an unused timestamp string. You need to change URLs in:
 
