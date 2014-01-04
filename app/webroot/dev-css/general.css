@@ -1,9 +1,10 @@
 html {
 	background-color: #F7F5F5;
 	color: #333;
-	font-family: "Ubuntu", "DejaVu Sans", "Droid Serif", "Lucida Grande", "Georgia", sans-serif;
+	font-family: "Alegreya Sans", "Ubuntu", "DejaVu Sans", "Lucida Grande", sans-serif;
+	font-size: 62.5%;
 	padding: 20px; /* @alternate */
-	padding: 1.25rem;
+	padding: 2rem;
 
 	/* Show scrollbar right away so the available width for our board remains the same when images are added. */
 	overflow-y: scroll;
@@ -16,15 +17,20 @@ html {
 @media (max-width: 1024px) {
 	html {
 		padding: 10px; /* @alternate */
-		padding: 0.625rem;
+		padding: 1rem;
 	}
 }
 
 @media (max-width: 360px) {
 	html {
 		padding: 5px; /* @alternate */
-		padding: 0.3125rem;
+		padding: 0.5rem;
 	}
+}
+
+body {
+	font-size: 16px; /* @alternate */
+	font-size: 1.6rem;
 }
 
 a {
@@ -38,27 +44,33 @@ a:hover {
 
 p {
 	margin: 0 0 10px; /* @alternate */
-	margin: 0 0 0.625rem;
+	margin: 0 0 1rem;
 }
 
 #about {
-	font-size: 18px; /* @alternate */
-	font-size: 1.125rem;
-}
-
-#about-subtitle {
-	font-size: 15px; /* @alternate */
-	font-size: 0.9375rem;
+	font-size: 22px; /* @alternate */
+	font-size: 2.2rem;
 }
 
 #board-controls {
 	display: block;
 	font-size: 14px; /* @alternate */
-	font-size: 0.875rem;
+	font-size: 1.4rem;
 	padding: 10px 0; /* @alternate */
-	padding: 0.625rem 0;
+	padding: 1rem 0;
 	text-align: center;
 }
+
+.inline-list {
+
+}
+
+	.inline-list-item {
+		display: inline-block;
+		margin: 0 0 10px; /* @alternate */
+		margin: 0 0 1rem;
+		vertical-align: middle;
+	}
 
 /* AngularJS CSS */
 [ng-cloak], .ng-cloak {

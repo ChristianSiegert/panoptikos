@@ -7,9 +7,10 @@
 	<li ng-if="!subreddits.length">Please add one or more subreddits.</li>
 </ul>
 
-<input ng-keyup="addSubreddit($event)" placeholder="Enter subreddit and press return">
-
-<button ng-click="viewSubreddits()">View subreddits</button>
+<ul>
+	<li class="inline-list-item"><input type="text" ng-keyup="addSubreddit($event)" placeholder="Enter subreddit and press return"></li>
+	<li class="inline-list-item"><button ng-click="viewSubreddits()">View subreddits</button></li>
+</ul>
 
 <!--
 <input ng-change="retrieveSubredditsFromReddit" ng-model="search.subredditName">

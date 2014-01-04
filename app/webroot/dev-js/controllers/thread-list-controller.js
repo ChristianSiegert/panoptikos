@@ -69,6 +69,7 @@ app.controller("ThreadListController", [
 	};
 
 	$scope.loadMoreButtonText = loadMoreButtonTexts.LOADING;
+	$scope.openExternalLinksInNewTab = true;
 
 	function main() {
 		$scope.board = Board.New();

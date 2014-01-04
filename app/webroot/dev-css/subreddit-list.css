@@ -1,9 +1,9 @@
 #subreddit-list {
 	margin: 10px 0 0; /* @alternate */
-	margin: 0.625rem 0 0;
+	margin: 1rem 0 0;
 }
 
 	.subreddit-list-item {
 		margin: 0 0 10px; /* @alternate */
-		margin: 0 0 0.625rem;
+		margin: 0 0 1rem;
 	}

@@ -199,6 +199,9 @@ app.directive("board", ["$log", "$timeout", "$window", "BoardEventTypes", functi
 	};
 
 	return {
+		controller: ["$scope", function($scope) {
+			$scope.openExternalLinksInNewTab = false;
+		}],
 		link: function(scope, element, attributes) {
 			// Set up BoardElementManager
 			var boardElementManager = BoardElementManager.New(
@@ -217,14 +220,62 @@ app.directive("board", ["$log", "$timeout", "$window", "BoardEventTypes", functi
 
 			// Set up board element for the first time
 			boardElementManager.rebuildBoardElement();
+			var updateBoardElementBound = angular.bind(boardElementManager, boardElementManager.updateBoardElement);
 
 			boardElementManager.board.addEventListener(
 				BoardEventTypes.DID_ADD_ITEMS,
-				angular.bind(boardElementManager, boardElementManager.updateBoardElement)
+				updateBoardElementBound
 			);
+
+			scope.$on("$destroy", function() {
+				boardElementManager.board.removeEventListener(
+					BoardEventTypes.DID_ADD_ITEMS,
+					updateBoardElementBound
+				);
+			});
 
 			boardElementManager.updateBoardElement();
 
+			// Observe attribute "board-open-external-links-in-new-tab"
+			if (typeof(attributes.boardOpenExternalLinksInNewTab) !== "undefined") {
+				attributes.$observe("boardOpenExternalLinksInNewTab", function(value) {
+					scope.openExternalLinksInNewTab = value === "true";
+				});
+			}
+
+
+			// Handle click events
+			boardElementManager.boardElement.on("click", handleClickEvent);
+
+			scope.$on("$destroy", function() {
+				boardElementManager.boardElement.off("click", handleClickEvent);
+			});
+
+			function handleClickEvent(event) {
+				if (!scope.openExternalLinksInNewTab) {
+					return;
+				}
+
+				// If modified click, allow browser-specific behavior
+				if (event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) {
+					return;
+				}
+
+				var targetElement = $(event.target);
+
+				if (targetElement.hasClass("board-item-image")) {
+					targetElement = targetElement.parent();
+				}
+
+				if ((targetElement.hasClass("board-item-comments-anchor")
+						|| targetElement.hasClass("board-item-image-anchor")
+						|| targetElement.hasClass("board-item-title-anchor"))
+						&& targetElement.attr("href")) {
+					event.preventDefault();
+					$window.open(targetElement.attr("href"));
+					return;
+				}
+			}
 
 
 			// Handle scroll events
@@ -242,7 +293,7 @@ app.directive("board", ["$log", "$timeout", "$window", "BoardEventTypes", functi
 					$timeout.cancel(scrollTimeoutPromise);
 				}
 
-				scrollTimeoutPromise = $timeout(handleScrollEvent_, 100);
+				scrollTimeoutPromise = $timeout(handleScrollEvent_, 100, false);
 			}
 
 			function handleScrollEvent_() {
@@ -275,7 +326,7 @@ app.directive("board", ["$log", "$timeout", "$window", "BoardEventTypes", functi
 
 				resizeTimeoutPromise = $timeout(function() {
 					boardElementManager.rebuildBoardElement();
-				}, 100);
+				}, 100, false);
 			}
 		},
 		restrict: "EA",
