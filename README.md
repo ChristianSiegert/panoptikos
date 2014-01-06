@@ -17,9 +17,10 @@ The server-side code is written in Go, the client-side in JavaScript with [Angul
 
 ## Features
 
-* **Preview images.** No need to open dozens of tabs to view images.
+* **Preview images.** No need to open dozens of tabs to see what’s behind all those links.
 * **Infinite scrolling.**
-* **No duplicate content.**
+* **Sharp images.** Preview images look gorgeous on high-density screens.
+* **No duplicate content.** On Reddit you’ll often see the same content on the next page again. Doesn’t happen here!
 * **Supports all screensizes.** Works on mobile phones equally as well as on widescreens.
 * **Supports all common platforms and browsers.** It’s a web-app. There’s nothing to install, not even a browser extension.
 
