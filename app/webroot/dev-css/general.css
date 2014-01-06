@@ -72,6 +72,14 @@ p {
 		vertical-align: middle;
 	}
 
+#enable-javascript {
+	font-size: 18px;
+	font-size: 1.8rem;
+	margin: 30px 0;
+	margin: 3rem 0;
+	text-align: center;
+}
+
 /* AngularJS CSS */
 [ng-cloak], .ng-cloak {
 	display: none !important;
