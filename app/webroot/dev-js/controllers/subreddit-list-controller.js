@@ -35,8 +35,8 @@ app.controller("SubredditListController", ["$http", "$location", "$routeParams",
 
 	function Subreddit(subredditId, isChecked) {
 		this.id = subredditId || "";
-		this.isChecked = isChecked || false;
-		this.name = subredditId || "";
+		this.isChecked = isChecked || false;
+		this.name = subredditId || "";
 	}
 
 	// var redditBaseUrl = "http://www.reddit.com";

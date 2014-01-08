@@ -15,7 +15,7 @@ app.directive("buttonBar", function() {
 	"use strict";
 
 	function handleClick(buttonBarCallback, event) {
-		if (event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) {
+		if (event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) {
 			return;
 		}
 

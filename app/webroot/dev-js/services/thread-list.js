@@ -8,7 +8,7 @@ app.factory("ThreadList", ["$log", "ThreadListItem", function($log, ThreadListIt
 		if (!angular.isObject(redditThreadList)
 				|| !angular.isObject(redditThreadList.data)
 				|| !angular.isString(redditThreadList.data.after)
-				|| !angular.isArray(redditThreadList.data.children)) {
+				|| !angular.isArray(redditThreadList.data.children)) {
 			return false;
 		}
 
