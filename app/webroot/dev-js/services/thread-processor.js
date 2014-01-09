@@ -13,8 +13,8 @@ app.provider("threadProcessor", function() {
 	};
 
 	this.$get = ["$timeout", function($timeout) {
-			return new ThreadProcessor($timeout);
-		}];
+		return new ThreadProcessor($timeout);
+	}];
 
 	/**
 	 * Class ThreadProcessor takes Reddit thread objects and tries to find
