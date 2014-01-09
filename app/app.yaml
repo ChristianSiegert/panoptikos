@@ -1,5 +1,5 @@
 application: panoptikos3
-version: 2013-12-27-0
+version: 2014-01-09-0
 runtime: go
 api_version: go1
 
@@ -50,10 +50,15 @@ handlers:
   upload: webroot/robots\.txt
   expiration: 1d
 
+# Handle legacy URLs
+- url: /(feedback|feeds|pictures|preferences|referrals|sources)(/.*)?
+  script: _go_app
+
 # Serve development index.html
 - url: /.*
   static_files: webroot/dev-partials/index.html
   upload: webroot/dev-partials/index\.html
+  expiration: 1h
 
 # Serve production index.html
 # - url: /.*
