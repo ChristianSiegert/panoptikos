@@ -3,6 +3,7 @@ html {
 	color: #333;
 	font-family: "Alegreya Sans", "Ubuntu", "DejaVu Sans", "Lucida Grande", sans-serif;
 	font-size: 62.5%;
+	font-size-adjust: 0.46;
 	padding: 20px; /* @alternate */
 	padding: 2rem;
 
