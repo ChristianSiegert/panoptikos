@@ -20,8 +20,8 @@ func Convert(number uint64, characters []string) (string, error) {
 	base := uint64(len(characters))
 
 	if base < 2 {
-		error := fmt.Errorf("At least two characters must be provided, got %d.", base)
-		return "", error
+		err := fmt.Errorf("At least two characters must be provided, got %d.", base)
+		return "", err
 	}
 
 	result := ""
