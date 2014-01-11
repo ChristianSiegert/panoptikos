@@ -3,12 +3,10 @@ package asset
 
 import (
 	"fmt"
-	"github.com/ChristianSiegert/panoptikos/app/base"
 	"io/ioutil"
 	"os"
 	"os/exec"
 	"strings"
-	"time"
 )
 
 // Compilation levels supported by Closure Compiler
@@ -21,31 +19,29 @@ const (
 // CompileCss executes Closure Stylesheets to merge and compile all CSS code
 // into a single file. The file is written to the webroot directory, its
 // filename is a Unix timestamp in base 62.
-func CompileCss(compilerArguments []string, resultChan, progressChan chan<- string, errorChan chan<- error) {
+func CompileCss(sourceFilenames []string, destinationFilename string, compilerArguments []string, resultChan, progressChan chan<- string, errorChan chan<- error) {
 	progressChan <- "Compiling CSS ..."
 
-	workingDirectory, error := os.Getwd()
+	workingDirectory, err := os.Getwd()
 
-	if error != nil {
-		errorChan <- fmt.Errorf("Could not determine working directory: %s", error)
+	if err != nil {
+		errorChan <- fmt.Errorf("Could not determine working directory: %s", err)
 		return
 	}
 
-	timestampInBase62, error := base.Convert(uint64(time.Now().Unix()), base.DefaultCharacters)
-
-	if error != nil {
-		errorChan <- fmt.Errorf("Failed to convert timestamp to base 62: %s", error)
-		return
-	}
-
-	relativeFilename := timestampInBase62 + ".css"
-	absoluteFilename := workingDirectory + "/app/webroot/compiled-css/" + relativeFilename
+	absoluteDestinationFilename := workingDirectory + destinationFilename
 
 	// Merge arguments
 	arguments := []string{
-		"-jar", workingDirectory + "/assetcompiler/libraries/closure-stylesheets-20111230/closure-stylesheets-20111230.jar",
-		"--output-file", absoluteFilename,
+		"-jar", workingDirectory + "/assetcompiler/third-party/closure-stylesheets-20111230/closure-stylesheets-20111230.jar",
+		"--output-file", absoluteDestinationFilename,
 	}
+
+	for k, v := range sourceFilenames {
+		sourceFilenames[k] = workingDirectory + "/app/webroot" + v
+	}
+
+	arguments = append(arguments, sourceFilenames...)
 	arguments = append(arguments, compilerArguments...)
 
 	command := exec.Command("java", arguments...)
@@ -75,13 +71,13 @@ func CompileCss(compilerArguments []string, resultChan, progressChan chan<- stri
 	}
 
 	progressChan <- "Compiled CSS."
-	resultChan <- relativeFilename
+	resultChan <- destinationFilename
 }
 
-// CompileJavaScript executes Closure Compiler to merge and compile all
-// JavaScript code into a single file. The file is written to the webroot
-// directory, its filename is a Unix timestamp in base 62.
-func CompileJavaScript(jsCompilationLevel string, verbose bool, resultChan, progressChan chan<- string, errorChan chan<- error) {
+// CompileJs executes Closure Compiler to merge and compile all JavaScript code
+// into a single file. The file is written to the webroot directory, its
+// filename is a Unix timestamp in base 62.
+func CompileJs(sourceFilenames []string, destinationFilename string, jsCompilationLevel string, verbose bool, resultChan, progressChan chan<- string, errorChan chan<- error) {
 	jsCompilationLevel = strings.ToUpper(jsCompilationLevel)
 
 	switch jsCompilationLevel {
@@ -104,26 +100,25 @@ func CompileJavaScript(jsCompilationLevel string, verbose bool, resultChan, prog
 		return
 	}
 
-	timestampInBase62, error := base.Convert(uint64(time.Now().Unix()), base.DefaultCharacters)
+	absoluteDestinationFilename := workingDirectory + destinationFilename
 
-	if error != nil {
-		errorChan <- fmt.Errorf("Failed to convert timestamp to base 62: %s", error)
-		return
+	arguments := []string{
+		"-jar", workingDirectory + "/assetcompiler/third-party/closure-compiler-20130823/compiler.jar",
+		"--compilation_level", jsCompilationLevel,
 	}
 
-	relativeFilename := timestampInBase62 + ".js"
-	absoluteFilename := workingDirectory + "/app/webroot/compiled-js/" + relativeFilename
+	for k, v := range sourceFilenames {
+		sourceFilenames[k] = workingDirectory + "/app/webroot" + v
+	}
 
-	command := exec.Command(
-		workingDirectory+"/app/libraries/closure-library-20120710-r2029/closure/bin/build/closurebuilder.py",
-		"--compiler_flags=--compilation_level="+jsCompilationLevel,
-		"--compiler_flags=--warning_level=VERBOSE",
-		"--compiler_jar="+workingDirectory+"/assetcompiler/libraries/closure-compiler-20120917-r2180/compiler.jar",
-		"--namespace=panoptikos.Panoptikos",
-		"--output_file="+absoluteFilename,
-		"--output_mode=compiled",
-		"--root="+workingDirectory,
-	)
+	arguments = append(arguments, sourceFilenames...)
+	arguments = append(arguments, []string{
+		"--js_output_file", absoluteDestinationFilename,
+		"--language_in", "ECMASCRIPT5",
+		// "--warning_level", "VERBOSE",
+	}...)
+
+	command := exec.Command("java", arguments...)
 
 	stderrPipe, error := command.StderrPipe()
 
@@ -155,5 +150,5 @@ func CompileJavaScript(jsCompilationLevel string, verbose bool, resultChan, prog
 	}
 
 	progressChan <- "Compiled JavaScript."
-	resultChan <- relativeFilename
+	resultChan <- destinationFilename
 }
