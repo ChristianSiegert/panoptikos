@@ -5,6 +5,7 @@ package sanitizer
 import "regexp"
 
 var (
+	htmlCommentRegExp             = regexp.MustCompile("<!--.*?-->")
 	whitespaceAtStart             = regexp.MustCompile("^[ \f\n\r\t]+")
 	whitespaceAtEnd               = regexp.MustCompile("[ \f\n\r\t]+$")
 	whitespaceBetweenTags         = regexp.MustCompile(">[ \f\n\r\t]+<")
@@ -12,6 +13,10 @@ var (
 	whitespaceBetweenTagAndAction = regexp.MustCompile(">[ \f\n\r\t]+{{")
 	whitespaceBetweenActionAndTag = regexp.MustCompile("}}[ \f\n\r\t]+<")
 )
+
+func RemoveHtmlComments(html []byte) []byte {
+	return htmlCommentRegExp.ReplaceAll(html, []byte(""))
+}
 
 // RemoveWhitespace removes whitespace between tags, actions, and at the
 // beginning and end of the HTML code.
