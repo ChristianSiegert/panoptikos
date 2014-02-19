@@ -7,14 +7,20 @@ api_version: go1
 default_expiration: 7d
 
 handlers:
+# Allow access to development CSS files locally.
+# Development CSS files are not uploaded. See skip_files below.
 - url: /dev-css/
   static_dir: webroot/dev-css/
   expiration: 0s
 
+# Allow access to development JavaScript files locally.
+# Development JavaScript files are not uploaded. See skip_files below.
 - url: /dev-js/
   static_dir: webroot/dev-js/
   expiration: 0s
 
+# Allow access to development HTML template files locally.
+# Development HTML template files are not uploaded. See skip_files below.
 - url: /dev-partials/
   static_dir: webroot/dev-partials/
   expiration: 0s
