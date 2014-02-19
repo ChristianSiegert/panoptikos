@@ -83,6 +83,49 @@ func main() {
 			log.Printf("Failed while searching JS links: %s", err)
 		}
 
+		if url == "/dev-js/config.js" {
+			templateUrlRegExp := regexp.MustCompile(`templateUrl: "([^"]+)"`)
+			configFilename := "./app/webroot" + url
+			configFileContent, err := ioutil.ReadFile(configFilename)
+
+			if err != nil {
+				log.Printf("assetcompiler: Couldn’t read file '%s': %s", configFilename, err)
+				return
+			}
+
+			matches := templateUrlRegExp.FindAllStringSubmatch(string(configFileContent), -1)
+
+			if len(matches) == 0 {
+				continue
+			}
+
+			for _, match := range matches {
+				templateUrl := match[1]
+				templateFilename := "./app/webroot" + templateUrl
+				templateFileContent, err := ioutil.ReadFile(templateFilename)
+
+				if err != nil {
+					log.Printf("assetcompiler: Couldn’t read file '%s': %s", templateFilename, err)
+					return
+				}
+
+				templateFileContent = sanitizer.RemoveHtmlComments(templateFileContent)
+				templateFileContent = sanitizer.RemoveHtmlWhitespace(templateFileContent)
+				templateFileContent = []byte(strings.Replace(string(templateFileContent), `'`, `\'`, -1))
+				configFileContent = []byte(strings.Replace(string(configFileContent), match[0], fmt.Sprintf(`template: '%s'`, string(templateFileContent)), 1))
+
+			}
+
+			configDestinationFilename := "./app/webroot/compiled-js/temp-config-" + token + ".js"
+
+			if err := ioutil.WriteFile(configDestinationFilename, configFileContent, 0666); err != nil {
+				log.Printf("assetcompiler: Couldn’t write file '%s': %s", configDestinationFilename, err)
+				return
+			}
+
+			url = "/compiled-js/temp-config-" + token + ".js"
+		}
+
 		jsFilenames = append(jsFilenames, url)
 		indexHtml = []byte(strings.Replace(string(indexHtml), match[0], "", 1))
 	}
@@ -101,7 +144,7 @@ func main() {
 	indexHtml = []byte(strings.Replace(string(indexHtml), "<!-- COMPILED_CSS_HERE -->", cssLink, 1))
 	indexHtml = []byte(strings.Replace(string(indexHtml), "<!-- COMPILED_JS_HERE -->", jsLink, 1))
 	indexHtml = sanitizer.RemoveHtmlComments(indexHtml)
-	indexHtml = sanitizer.RemoveWhitespace(indexHtml)
+	indexHtml = sanitizer.RemoveHtmlWhitespace(indexHtml)
 
 	destinationFilename := "./app/webroot/compiled-partials/index-" + token + ".html"
 	ioutil.WriteFile(destinationFilename, indexHtml, 0666)
