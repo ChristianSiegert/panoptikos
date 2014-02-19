@@ -1,14 +1,16 @@
-<p id="about-subtitle">The <a href="https://github.com/ChristianSiegert/panoptikos/tree/angularjs-port">source code</a> is available on GitHub. I'm <a href="https://twitter.com/Panoptikos">@Panoptikos</a> on Twitter. Do you want to explore more? Try <a href="/r/all">/r/all</a> <small>(Be careful: It can contain NSFW material)</small>.</p>
+<p id="about-subtitle">I’m <a href="https://twitter.com/Panoptikos">@Panoptikos</a> on Twitter. Do you want to explore more? Try <a href="/r/all">/r/all</a> <small>(Be careful: It can contain NSFW material)</small>.</p>
 
 <ul class="inline-list">
 	<li class="inline-list-item">
 		<button ng-click="selectSubreddits()">Select Subreddits&hellip;</button>
 	</li>
 
-	<li class="inline-list-item"><div
-		button-bar
-		button-bar-callback="selectSection"
-		button-bar-labels='["Hot", "New", "Rising", "Controversial", "Top"]'></div>
+	<li class="inline-list-item">
+		<div
+			button-bar
+			button-bar-callback="selectSection"
+			button-bar-labels='["Hot", "New", "Rising", "Controversial", "Top"]'>
+		</div>
 	</li>
 
 	<li class="inline-list-item">
@@ -25,7 +27,8 @@
 	board-on-did-add-item="loadMoreToFillPage"
 	board-on-did-scroll-to-bottom="loadMoreToFillPage"
 	board-open-external-links-in-new-tab="{{openExternalLinksInNewTab}}"
-	board-service-object="board"></div>
+	board-service-object="board">
+</div>
 
 <div id="board-controls">
 	<button ng-click="retrieveThreadsFromReddit()">{{loadMoreButtonText}}</button>
