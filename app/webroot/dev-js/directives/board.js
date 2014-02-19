@@ -17,8 +17,8 @@ app.directive("board", ["$log", "$timeout", "$window", "BoardEventTypes", functi
 	BoardElementManager.New = function(boardElement, board, onDidAddItem, columnWidth, marginBetweenColumns, isMultiReddit) {
 		if (!angular.isElement(boardElement)
 				|| !angular.isObject(board)
-				|| !angular.isFunction(onDidAddItem)
-				|| !angular.isNumber(columnWidth)
+				|| !angular.isFunction(onDidAddItem)
+				|| !angular.isNumber(columnWidth)
 				|| columnWidth === NaN
 				|| !angular.isNumber(marginBetweenColumns)
 				|| marginBetweenColumns === NaN
@@ -131,7 +131,7 @@ app.directive("board", ["$log", "$timeout", "$window", "BoardEventTypes", functi
 		var shortestColumnIndex = null;
 
 		for (var i = 0; i < columnHeightCount; i++) {
-			if (shortestColumnHeight === null || this.columnHeights[i] < shortestColumnHeight) {
+			if (shortestColumnHeight === null || this.columnHeights[i] < shortestColumnHeight) {
 				shortestColumnHeight = this.columnHeights[i];
 				shortestColumnIndex = i;
 			}
@@ -144,22 +144,22 @@ app.directive("board", ["$log", "$timeout", "$window", "BoardEventTypes", functi
 		var boardItemElement = $(document.createElement("li"));
 		boardItemElement.attr("class", "board-item");
 
-		if (boardItem.imageUrl) {
+		if (boardItem.imagePreviewUrl) {
 			var imageAnchorElement = $(document.createElement("a"));
-			imageAnchorElement.attr("href", boardItem.thread.url);
+			imageAnchorElement.attr("href", boardItem.threadListItem.url);
 			imageAnchorElement.attr("class", "board-item-image-anchor");
 			boardItemElement.append(imageAnchorElement);
 
 			var imageElement = $(document.createElement("img"));
 			imageElement.attr("class", "board-item-image");
-			imageElement.attr("src", boardItem.imageUrl);
+			imageElement.attr("src", boardItem.imagePreviewUrl);
 			imageAnchorElement.append(imageElement);
 		}
 
 		var titleAnchorElement = $(document.createElement("a"));
 		titleAnchorElement.attr("class", "board-item-title-anchor");
-		titleAnchorElement.attr("href", boardItem.thread.url);
-		titleAnchorElement.text(boardItem.thread.title);
+		titleAnchorElement.attr("href", boardItem.threadListItem.url);
+		titleAnchorElement.text(boardItem.threadListItem.title);
 		boardItemElement.append(titleAnchorElement);
 
 		var infoElement = $(document.createElement("div"));
@@ -168,15 +168,15 @@ app.directive("board", ["$log", "$timeout", "$window", "BoardEventTypes", functi
 
 		var commentsAnchorElement = $(document.createElement("a"));
 		commentsAnchorElement.attr("class", "board-item-info-cell board-item-comments-anchor");
-		commentsAnchorElement.attr("href", "http://www.reddit.com" + boardItem.thread.commentUrl);
-		commentsAnchorElement.text(boardItem.thread.commentCount === 1 ? "1 Comment" : boardItem.thread.commentCount + " Comments");
+		commentsAnchorElement.attr("href", "http://www.reddit.com" + boardItem.threadListItem.commentUrl);
+		commentsAnchorElement.text(boardItem.threadListItem.commentCount === 1 ? "1 Comment" : boardItem.threadListItem.commentCount + " Comments");
 		infoElement.append(commentsAnchorElement);
 
 		if (this.isMultiReddit) {
 			var subredditAnchorElement = $(document.createElement("a"));
 			subredditAnchorElement.attr("class", "board-item-info-cell board-item-info-cell-right board-item-subreddit-anchor");
-			subredditAnchorElement.attr("href", "/r/" + boardItem.thread.subredditName);
-			subredditAnchorElement.text("/r/" + boardItem.thread.subredditName);
+			subredditAnchorElement.attr("href", "/r/" + boardItem.threadListItem.subredditName);
+			subredditAnchorElement.text("/r/" + boardItem.threadListItem.subredditName);
 			infoElement.append(subredditAnchorElement);
 		}
 

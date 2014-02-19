@@ -42,7 +42,7 @@ app.controller("ThreadListController", [
 		"top": true
 	};
 
-	var section = (isDefaultPage ? $routeParams.subredditIds : $routeParams.section) || "";
+	var section = (isDefaultPage ? $routeParams.subredditIds : $routeParams.section) || "";
 
 	// If section is not "controversial", "hot", "new", "rising" or "top", redirect.
 	if ($routeParams.section && !sections[$routeParams.section]) {
@@ -127,7 +127,7 @@ app.controller("ThreadListController", [
 
 	function handleRedditRequestSuccess(responseData, status, headers, config) {
 		redditRequestIsRunning = false;
-		var threadList = ThreadList.fromRedditThreadList(responseData) || new ThreadList();
+		var threadList = ThreadList.fromRedditThreadList(responseData) || new ThreadList();
 		var threadListItems = threadList.items;
 		var atLeastOneItemWasAddedToQueue = false;
 
@@ -145,8 +145,13 @@ app.controller("ThreadListController", [
 		}
 	};
 
-	function handleProcessedSuccess(thread, imageUrl) {
-		var boardItem = new BoardItem(thread, imageUrl);
+	function handleProcessedSuccess(threadListItem, imagePreviewUrl, imageFullSizeUrl) {
+		var boardItem = BoardItem.New(threadListItem, imagePreviewUrl, imageFullSizeUrl);
+
+		if (!boardItem) {
+			return;
+		}
+
 		$scope.board.addItems([boardItem]);
 	}
 
