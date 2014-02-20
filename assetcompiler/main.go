@@ -21,6 +21,11 @@ var (
 	verbose            = flag.Bool("verbose", false, "Whether additional information should be displayed after compiling.")
 )
 
+var (
+	appYamlRegExp1 = regexp.MustCompile("(static_files: webroot/compiled-partials/index)(?:-[a-zA-Z0-9]+)?(.html)")
+	appYamlRegExp2 = regexp.MustCompile("(upload: webroot/compiled-partials/index)(?:-[a-zA-Z0-9]+)?(\\\\.html)")
+)
+
 var cssCompilerArguments = []string{
 	// Ignore non-standard CSS functions and unrecognized CSS properties that
 	// we use or else Closure Stylesheets won’t compile our CSS.
@@ -138,8 +143,27 @@ func main() {
 		return
 	}
 
-	cssLink := fmt.Sprintf("<link href=\"%s\" rel=\"stylesheet\" type=\"text/css\">", cssDestinationBaseName)
-	jsLink := fmt.Sprintf("<script src=\"%s\"></script>", jsDestinationBaseName)
+	// cssLink := fmt.Sprintf("<link href=\"%s\" rel=\"stylesheet\" type=\"text/css\">", cssDestinationBaseName)
+	// jsLink := fmt.Sprintf("<script src=\"%s\"></script>", jsDestinationBaseName)
+
+	cssFileName := "./app/webroot/compiled-css/" + cssDestinationBaseName
+	cssContent, err := ioutil.ReadFile(cssFileName)
+
+	if err != nil {
+		log.Printf("assetcompiler: Reading compiled CSS file failed: %s", err)
+		return
+	}
+
+	jsFileName := "./app/webroot/compiled-js/" + jsDestinationBaseName
+	jsContent, err := ioutil.ReadFile(jsFileName)
+
+	if err != nil {
+		log.Printf("assetcompiler: Reading compiled JS file failed: %s", err)
+		return
+	}
+
+	cssLink := fmt.Sprintf(`<style type="text/css">%s</style>`, cssContent)
+	jsLink := fmt.Sprintf(`<script>%s</script>`, jsContent)
 
 	indexHtml = []byte(strings.Replace(string(indexHtml), "<!-- COMPILED_CSS_HERE -->", cssLink, 1))
 	indexHtml = []byte(strings.Replace(string(indexHtml), "<!-- COMPILED_JS_HERE -->", jsLink, 1))
@@ -148,6 +172,27 @@ func main() {
 
 	destinationFilename := "./app/webroot/compiled-partials/index-" + token + ".html"
 	ioutil.WriteFile(destinationFilename, indexHtml, 0666)
+
+	if err := updateAppYaml("./app/app.yaml", token); err != nil {
+		log.Printf("main: Updating app.yaml failed: %s", err)
+	}
+}
+
+func updateAppYaml(fileName, token string) error {
+	fileContent, err := ioutil.ReadFile(fileName)
+
+	if err != nil {
+		return err
+	}
+
+	fileContent = appYamlRegExp1.ReplaceAll(fileContent, []byte("$1-"+token+"$2"))
+	fileContent = appYamlRegExp2.ReplaceAll(fileContent, []byte("$1-"+token+"$2"))
+
+	if err := ioutil.WriteFile(fileName, fileContent, 0640); err != nil {
+		return err
+	}
+
+	return nil
 }
 
 // compileCssJs compiles CSS and/or JavaScript. Progress and error messages are
