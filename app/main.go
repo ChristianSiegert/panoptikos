@@ -40,21 +40,21 @@ func handleFeedsRequest(responseWriter http.ResponseWriter, request *http.Reques
 // handlePicturesRequest redirects from the legacy URL for viewing subreddits to
 // the new URL for viewing subreddits.
 func handlePicturesRequest(responseWriter http.ResponseWriter, request *http.Request) {
+	matches := legacyPicturesUrlRegExp.FindStringSubmatch(request.URL.Path)
+
+	if len(matches) >= 1 {
+		newUrl := "/r/" + strings.Replace(matches[1], "-", "_", -1)
+		http.Redirect(responseWriter, request, newUrl, http.StatusMovedPermanently)
+		return
+	}
+
 	if strings.HasPrefix(request.URL.Path, "/pictures/browse/nsfw") {
 		url := "/r/Amateur+BustyPetite+gonewild+nsfw+RealGirls"
 		http.Redirect(responseWriter, request, url, http.StatusMovedPermanently)
 		return
 	}
 
-	matches := legacyPicturesUrlRegExp.FindStringSubmatch(request.URL.Path)
-
-	if len(matches) == 0 {
-		http.Redirect(responseWriter, request, "/", http.StatusMovedPermanently)
-		return
-	}
-
-	newUrl := "/r/" + matches[1]
-	http.Redirect(responseWriter, request, newUrl, http.StatusMovedPermanently)
+	http.Redirect(responseWriter, request, "/", http.StatusMovedPermanently)
 }
 
 func handleDevPartialsRequest(responseWriter http.ResponseWriter, request *http.Request) {
