@@ -9,6 +9,7 @@ import (
 	"log"
 	"net/http"
 	"regexp"
+	"strings"
 )
 
 var isDevAppServer = appengine.IsDevAppServer()
@@ -39,7 +40,7 @@ func handleFeedsRequest(responseWriter http.ResponseWriter, request *http.Reques
 // handlePicturesRequest redirects from the legacy URL for viewing subreddits to
 // the new URL for viewing subreddits.
 func handlePicturesRequest(responseWriter http.ResponseWriter, request *http.Request) {
-	if request.URL.Path == "/pictures/browse/nsfw" {
+	if strings.HasPrefix(request.URL.Path, "/pictures/browse/nsfw") {
 		url := "/r/Amateur+BustyPetite+gonewild+nsfw+RealGirls"
 		http.Redirect(responseWriter, request, url, http.StatusMovedPermanently)
 		return
