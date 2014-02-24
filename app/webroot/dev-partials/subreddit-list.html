@@ -1,3 +1,7 @@
+<h1>Subreddits</h1>
+
+<p>Check the ones you want to see, uncheck the ones you don’t want to see. You can add a subreddit by entering its name into the textbox below and hitting “return”.</p>
+
 <ul id="subreddit-list">
 	<li class="subreddit-list-item" ng-repeat="subreddit in subreddits">
 		<input type="checkbox" id="subreddit-{{subreddit.id}}" name="{{subreddit.name}}" value="/r/{{subreddit.id}}" ng-checked="subreddit.isChecked" ng-model="subreddit.isChecked">

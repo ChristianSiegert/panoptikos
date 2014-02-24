@@ -1,5 +1,6 @@
 #board {
 	line-height: 0;
+	margin: 5px 0 0 0;
 	text-align: center;
 }
 
@@ -14,8 +15,17 @@
 		margin-left: 0;
 	}
 
-@media (max-width: 669px) {
-	.board-column {
-		width: 100%;
+	@media (max-width: 669px) {
+		.board-column {
+			width: 100%;
+		}
 	}
+
+#board-controls {
+	display: block;
+	font-size: 14px; /* @alternate */
+	font-size: 1.4rem;
+	padding: 10px 0; /* @alternate */
+	padding: 1rem 0;
+	text-align: center;
 }

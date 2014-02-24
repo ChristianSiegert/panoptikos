@@ -1,7 +1,13 @@
 app.controller("ThreadListController", [
-		"$http", "$location", "$log", "$rootScope", "$route", "$routeParams", "$scope", "$timeout", "$window", "defaultSubredditIds", "Board", "BoardItem", "ThreadList", "threadProcessor",
-		function($http, $location, $log, $rootScope, $route, $routeParams, $scope, $timeout, $window, defaultSubredditIds, Board, BoardItem, ThreadList, threadProcessor) {
+		"$http", "$location", "$log", "$rootScope", "$route", "$routeParams",
+		"$scope", "$timeout", "$window", "defaultSubredditIds", "Board",
+		"BoardItem", "localStorageService", "Settings", "ThreadList", "threadProcessor",
+		function($http, $location, $log, $rootScope, $route, $routeParams,
+			$scope, $timeout, $window, defaultSubredditIds, Board, BoardItem,
+			localStorageService, Settings, ThreadList, threadProcessor) {
 	"use strict";
+
+	Settings.setDefaults();
 
 	// We may have used threadProcessor previously. Clear any old state
 	// (e.g. queue).
@@ -69,7 +75,7 @@ app.controller("ThreadListController", [
 	};
 
 	$scope.loadMoreButtonText = loadMoreButtonTexts.LOADING;
-	$scope.openExternalLinksInNewTab = true;
+	$scope.openExternalLinksInNewTab = localStorageService.get(Settings.keys.O) === "true";
 
 	function main() {
 		$scope.board = Board.New();

@@ -2,7 +2,7 @@ app.provider("threadProcessor", function() {
 	"use strict";
 
 	var imgurClientId = "";
-	var maxThreadsToProcessSimultaneously = 3;
+	var maxThreadsToProcessSimultaneously = 2;
 
 	this.setImgurClientId = function(id) {
 		imgurClientId = id;

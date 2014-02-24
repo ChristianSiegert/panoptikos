@@ -9,7 +9,7 @@ button {
 	background:         linear-gradient(to bottom, #FFF 5%, #F6F6F6 100%);
 	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#FFFFFF", endColorstr="#F6F6F6"); /* IE 6 to 9 */
 	border: 1px solid #DCDCDC;
-	color: #666;
+	color: #585858;
 	cursor: pointer;
 	font-family: "Alegreya Sans", "Ubuntu", "DejaVu Sans", "Arial", sans-serif;
 	font-size: 17px; /* @alternate */
@@ -106,6 +106,14 @@ label {
 	margin: 0 0 2px;
 	margin: 0 0 0.2rem;
 }
+
+	input[type=checkbox] + label {
+		font-weight: normal;
+	}
+
+	input[type=checkbox][disabled] + label {
+		color: #999;
+	}
 
 textarea {
 	min-height: 150px;

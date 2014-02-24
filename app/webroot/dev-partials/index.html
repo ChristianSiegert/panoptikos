@@ -3,12 +3,12 @@
 	<head>
 		<meta charset="utf-8">
 		<meta name="viewport" content="initial-scale=1, width=device-width">
-		<title ng-bind-template="{{pageTitle}}Panoptikos">Panoptikos</title>
+		<title ng-bind-template="{{pageTitle}}Panoptikos">Panoptikos - The Reddit image viewer</title>
 
 		<!-- CSS -->
 		<!-- COMPILED_CSS_HERE -->
 		<link href="/dev-css/reset.css" rel="stylesheet" type="text/css">
-		<link href="/dev-css/general.css" rel="stylesheet" type="text/css">
+		<link href="/dev-css/main.css" rel="stylesheet" type="text/css">
 		<link href="/dev-css/form.css" rel="stylesheet" type="text/css">
 		<link href="/dev-css/board.css" rel="stylesheet" type="text/css">
 		<link href="/dev-css/board-item.css" rel="stylesheet" type="text/css">
@@ -31,9 +31,14 @@
 	</head>
 
 	<body>
-		<p id="about"><a href="/">Panoptikos</a> is an image viewer for Reddit.</p>
+		<ul id="nav-list">
+			<li class="nav-list-item"><a class="nav-link" href="/">Panoptikos</a></li>
+			<li class="nav-list-item nav-list-item-flex"><a class="nav-link" href="/donate">donate</a></li>
+			<li class="nav-list-item"><a class="nav-link" href="/feedback">Feedback</a></li>
+			<li class="nav-list-item"><a class="nav-link" href="/settings">Settings</a></li>
+		</ul>
 
-		<div ng-view></div>
+		<div id="content" ng-view></div>
 
 		<!-- JS -->
 		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
@@ -42,17 +47,21 @@
 		<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.13/angular-sanitize.min.js"></script>
 		<!-- COMPILED_JS_HERE -->
 		<script src="/dev-js/app.js"></script>
+		<script src="/dev-js/controllers/donations-controller.js"></script>
+		<script src="/dev-js/controllers/settings-controller.js"></script>
+		<script src="/dev-js/controllers/subreddit-list-controller.js"></script>
 		<script src="/dev-js/controllers/thread-detail-controller.js"></script>
 		<script src="/dev-js/controllers/thread-list-controller.js"></script>
-		<script src="/dev-js/controllers/subreddit-list-controller.js"></script>
 		<script src="/dev-js/directives/board.js"></script>
 		<script src="/dev-js/directives/button-bar.js"></script>
 		<script src="/dev-js/services/board.js"></script>
 		<script src="/dev-js/services/board-event-types.js"></script>
 		<script src="/dev-js/services/board-item.js"></script>
 		<script src="/dev-js/services/constants.js"></script>
+		<script src="/dev-js/services/settings.js"></script>
 		<script src="/dev-js/services/thread-list.js"></script>
 		<script src="/dev-js/services/thread-list-item.js"></script>
+		<script src="/dev-js/services/third-party/angular-local-storage.js"></script>
 		<script src="/dev-js/services/thread-processor.js"></script>
 		<script src="/dev-js/config.js"></script>
 

@@ -1,0 +1,10 @@
+<h1>Settings</h1>
+
+<p ng-if="!localStorageIsSupported">Your browser doesn’t allow storing data. Enable your browser’s local storage to be able to save the settings.</p>
+
+<ul>
+	<li class="inline-list-item">
+		<input id="open-external-links-in-new-tab" type="checkbox" ng-change="save()" ng-disabled="!localStorageIsSupported" ng-model="openExternalLinksInNewTab">
+		<label for="open-external-links-in-new-tab">Open external links in new tab</label>
+	</li>
+</ul>

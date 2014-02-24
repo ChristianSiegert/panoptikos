@@ -1,1 +1,1 @@
-app = angular.module("panoptikos", ["ngRoute", "ngSanitize"]);
+app = angular.module("panoptikos", ["LocalStorageModule", "ngRoute", "ngSanitize"]);

@@ -10,33 +10,21 @@
 }
 
 html {
-	background-color: #F7F5F5;
+	background: #F9F9F9;
+	background: -webkit-linear-gradient(to top, #F7F7F7, #F9F9F9) fixed;
+	background:    -moz-linear-gradient(to top, #F7F7F7, #F9F9F9) fixed;
+	background:     -ms-linear-gradient(to top, #F7F7F7, #F9F9F9) fixed;
+	background:         linear-gradient(to top, #F7F7F7, #F9F9F9) fixed;
 	color: #333;
 	font-family: "Alegreya Sans", "Ubuntu", "DejaVu Sans", "Lucida Grande", sans-serif;
 	font-size: 62.5%;
 	font-size-adjust: 0.46;
-	padding: 20px; /* @alternate */
-	padding: 2rem;
 
 	/* Show scrollbar right away so the available width for our board remains the same when images are added. */
 	overflow-y: scroll;
 
 	/* Prevent Webkit on iOS from scaling text up when orientation is changed to landscape. */
 	-webkit-text-size-adjust: 100%;
-}
-
-@media (max-width: 1024px) {
-	html {
-		padding: 10px; /* @alternate */
-		padding: 1rem;
-	}
-}
-
-@media (max-width: 360px) {
-	html {
-		padding: 5px; /* @alternate */
-		padding: 0.5rem;
-	}
 }
 
 body {
@@ -61,7 +49,7 @@ h5,
 h6 {
 	font-size: 100%;
 	font-weight: bold;
-	margin: 0.4em 0 0.1em;
+	margin: 0.5em 0 0.3em;
 }
 
 h1 {
@@ -74,28 +62,14 @@ p {
 	margin: 0 0 1rem;
 }
 
-#about {
-	font-size: 22px; /* @alternate */
-	font-size: 2.2rem;
-}
-
-#board-controls {
-	display: block;
-	font-size: 14px; /* @alternate */
-	font-size: 1.4rem;
-	padding: 10px 0; /* @alternate */
-	padding: 1rem 0;
-	text-align: center;
-}
-
 .inline-list {
 
 }
 
 	.inline-list-item {
 		display: inline-block;
-		margin: 0 10px 10px 0; /* @alternate */
-		margin: 0 1rem 1rem 0;
+		margin: 0 10px 0 0; /* @alternate */
+		margin: 0 1rem 0 0;
 		vertical-align: middle;
 	}
 
@@ -127,6 +101,61 @@ table {
 		td:last-of-type,
 		th:last-of-type {
 			border-right: none;
+		}
+
+#content {
+	margin: 15px 20px; /* @alternate */
+	margin: 1.5rem 2rem;
+}
+
+@media (max-width: 1024px) {
+	#content {
+		margin: 10px; /* @alternate */
+		margin: 1rem;
+	}
+}
+
+@media (max-width: 360px) {
+	#content {
+		margin: 5px; /* @alternate */
+		margin: 0.5rem;
+	}
+}
+
+#nav-list {
+	background: #FFF;
+	box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+	display: flex;
+	padding: 0 20px;
+}
+
+	.nav-list-item {
+		display: inline-block;
+	}
+
+	.nav-list-item-flex {
+		flex: auto;
+		text-align: right;
+	}
+
+		.nav-link,
+		.nav-link:visited {
+			color: #333;
+			display: inline-block;
+			font-weight: bold;
+			padding: 10px;
+			padding: 1rem;
+			text-transform: uppercase;
+		}
+
+		.nav-link:hover {
+			color: #FFF;
+			background-color: #FD726E;
+		}
+
+		.nav-link.active {
+			color: #FFF;
+			background-color: #FD726E;
 		}
 
 #no-js {
