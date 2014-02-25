@@ -76,6 +76,7 @@ app.controller("ThreadListController", [
 
 	$scope.loadMoreButtonText = loadMoreButtonTexts.LOADING;
 	$scope.openExternalLinksInNewTab = localStorageService.get(Settings.keys.O) === "true";
+	$scope.onlyShowPostsWithImages = localStorageService.get(Settings.keys.I) === "true";
 
 	function main() {
 		$scope.board = Board.New();

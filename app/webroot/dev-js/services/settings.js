@@ -3,6 +3,7 @@ app.factory("Settings", ["localStorageService", function(localStorageService) {
 	var settings = {};
 
 	settings.keys = {
+		I: "settings.I",	// Only show posts that have an image
 		O: "settings.O",	// Open external links in new tab
 		V: "settings.V"		// Settings version
 	};

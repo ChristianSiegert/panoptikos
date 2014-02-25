@@ -5,11 +5,13 @@ app.controller("SettingsController", [
 
 	Settings.setDefaults();
 
-	$scope.openExternalLinksInNewTab = localStorageService.get(Settings.keys.O) === "true";
-	$scope.localStorageIsSupported = localStorageService.isSupported;
+	$scope.i = localStorageService.get(Settings.keys.I) === "true";
+	$scope.o = localStorageService.get(Settings.keys.O) === "true";
+	$scope.l = localStorageService.isSupported;
 
-	$scope.save = function() {
-		localStorageService.set(Settings.keys.O, $scope.openExternalLinksInNewTab)
+	$scope.s = function() {
+		localStorageService.set(Settings.keys.I, $scope.i);
+		localStorageService.set(Settings.keys.O, $scope.o);
 	};
 }]);
 

@@ -31,7 +31,8 @@ var cssCompilerArguments = []string{
 	// we use or else Closure Stylesheets won’t compile our CSS.
 	"--allowed-non-standard-function", "color-stop",
 	"--allowed-non-standard-function", "progid:DXImageTransform.Microsoft.gradient",
-	"--allowed-unrecognized-property", "tap-highlight-color",
+	"--allowed-unrecognized-property", "-webkit-flex",
+	"--allowed-unrecognized-property", "flex",
 }
 
 func main() {
@@ -53,7 +54,7 @@ func main() {
 	}
 
 	// CSS
-	stylesheetRegExp := regexp.MustCompile("<link href=\"([^\"]+)\" rel=\"stylesheet\" type=\"text/css\">")
+	stylesheetRegExp := regexp.MustCompile("<link href=\"([^\"]+)\" rel=\"stylesheet\">")
 	matches := stylesheetRegExp.FindAllStringSubmatch(string(indexHtml), -1)
 
 	cssFilenames := make([]string, 0, len(matches))
@@ -162,7 +163,7 @@ func main() {
 		return
 	}
 
-	cssLink := fmt.Sprintf(`<style type="text/css">%s</style>`, cssContent)
+	cssLink := fmt.Sprintf(`<style>%s</style>`, cssContent)
 	jsLink := fmt.Sprintf(`<script>%s</script>`, jsContent)
 
 	indexHtml = []byte(strings.Replace(string(indexHtml), "<!-- COMPILED_CSS_HERE -->", cssLink, 1))

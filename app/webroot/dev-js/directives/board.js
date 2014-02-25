@@ -11,6 +11,7 @@ app.directive("board", ["$log", "$timeout", "$window", "BoardEventTypes", functi
 		this.isMultiReddit = false;
 		this.marginBetweenColumns = 0;
 		this.onDidAddItem = angular.noop;
+		this.onlyShowPostsWithImages = false;
 		this.windowElement = angular.element($window);
 	}
 
@@ -75,7 +76,13 @@ app.directive("board", ["$log", "$timeout", "$window", "BoardEventTypes", functi
 		var boardItems = this.board.getNewlyAddedItems();
 
 		for (var i = 0, boardItemCount = boardItems.length; i < boardItemCount; i++) {
-			var boardItemElement = this.boardItemElementFromBoardItem(boardItems[i]);
+			var boardItem = boardItems[i];
+
+			if (this.onlyShowPostsWithImages && !boardItem.imagePreviewUrl) {
+				continue;
+			}
+
+			var boardItemElement = this.boardItemElementFromBoardItem(boardItem);
 			boardItemElements.push(boardItemElement);
 			this.boardItemElements.push(boardItemElement);
 		}
@@ -200,6 +207,7 @@ app.directive("board", ["$log", "$timeout", "$window", "BoardEventTypes", functi
 
 	return {
 		controller: ["$scope", function($scope) {
+			$scope.onlyShowPostsWithImages = false;
 			$scope.openExternalLinksInNewTab = false;
 		}],
 		link: function(scope, element, attributes) {
@@ -235,6 +243,13 @@ app.directive("board", ["$log", "$timeout", "$window", "BoardEventTypes", functi
 			});
 
 			boardElementManager.updateBoardElement();
+
+			// Observe attribute "board-only-show-posts-with-images"
+			if (typeof(attributes.boardOnlyShowPostsWithImages) !== "undefined") {
+				attributes.$observe("boardOnlyShowPostsWithImages", function(value) {
+					boardElementManager.onlyShowPostsWithImages = value === "true";
+				});
+			}
 
 			// Observe attribute "board-open-external-links-in-new-tab"
 			if (typeof(attributes.boardOpenExternalLinksInNewTab) !== "undefined") {

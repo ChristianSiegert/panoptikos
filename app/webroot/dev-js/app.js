@@ -1,1 +1,2 @@
-app = angular.module("panoptikos", ["LocalStorageModule", "ngRoute", "ngSanitize"]);
+// Global variable
+app = angular.module("p", ["LocalStorageModule", "ngRoute", "ngSanitize"]);
