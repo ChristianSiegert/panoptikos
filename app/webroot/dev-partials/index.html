@@ -9,6 +9,7 @@
 		<!-- COMPILED_CSS_HERE -->
 		<link href="/dev-css/reset.css" rel="stylesheet">
 		<link href="/dev-css/main.css" rel="stylesheet">
+		<link href="/components/flash/flash.css" rel="stylesheet">
 		<link href="/dev-css/form.css" rel="stylesheet">
 		<link href="/dev-css/board.css" rel="stylesheet">
 		<link href="/dev-css/board-item.css" rel="stylesheet">
@@ -38,6 +39,12 @@
 			<li class="nav-list-item"><a class="nav-link" href="/settings" ng-class="{active: page.Settings}">Settings</a></li>
 		</ul>
 
+		<div ng-controller="FlashController">
+			<div class="flash" ng-repeat="m in Flash.InfoMessages track by $index">{{m.text}}</div>
+			<div class="flash flash-warn" ng-repeat="m in Flash.WarnMessages track by $index">{{m.text}}</div>
+			<div class="flash flash-error" ng-repeat="m in Flash.ErrorMessages track by $index">{{m.text}}</div>
+		</div>
+
 		<div id="content" ng-view></div>
 
 		<!-- JS -->
@@ -47,6 +54,8 @@
 		<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.13/angular-sanitize.min.js"></script>
 		<!-- COMPILED_JS_HERE -->
 		<script src="/dev-js/app.js"></script>
+		<script src="/components/flash/flash-controller.js"></script>
+		<script src="/components/flash/flash-service.js"></script>
 		<script src="/dev-js/controllers/donations-controller.js"></script>
 		<script src="/dev-js/controllers/settings-controller.js"></script>
 		<script src="/dev-js/controllers/navigation-controller.js"></script>
