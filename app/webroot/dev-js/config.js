@@ -10,7 +10,7 @@ app
 				templateUrl: "/dev-partials/donations.html"
 			})
 			.when("/feedback", {
-				// controller: "FeedbackController",
+				controller: "FeedbackController",
 				templateUrl: "/dev-partials/feedback.html"
 			})
 			.when("/r/:subredditId/comments/:threadId/:title?", {

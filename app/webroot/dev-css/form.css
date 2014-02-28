@@ -72,6 +72,9 @@ textarea {
 	border-width: 0;
 	color: #767676;
 	outline: none;
+	margin: 0 0 10px; /* @alternate */
+	margin: 0 0 1rem;
+	max-width: 600px;
 	padding: 8px 8px 6px; /* @alternate */
 	padding: 0.8rem 0.8rem 0.6rem;
 	text-shadow: 1px 1px #FFF; /* @alternate */
@@ -82,23 +85,17 @@ textarea {
 	        box-shadow: inset 0 1px 3px #CCC;
 }
 
+input:focus,
+textarea:focus {
+	background-color: #EAEAEA;
+	color: #818181;
+}
+
 input[type="checkbox"] {
 	-webkit-appearance: checkbox;
 	margin: 0 3px 2px 0; /* @alternate */
 	margin: 0 3px 0.2rem 0;
 	width: auto;
-}
-
-input[type="text"] {
-	margin: 0 0 10px; /* @alternate */
-	margin: 0 0 1rem;
-	width: 250px;
-}
-
-input:focus,
-textarea:focus {
-	background-color: #EAEAEA;
-	color: #818181;
 }
 
 label {
@@ -108,11 +105,11 @@ label {
 	margin: 0 0 0.2rem;
 }
 
-	input[type=checkbox] + label {
+	input[type="checkbox"] + label {
 		font-weight: normal;
 	}
 
-	input[type=checkbox][disabled] + label {
+	input[type="checkbox"][disabled] + label {
 		color: #999;
 	}
 
@@ -120,13 +117,6 @@ textarea {
 	min-height: 150px; /* @alternate */
 	min-height: 15rem;
 	resize: vertical;
-	margin: 0 0 10px;  /* @alternate */
-	margin: 0 0 1rem;
-}
-
-textarea.wide {
-	max-width: 600px; /* @alternate */
-	max-width: 60rem;
 }
 
 .button-bar {

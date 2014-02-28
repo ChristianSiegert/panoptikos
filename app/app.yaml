@@ -51,7 +51,14 @@ handlers:
   upload: webroot/robots\.txt
   expiration: "1d"
 
-# Handle legacy URLs
+- url: /api/1/.*
+  script: _go_app
+
+- url: /worker/.*
+  login: admin
+  script: _go_app
+
+# Handle requests to legacy URLs
 - url: /(feeds|pictures|preferences|referrals|sources)(/.*)?
   script: _go_app
 
