@@ -7,13 +7,12 @@
 
 		<!-- CSS -->
 		<!-- COMPILED_CSS_HERE -->
-		<link href="/dev-css/reset.css" rel="stylesheet">
-		<link href="/dev-css/main.css" rel="stylesheet">
+		<link href="/main/reset.css" rel="stylesheet">
+		<link href="/main/main.css" rel="stylesheet">
+		<link href="/main/form.css" rel="stylesheet">
 		<link href="/components/flash/flash.css" rel="stylesheet">
-		<link href="/dev-css/form.css" rel="stylesheet">
-		<link href="/dev-css/board.css" rel="stylesheet">
-		<link href="/dev-css/board-item.css" rel="stylesheet">
-		<link href="/dev-css/subreddit-list.css" rel="stylesheet">
+		<link href="/subreddit-list/subreddit-list.css" rel="stylesheet">
+		<link href="/thread-list/thread-list.css" rel="stylesheet">
 
 		<!-- Fonts -->
 		<link href="//fonts.googleapis.com/css?family=Alegreya+Sans:400,700&amp;subset=latin,latin-ext" rel="stylesheet">
@@ -34,12 +33,12 @@
 	<body>
 		<ul id="nav-list" ng-controller="NavigationController">
 			<li class="nav-list-item"><a class="nav-link" href="/" ng-class="{active: page.ThreadList}">Panoptikos</a></li>
-			<li class="nav-list-item nav-list-item-flex"><a class="nav-link" href="/donate" ng-class="{active: page.Donations}">Donate</a></li>
-			<li class="nav-list-item"><a class="nav-link" href="/feedback" ng-class="{active: page.Feedback}">Feedback</a></li>
+			<!-- <li class="nav-list-item nav-list-item-flex"><a class="nav-link" href="/donate" ng-class="{active: page.Donations}">Donate</a></li> -->
+			<li class="nav-list-item nav-list-item-flex"><a class="nav-link" href="/feedback" ng-class="{active: page.Feedback}">Feedback</a></li>
 			<li class="nav-list-item"><a class="nav-link" href="/settings" ng-class="{active: page.Settings}">Settings</a></li>
 		</ul>
 
-		<div ng-controller="FlashController">
+		<div ng-cloak ng-controller="FlashController">
 			<div class="flash" ng-repeat="m in Flash.InfoMessages track by $index">{{m.text}}</div>
 			<div class="flash flash-warn" ng-repeat="m in Flash.WarnMessages track by $index">{{m.text}}</div>
 			<div class="flash flash-error" ng-repeat="m in Flash.ErrorMessages track by $index">{{m.text}}</div>
@@ -53,28 +52,28 @@
 		<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.13/angular-route.min.js"></script>
 		<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.13/angular-sanitize.min.js"></script>
 		<!-- COMPILED_JS_HERE -->
-		<script src="/dev-js/app.js"></script>
+		<script src="/main/app.js"></script>
+		<script src="/components/button-bar/button-bar-directive.js"></script>
+		<script src="/components/default-subreddit-ids-service.js"></script>
 		<script src="/components/flash/flash-controller.js"></script>
 		<script src="/components/flash/flash-service.js"></script>
-		<script src="/dev-js/controllers/donations-controller.js"></script>
-		<script src="/dev-js/controllers/feedback-controller.js"></script>
-		<script src="/dev-js/controllers/navigation-controller.js"></script>
-		<script src="/dev-js/controllers/settings-controller.js"></script>
-		<script src="/dev-js/controllers/subreddit-list-controller.js"></script>
-		<script src="/dev-js/controllers/thread-detail-controller.js"></script>
-		<script src="/dev-js/controllers/thread-list-controller.js"></script>
-		<script src="/dev-js/directives/board.js"></script>
-		<script src="/dev-js/directives/button-bar.js"></script>
-		<script src="/dev-js/services/board.js"></script>
-		<script src="/dev-js/services/board-event-types.js"></script>
-		<script src="/dev-js/services/board-item.js"></script>
-		<script src="/dev-js/services/constants.js"></script>
-		<script src="/dev-js/services/settings.js"></script>
-		<script src="/dev-js/services/thread-list.js"></script>
-		<script src="/dev-js/services/thread-list-item.js"></script>
-		<script src="/dev-js/services/third-party/angular-local-storage.js"></script>
-		<script src="/dev-js/services/thread-processor.js"></script>
-		<script src="/dev-js/config.js"></script>
+		<script src="/components/navigation/navigation-controller.js"></script>
+		<script src="/components/third-party/angular-local-storage/angular-local-storage-service.js"></script>
+		<script src="/donations/donations-controller.js"></script>
+		<script src="/feedback/feedback-controller.js"></script>
+		<script src="/settings/settings-controller.js"></script>
+		<script src="/settings/settings-service.js"></script>
+		<script src="/subreddit-list/subreddit-list-controller.js"></script>
+		<script src="/thread-detail/thread-detail-controller.js"></script>
+		<script src="/thread-list/board-directive.js"></script>
+		<script src="/thread-list/board-event-types-service.js"></script>
+		<script src="/thread-list/board-item-service.js"></script>
+		<script src="/thread-list/board-service.js"></script>
+		<script src="/thread-list/thread-list-controller.js"></script>
+		<script src="/thread-list/thread-list-item-service.js"></script>
+		<script src="/thread-list/thread-list-service.js"></script>
+		<script src="/thread-list/thread-processor-service.js"></script>
+		<script src="/main/config.js"></script>
 
 		<!-- Google Analytics -->
 		<script>if(location.hostname==="www.panoptikos.com"){(function(i,s,o,g,r,a,m){i["GoogleAnalyticsObject"]=r;i[r]=i[r]||function(){(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)})(window,document,"script","//www.google-analytics.com/analytics.js","ga");ga("create","UA-44086983-1","panoptikos.com");ga("send","pageview");}</script>

@@ -1,4 +1,4 @@
-/*
+/**
  * @description
  * You can use this directive by putting the following HTML code into your
  * partials:

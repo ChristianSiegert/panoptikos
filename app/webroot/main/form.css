@@ -93,8 +93,8 @@ textarea:focus {
 
 input[type="checkbox"] {
 	-webkit-appearance: checkbox;
-	margin: 0 3px 2px 0; /* @alternate */
-	margin: 0 3px 0.2rem 0;
+	margin: 0 5px 2px 0; /* @alternate */
+	margin: 0 0.5rem 0.2rem 0;
 	width: auto;
 }
 

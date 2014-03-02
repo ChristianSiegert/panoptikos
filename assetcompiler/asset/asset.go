@@ -108,7 +108,7 @@ func CompileJs(sourceFilenames []string, destinationFilename string, jsCompilati
 	}
 
 	for k, v := range sourceFilenames {
-		sourceFilenames[k] = workingDirectory + "/app/webroot" + v
+		sourceFilenames[k] = workingDirectory + v
 	}
 
 	arguments = append(arguments, sourceFilenames...)

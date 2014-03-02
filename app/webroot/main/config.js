@@ -6,32 +6,33 @@ app
 	.config(["$routeProvider", function($routeProvider) {
 		$routeProvider
 			.when("/donate", {
-				// controller: "DonationsController",
-				templateUrl: "/dev-partials/donations.html"
+				controller: "DonationsController",
+				templateUrl: "/donations/donations.html"
 			})
 			.when("/feedback", {
 				controller: "FeedbackController",
-				templateUrl: "/dev-partials/feedback.html"
+				templateUrl: "/feedback/feedback.html"
 			})
 			.when("/r/:subredditId/comments/:threadId/:title?", {
 				controller: "ThreadDetailController",
-				templateUrl: "/dev-partials/thread-detail.html"
+				templateUrl: "/thread-detail/thread-detail.html"
 			})
 			.when("/r/:subredditIds/:section?", {
 				controller: "ThreadListController",
-				templateUrl: "/dev-partials/thread-list.html"
+				templateUrl: "/thread-list/thread-list.html"
 			})
 			.when("/settings", {
 				controller: "SettingsController",
-				templateUrl: "/dev-partials/settings.html"
+				templateUrl: "/settings/settings.html"
 			})
 			.when("/subreddits/:subredditIds?", {
 				controller: "SubredditListController",
-				templateUrl: "/dev-partials/subreddit-list.html"
+				templateUrl: "/subreddit-list/subreddit-list.html"
 			})
+			// TODO: Check if I can remove this.
 			.when("/:subredditIds?", {
 				controller: "ThreadListController",
-				templateUrl: "/dev-partials/thread-list.html"
+				templateUrl: "/thread-list/thread-list.html"
 			})
 			.otherwise({
 				redirectTo: "/"

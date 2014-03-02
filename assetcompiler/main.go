@@ -22,8 +22,10 @@ var (
 )
 
 var (
-	appYamlRegExp1 = regexp.MustCompile("(static_files: webroot/compiled-partials/index)(?:-[a-zA-Z0-9]+)?(.html)")
-	appYamlRegExp2 = regexp.MustCompile("(upload: webroot/compiled-partials/index)(?:-[a-zA-Z0-9]+)?(\\\\.html)")
+	appYamlRegExp1   = regexp.MustCompile("(static_files: webroot/compiled-index/index)(?:-[a-zA-Z0-9]+)?(.html)")
+	appYamlRegExp2   = regexp.MustCompile("(upload: webroot/compiled-index/index)(?:-[a-zA-Z0-9]+)?(\\\\.html)")
+	jsRegExp         = regexp.MustCompile("<script src=\"([^\"]+)\"></script>")
+	stylesheetRegExp = regexp.MustCompile("<link href=\"([^\"]+)\" rel=\"stylesheet\">")
 )
 
 var cssCompilerArguments = []string{
@@ -35,28 +37,85 @@ var cssCompilerArguments = []string{
 	"--allowed-unrecognized-property", "flex",
 }
 
+var indexFileName = "./app/webroot/main/index.html"
+
 func main() {
-	// token is a Unix timestamp in base 62
 	token, err := base.Convert(uint64(time.Now().Unix()), base.DefaultCharacters)
 
 	if err != nil {
-		log.Printf("Failed to create token: %s", err)
+		log.Printf("Creating token failed: %s", err)
 		return
 	}
 
 	// Read index.html
-	sourceFilename := "./app/webroot/dev-partials/index.html"
-	indexHtml, err := ioutil.ReadFile(sourceFilename)
+	indexHtml, err := ioutil.ReadFile(indexFileName)
 
 	if err != nil {
-		log.Printf("Failed to read file '%s'.", sourceFilename)
+		log.Printf("Reading file “%s” failed: %s", indexFileName, err)
 		return
 	}
 
-	// CSS
-	stylesheetRegExp := regexp.MustCompile("<link href=\"([^\"]+)\" rel=\"stylesheet\">")
-	matches := stylesheetRegExp.FindAllStringSubmatch(string(indexHtml), -1)
+	cssFilenames, indexHtml, err := getCssFilenames(indexHtml)
 
+	if err != nil {
+		log.Printf("Getting CSS filenames failed: %s", err)
+		return
+	}
+
+	jsFilenames, indexHtml, err := getJsFilenames(indexHtml)
+
+	if err != nil {
+		log.Printf("Getting JS filenames failed: %s", err)
+		return
+	}
+
+	cssDestinationBaseName, jsDestinationBaseName, err := compileCssJs(token, cssFilenames, jsFilenames)
+
+	if err != nil {
+		log.Printf("Compiling CSS/JS failed: %s", err)
+		return
+	}
+
+	// cssLink := fmt.Sprintf("<link href=\"%s\" rel=\"stylesheet\" type=\"text/css\">", cssDestinationBaseName)
+	// jsLink := fmt.Sprintf("<script src=\"%s\"></script>", jsDestinationBaseName)
+
+	cssFilename := "./app/temp/" + cssDestinationBaseName
+	cssContent, err := ioutil.ReadFile(cssFilename)
+
+	if err != nil {
+		log.Printf("Reading compiled CSS file failed: %s", err)
+		return
+	}
+
+	jsFilename := "./app/temp/" + jsDestinationBaseName
+	jsContent, err := ioutil.ReadFile(jsFilename)
+
+	if err != nil {
+		log.Printf("Reading compiled JS file failed: %s", err)
+		return
+	}
+
+	cssElement := fmt.Sprintf("<style>%s</style>", cssContent)
+	jsElement := fmt.Sprintf("<script>%s</script>", jsContent)
+
+	indexHtml = []byte(strings.Replace(string(indexHtml), "<!-- COMPILED_CSS_HERE -->", cssElement, 1))
+	indexHtml = []byte(strings.Replace(string(indexHtml), "<!-- COMPILED_JS_HERE -->", jsElement, 1))
+	indexHtml = sanitizer.RemoveHtmlComments(indexHtml)
+	indexHtml = sanitizer.RemoveHtmlWhitespace(indexHtml)
+
+	destinationFilename := "./app/webroot/compiled-index/index-" + token + ".html"
+	if err := ioutil.WriteFile(destinationFilename, indexHtml, 0640); err != nil {
+		log.Printf("Writing compiled index file failed: %s", err)
+		return
+	}
+
+	if err := updateAppYaml("./app/app.yaml", token); err != nil {
+		log.Printf("Updating app.yaml failed: %s", err)
+	}
+}
+
+func getCssFilenames(indexHtml []byte) ([]string, []byte, error) {
+	matches := stylesheetRegExp.FindAllStringSubmatch(string(indexHtml), -1)
 	cssFilenames := make([]string, 0, len(matches))
 
 	for _, match := range matches {
@@ -66,117 +125,90 @@ func main() {
 		if found, err := regexp.MatchString("^(https?:)?//", url); found {
 			continue
 		} else if err != nil {
-			log.Printf("Failed while searching CSS links: %s", err)
+			return nil, nil, fmt.Errorf("main: Searching for external URLs failed: %s", err)
 		}
 
 		cssFilenames = append(cssFilenames, url)
 		indexHtml = []byte(strings.Replace(string(indexHtml), match[0], "", 1))
 	}
 
-	// JavaScript
-	jsRegExp := regexp.MustCompile("<script src=\"([^\"]+)\"></script>")
-	matches = jsRegExp.FindAllStringSubmatch(string(indexHtml), -1)
+	return cssFilenames, indexHtml, nil
+}
 
+func getJsFilenames(indexHtml []byte) ([]string, []byte, error) {
+	matches := jsRegExp.FindAllStringSubmatch(string(indexHtml), -1)
 	jsFilenames := make([]string, 0, len(matches))
 
 	for _, match := range matches {
 		url := match[1]
 
 		// If URL begins with “http://”, “https://” or “//”, skip it.
-		if found, err := regexp.MatchString("^(https?:)?//", url); found {
+		if isExternalUrl, err := regexp.MatchString("^(https?:)?//", url); isExternalUrl {
 			continue
 		} else if err != nil {
-			log.Printf("Failed while searching JS links: %s", err)
+			return nil, nil, fmt.Errorf("main: Searching for external URLs failed: %s", err)
 		}
 
-		if url == "/dev-js/config.js" {
-			templateUrlRegExp := regexp.MustCompile(`templateUrl: "([^"]+)"`)
-			configFilename := "./app/webroot" + url
-			configFileContent, err := ioutil.ReadFile(configFilename)
+		if url == "/main/config.js" {
+			var err error
+			url, err = compileConfig(url)
 
 			if err != nil {
-				log.Printf("assetcompiler: Couldn’t read file '%s': %s", configFilename, err)
-				return
+				return nil, nil, err
 			}
-
-			matches := templateUrlRegExp.FindAllStringSubmatch(string(configFileContent), -1)
-
-			if len(matches) == 0 {
-				continue
-			}
-
-			for _, match := range matches {
-				templateUrl := match[1]
-				templateFilename := "./app/webroot" + templateUrl
-				templateFileContent, err := ioutil.ReadFile(templateFilename)
-
-				if err != nil {
-					log.Printf("assetcompiler: Couldn’t read file '%s': %s", templateFilename, err)
-					return
-				}
-
-				templateFileContent = sanitizer.RemoveHtmlComments(templateFileContent)
-				templateFileContent = sanitizer.RemoveHtmlWhitespace(templateFileContent)
-				templateFileContent = []byte(strings.Replace(string(templateFileContent), `'`, `\'`, -1))
-				configFileContent = []byte(strings.Replace(string(configFileContent), match[0], fmt.Sprintf(`template: '%s'`, string(templateFileContent)), 1))
-
-			}
-
-			configDestinationFilename := "./app/webroot/compiled-js/temp-config-" + token + ".js"
-
-			if err := ioutil.WriteFile(configDestinationFilename, configFileContent, 0666); err != nil {
-				log.Printf("assetcompiler: Couldn’t write file '%s': %s", configDestinationFilename, err)
-				return
-			}
-
-			url = "/compiled-js/temp-config-" + token + ".js"
+		} else {
+			url = "/app/webroot/" + url
 		}
 
 		jsFilenames = append(jsFilenames, url)
 		indexHtml = []byte(strings.Replace(string(indexHtml), match[0], "", 1))
 	}
 
-	// Compile
-	cssDestinationBaseName, jsDestinationBaseName, err := compileCssJs(token, cssFilenames, jsFilenames)
+	return jsFilenames, indexHtml, nil
+}
+
+func compileConfig(url string) (string, error) {
+	templateUrlRegExp := regexp.MustCompile(`templateUrl: "([^"]+)"`)
+	configFilename := "./app/webroot" + url
+	configFileContent, err := ioutil.ReadFile(configFilename)
 
 	if err != nil {
-		log.Printf("assetcompiler: Compiling CSS/JS failed: %s", err)
-		return
+		return "", err
 	}
 
-	// cssLink := fmt.Sprintf("<link href=\"%s\" rel=\"stylesheet\" type=\"text/css\">", cssDestinationBaseName)
-	// jsLink := fmt.Sprintf("<script src=\"%s\"></script>", jsDestinationBaseName)
+	matches := templateUrlRegExp.FindAllStringSubmatch(string(configFileContent), -1)
 
-	cssFileName := "./app/webroot/compiled-css/" + cssDestinationBaseName
-	cssContent, err := ioutil.ReadFile(cssFileName)
+	if len(matches) == 0 {
+		return "", fmt.Errorf("Searching for “templateUrl” in file “%s” yielded 0 results.", configFilename)
+	}
+
+	for _, match := range matches {
+		templateUrl := match[1]
+		templateFilename := "./app/webroot" + templateUrl
+		templateFileContent, err := ioutil.ReadFile(templateFilename)
+
+		if err != nil {
+			return "", err
+		}
+
+		templateFileContent = sanitizer.RemoveHtmlComments(templateFileContent)
+		templateFileContent = sanitizer.RemoveHtmlWhitespace(templateFileContent)
+		templateFileContent = []byte(strings.Replace(string(templateFileContent), `'`, `\'`, -1))
+		configFileContent = []byte(strings.Replace(string(configFileContent), match[0], fmt.Sprintf(`template: '%s'`, string(templateFileContent)), 1))
+
+	}
+
+	tempFile, err := ioutil.TempFile("./app/temp/", "config_")
 
 	if err != nil {
-		log.Printf("assetcompiler: Reading compiled CSS file failed: %s", err)
-		return
+		return "", err
 	}
 
-	jsFileName := "./app/webroot/compiled-js/" + jsDestinationBaseName
-	jsContent, err := ioutil.ReadFile(jsFileName)
-
-	if err != nil {
-		log.Printf("assetcompiler: Reading compiled JS file failed: %s", err)
-		return
+	if err := ioutil.WriteFile(tempFile.Name(), configFileContent, 0640); err != nil {
+		return "", err
 	}
 
-	cssLink := fmt.Sprintf(`<style>%s</style>`, cssContent)
-	jsLink := fmt.Sprintf(`<script>%s</script>`, jsContent)
-
-	indexHtml = []byte(strings.Replace(string(indexHtml), "<!-- COMPILED_CSS_HERE -->", cssLink, 1))
-	indexHtml = []byte(strings.Replace(string(indexHtml), "<!-- COMPILED_JS_HERE -->", jsLink, 1))
-	indexHtml = sanitizer.RemoveHtmlComments(indexHtml)
-	indexHtml = sanitizer.RemoveHtmlWhitespace(indexHtml)
-
-	destinationFilename := "./app/webroot/compiled-partials/index-" + token + ".html"
-	ioutil.WriteFile(destinationFilename, indexHtml, 0666)
-
-	if err := updateAppYaml("./app/app.yaml", token); err != nil {
-		log.Printf("main: Updating app.yaml failed: %s", err)
-	}
+	return "/" + tempFile.Name(), nil
 }
 
 func updateAppYaml(fileName, token string) error {
@@ -218,8 +250,8 @@ func compileCssJs(uniqueKey string, cssSourceFilenames, jsSourceFilenames []stri
 	cssDestinationBaseName = uniqueKey + ".css"
 	jsDestinationBaseName = uniqueKey + ".js"
 
-	cssDestinationFilename := "/app/webroot/compiled-css/" + cssDestinationBaseName
-	jsDestinationFilename := "/app/webroot/compiled-js/" + jsDestinationBaseName
+	cssDestinationFilename := "/app/temp/" + cssDestinationBaseName
+	jsDestinationFilename := "/app/temp/" + jsDestinationBaseName
 
 	go asset.CompileCss(cssSourceFilenames, cssDestinationFilename, cssCompilerArguments, cssResultChan, cssProgressChan, cssErrorChan)
 	go asset.CompileJs(jsSourceFilenames, jsDestinationFilename, *jsCompilationLevel, *verbose, jsResultChan, jsProgressChan, jsErrorChan)

@@ -1,5 +1,5 @@
 application: panoptikos3
-version: 2014-02-28-0
+version: 2014-03-01-1
 runtime: go
 api_version: go1
 
@@ -7,31 +7,31 @@ api_version: go1
 default_expiration: "7d"
 
 handlers:
-# Allow access to development CSS and JS files locally.
-# Development CSS and JS files are not uploaded. See skip_files below.
-- url: /(.*\.(?:css|js))
-  static_files: webroot/\1
-  upload: webroot/(.*\.(?:css|js))
-  expiration: "0s"
+# # Allow access to development CSS and JS files locally.
+# # Development CSS and JS files are not uploaded. See skip_files below.
+# - url: /(.*\.(?:css|js))
+#   static_files: webroot/\1
+#   upload: webroot/(.*\.(?:css|js))
+#   expiration: "0s"
 
-# Allow access to development HTML template files locally.
-# Development HTML template files are not uploaded. See skip_files below.
-- url: /dev-partials/.*\.html
-  script: _go_app
+# # Allow access to development HTML template files locally.
+# # Development HTML template files are not uploaded. See skip_files below.
+# - url: /.*\.html
+#   script: _go_app
 
 # File doesn't exist but some browsers request it, so serve an equivalent one.
 - url: /apple-touch-icon-precomposed\.png
-  static_files: webroot/images/a4.png
-  upload: webroot/images/a4\.png
+  static_files: webroot/components/images/a4.png
+  upload: webroot/components/images/a4\.png
 
 # File doesn't exist but some browsers request it, so serve an equivalent one.
 - url: /favicon\.ico
-  static_files: webroot/images/f1.ico
-  upload: webroot/images/f1\.ico
+  static_files: webroot/components/images/f1.ico
+  upload: webroot/components/images/f1\.ico
 
 - url: /(.*\.(?:ico|png))
-  static_files: webroot/images/\1
-  upload: webroot/images/.*\.(?:ico|png)
+  static_files: webroot/components/images/\1
+  upload: webroot/components/images/.*\.(?:ico|png)
 
 - url: /robots\.txt
   static_files: webroot/robots.txt
@@ -49,17 +49,17 @@ handlers:
 - url: /(feeds|pictures|preferences|referrals|sources)(/.*)?
   script: _go_app
 
-# Serve development index.html
-- url: /.*
-  static_files: webroot/dev-partials/index.html
-  upload: webroot/dev-partials/index\.html
-  expiration: "0s"
-
-# # Serve production index.html
+# # Serve development index.html
 # - url: /.*
-#   static_files: webroot/compiled-partials/index-1wgqTR.html
-#   upload: webroot/compiled-partials/index-1wgqTR\.html
-#   expiration: "1h"
+#   static_files: webroot/main/index.html
+#   upload: webroot/main/index\.html
+#   expiration: "0s"
+
+# Serve production index.html
+- url: /.*
+  static_files: webroot/compiled-index/index-1wjPku.html
+  upload: webroot/compiled-index/index-1wjPku\.html
+  expiration: "2h"
 
 # Files to skip when uploading the app to Google App Engine
 skip_files:
@@ -72,7 +72,7 @@ skip_files:
 - ^(.*/)?.*\.py[co]
 - ^(.*/)?.*/RCS/.*
 - ^(.*/)?\..*
-- ^(.*/)?webroot/components
 - ^(.*/)?webroot/dev-css
 - ^(.*/)?webroot/dev-js
 - ^(.*/)?webroot/dev-partials
+- ^/temp/

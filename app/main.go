@@ -32,7 +32,12 @@ func init() {
 	http.HandleFunc("/worker/send-feedback", workerSendFeedback)
 
 	if isDevAppServer {
-		http.HandleFunc("/dev-partials/", handleDevPartialsRequest)
+		http.HandleFunc("/donations/donations.html", handleTemplateRequest)
+		http.HandleFunc("/feedback/feedback.html", handleTemplateRequest)
+		http.HandleFunc("/settings/settings.html", handleTemplateRequest)
+		http.HandleFunc("/subreddit-list/subreddit-list.html", handleTemplateRequest)
+		http.HandleFunc("/thread-detail/thread-detail.html", handleTemplateRequest)
+		http.HandleFunc("/thread-list/thread-list.html", handleTemplateRequest)
 	}
 }
 
@@ -68,7 +73,7 @@ func handlePicturesRequest(responseWriter http.ResponseWriter, request *http.Req
 	http.Redirect(responseWriter, request, "/", http.StatusMovedPermanently)
 }
 
-func handleDevPartialsRequest(responseWriter http.ResponseWriter, request *http.Request) {
+func handleTemplateRequest(responseWriter http.ResponseWriter, request *http.Request) {
 	if !isDevAppServer {
 		http.NotFound(responseWriter, request)
 		return
@@ -158,10 +163,9 @@ func workerSendFeedback(responseWriter http.ResponseWriter, request *http.Reques
 		ReplyTo: sender,
 		Sender:  adminEmailAddress,
 		Subject: "Feedback",
-		To:      []string{adminEmailAddress},
 	}
 
-	if err := mail.Send(context, m); err != nil {
+	if err := mail.SendToAdmins(context, m); err != nil {
 		http.Error(responseWriter, err.Error(), http.StatusInternalServerError)
 	}
 }

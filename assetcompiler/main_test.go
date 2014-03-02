@@ -19,15 +19,15 @@ func TestUpdateAppYaml(t *testing.T) {
 	tempFileContent := []byte(`
 		handlers:
 		- url: /.*
-		  static_files: webroot/compiled-partials/index-0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ.html
-		  upload: webroot/compiled-partials/index-0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ\.html
+		  static_files: webroot/compiled-index/index-0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ.html
+		  upload: webroot/compiled-index/index-0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ\.html
  	`)
 
 	expectedResult := []byte(`
 		handlers:
 		- url: /.*
-		  static_files: webroot/compiled-partials/index-bar.html
-		  upload: webroot/compiled-partials/index-bar\.html
+		  static_files: webroot/compiled-index/index-bar.html
+		  upload: webroot/compiled-index/index-bar\.html
  	`)
 
 	tempFile, err := ioutil.TempFile("", "panoptikos_")
