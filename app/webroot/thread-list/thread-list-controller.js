@@ -132,7 +132,7 @@ app.controller("ThreadListController", [
 		httpPromise.error(handleRedditRequestError);
 	}
 
-	function handleRedditRequestSuccess(responseData, status, headers, config) {
+	function handleRedditRequestSuccess(responseData) {
 		redditRequestIsRunning = false;
 		var threadList = ThreadList.fromRedditThreadList(responseData) || new ThreadList();
 		var threadListItems = threadList.items;

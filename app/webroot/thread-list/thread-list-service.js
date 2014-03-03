@@ -7,7 +7,6 @@ app.factory("ThreadList", ["$log", "ThreadListItem", function($log, ThreadListIt
 	ThreadList.fromRedditThreadList = function(redditThreadList) {
 		if (!angular.isObject(redditThreadList)
 				|| !angular.isObject(redditThreadList.data)
-				|| !angular.isString(redditThreadList.data.after)
 				|| !angular.isArray(redditThreadList.data.children)) {
 			return false;
 		}
@@ -29,7 +28,7 @@ app.factory("ThreadList", ["$log", "ThreadListItem", function($log, ThreadListIt
 		}
 
 		// Fill threadList.lastThreadId
-		threadList.lastThreadId = redditThreadList.data.after;
+		threadList.lastThreadId = redditThreadList.data.after || "";
 
 		return threadList;
 	};
