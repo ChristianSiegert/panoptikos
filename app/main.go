@@ -3,6 +3,7 @@ package main
 
 import (
 	"appengine"
+	"appengine/datastore"
 	"appengine/mail"
 	"appengine/taskqueue"
 	"encoding/json"
@@ -13,6 +14,7 @@ import (
 	"net/http"
 	"regexp"
 	"strings"
+	"time"
 )
 
 var adminEmailAddress = "contact@panoptikos.com"
@@ -24,9 +26,16 @@ type Feedback struct {
 	Sender  string
 }
 
+type LegacyUrlHit struct {
+	Time      time.Time
+	Url       string
+	UserAgent string
+}
+
 func init() {
 	http.HandleFunc("/", handleRequest)
 	http.HandleFunc("/api/1/feedback", api1Feedback)
+	http.HandleFunc("/api/1/l", api1LegacyUrlHitCounter)
 	http.HandleFunc("/feeds/", handleFeedsRequest)
 	http.HandleFunc("/pictures/browse/", handlePicturesRequest)
 	http.HandleFunc("/worker/send-feedback", workerSendFeedback)
@@ -93,6 +102,33 @@ func handleTemplateRequest(responseWriter http.ResponseWriter, request *http.Req
 
 	if _, err := responseWriter.Write(fileContent); err != nil {
 		log.Printf("main: Couldn’t serve file: %s", err)
+	}
+}
+
+func api1LegacyUrlHitCounter(responseWriter http.ResponseWriter, request *http.Request) {
+	if request.Method != "POST" {
+		responseWriter.Header()["Allow"] = []string{"POST"}
+		http.Error(responseWriter, "", http.StatusMethodNotAllowed)
+		return
+	}
+
+	context := appengine.NewContext(request)
+	key := datastore.NewIncompleteKey(context, "LegacyUrlHit", nil)
+
+	urlRaw, err := ioutil.ReadAll(request.Body)
+
+	if err != nil {
+		context.Errorf("api1LegacyUrlHitCounter: Reading request body failed: %s", err)
+		return
+	}
+
+	hit := &LegacyUrlHit{}
+	hit.Time = time.Now()
+	hit.Url = string(urlRaw)
+	hit.UserAgent = request.UserAgent()
+
+	if _, err := datastore.Put(context, key, hit); err != nil {
+		context.Errorf("api1LegacyUrlHitCounter: Storing hit failed: %s", err)
 	}
 }
 
