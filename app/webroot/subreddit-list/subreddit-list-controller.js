@@ -1,4 +1,4 @@
-app.controller("SubredditListController", ["$http", "$location", "$routeParams", "$scope", function($http, $location, $routeParams, $scope) {
+app.controller("e", ["$http", "$location", "$routeParams", "$scope", function($http, $location, $routeParams, $scope) {
 	"use strict";
 
 	$scope.subreddits = [];

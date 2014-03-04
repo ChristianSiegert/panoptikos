@@ -1,3 +1,3 @@
-app.controller("DonationsController", function() {
+app.controller("a", function() {
 
 });

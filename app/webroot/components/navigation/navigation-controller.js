@@ -1,4 +1,4 @@
-app.controller("NavigationController", ["$route", "$scope", function($route, $scope) {
+app.controller("n", ["$route", "$scope", function($route, $scope) {
 	$scope.$on("$routeChangeSuccess", function() {
 		$scope.page = {};
 

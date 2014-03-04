@@ -1,4 +1,4 @@
-app.controller("SettingsController", [
+app.controller("s", [
 		"$scope", "localStorageService", "Settings",
 		function($scope, localStorageService, Settings) {
 	"use strict";

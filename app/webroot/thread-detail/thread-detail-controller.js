@@ -1,7 +1,9 @@
-app.controller("ThreadDetailController", ["$http", "$routeParams", "$scope", function($http, $routeParams, $scope) {
+app.controller("c", ["$http", "$routeParams", "$scope", function($http, $routeParams, $scope) {
 	"use strict";
 
 	var redditBaseUrl = "http://www.reddit.com";
+
+	retrieveThreadFromReddit();
 
 	function retrieveThreadFromReddit() {
 		console.log($routeParams);
@@ -26,6 +28,4 @@ app.controller("ThreadDetailController", ["$http", "$routeParams", "$scope", fun
 	function handleThreadRequestError(responseData, status, headers, config) {
 		console.log("error", responseData, status, headers, config);
 	}
-
-	retrieveThreadFromReddit();
 }]);

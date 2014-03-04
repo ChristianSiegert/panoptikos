@@ -1,4 +1,4 @@
-app.controller("ThreadListController", [
+app.controller("d", [
 		"$http", "$location", "$log", "$rootScope", "$route", "$routeParams",
 		"$scope", "$timeout", "$window", "defaultSubredditIds", "Board",
 		"BoardItem", "localStorageService", "Settings", "ThreadList", "threadProcessor",
@@ -29,6 +29,7 @@ app.controller("ThreadListController", [
 
 	// Redirect legacy URL "/:subredditIds" to "/r/:subredditIds"
 	if (!isDefaultPage && !locationPath.match(/^\/r\//)) {
+		$http.post("/api/1/l", $location.url());
 		var url = $routeParams.subredditIds ? "/r/" + $routeParams.subredditIds : "/";
 		$location.path(url);
 		return;

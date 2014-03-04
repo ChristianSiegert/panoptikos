@@ -1,3 +1,13 @@
+// Controllers:
+// 	a: DonationsController
+// 	b: FeedbackController
+// 	c: ThreadDetailController
+// 	d: ThreadListController
+// 	e: SubredditListController
+// 	f: FlashController
+// 	n: NavigationController
+//	s: SettingsController
+
 app
 	.config(["$locationProvider", function($locationProvider) {
 		$locationProvider.html5Mode(true);
@@ -6,32 +16,32 @@ app
 	.config(["$routeProvider", function($routeProvider) {
 		$routeProvider
 			.when("/donate", {
-				controller: "DonationsController",
+				controller: "a", // DonationsController
 				templateUrl: "/donations/donations.html"
 			})
 			.when("/feedback", {
-				controller: "FeedbackController",
+				controller: "b", // FeedbackController
 				templateUrl: "/feedback/feedback.html"
 			})
 			.when("/r/:subredditId/comments/:threadId/:title?", {
-				controller: "ThreadDetailController",
+				controller: "c", // ThreadDetailController
 				templateUrl: "/thread-detail/thread-detail.html"
 			})
 			.when("/r/:subredditIds/:section?", {
-				controller: "ThreadListController",
+				controller: "d", // ThreadListController
 				templateUrl: "/thread-list/thread-list.html"
 			})
 			.when("/settings", {
-				controller: "SettingsController",
+				controller: "s", // SettingsController
 				templateUrl: "/settings/settings.html"
 			})
 			.when("/subreddits/:subredditIds?", {
-				controller: "SubredditListController",
+				controller: "e", // SubredditListController
 				templateUrl: "/subreddit-list/subreddit-list.html"
 			})
 			// TODO: Check if I can remove this.
 			.when("/:subredditIds?", {
-				controller: "ThreadListController",
+				controller: "d", // ThreadListController
 				templateUrl: "/thread-list/thread-list.html"
 			})
 			.otherwise({

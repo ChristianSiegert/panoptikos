@@ -1,4 +1,4 @@
-app.controller("FeedbackController", ["$http", "$scope", "Flash", function($http, $scope, Flash) {
+app.controller("b", ["$http", "$scope", "Flash", function($http, $scope, Flash) {
 	var groupKey = "feedback";
 
 	$scope.$on("$destroy", function() {
