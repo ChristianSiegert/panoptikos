@@ -1,5 +1,4 @@
 app.constant("defaultSubredditIds", [
-	"birdpics",
 	"cityporn",
 	"earthporn",
 	"eyecandy",
