@@ -38,6 +38,7 @@ var cssCompilerArguments = []string{
 }
 
 var indexFileName = "./app/webroot/main/index.html"
+var configFilename = "./app/webroot/main/config.js"
 
 func main() {
 	token, err := base.Convert(uint64(time.Now().Unix()), base.DefaultCharacters)
@@ -139,6 +140,8 @@ func getJsFilenames(indexHtml []byte) ([]string, []byte, error) {
 	matches := jsRegExp.FindAllStringSubmatch(string(indexHtml), -1)
 	jsFilenames := make([]string, 0, len(matches))
 
+	configUrl := strings.TrimPrefix(configFilename, "./app/webroot")
+
 	for _, match := range matches {
 		url := match[1]
 
@@ -149,7 +152,7 @@ func getJsFilenames(indexHtml []byte) ([]string, []byte, error) {
 			return nil, nil, fmt.Errorf("main: Searching for external URLs failed: %s", err)
 		}
 
-		if url == "/main/config.js" {
+		if url == configUrl {
 			var err error
 			url, err = compileConfig(url)
 
