@@ -1,0 +1,3 @@
+blacklist:
+- subnet: 2a02:2658:1011:1::2:3083
+  description: Wget feed fetcher
