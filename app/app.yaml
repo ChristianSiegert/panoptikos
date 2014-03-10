@@ -6,6 +6,16 @@ api_version: go1
 # Set default expiration for static files to 7 days
 default_expiration: "7d"
 
+error_handlers:
+  - error_code: dos_api_denial
+    file: error-pages/dos-api-denial.html
+
+  - error_code: over_quota
+    file: error-pages/over-quota.html
+
+  - error_code: timeout
+    file: error-pages/timeout.html
+
 handlers:
 # # Allow access to development CSS and JS files locally.
 # # Development CSS and JS files are not uploaded. See skip_files below.
