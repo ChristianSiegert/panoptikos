@@ -1,8 +1,15 @@
 app.controller("e", ["$http", "$location", "$routeParams", "$scope", function($http, $location, $routeParams, $scope) {
 	"use strict";
 
-	$scope.subreddits = [];
+	function Subreddit(subredditId, isChecked) {
+		this.id = subredditId || "";
+		this.isChecked = isChecked || false;
+		this.name = subredditId || "";
+	}
 
+	$scope.name = "";
+	$scope.subreddits = [];
+	$scope.isValidName = true;
 	var subredditIds = $routeParams.subredditIds ? $routeParams.subredditIds.split("+") : [];
 
 	for (var i = 0, subredditCount = subredditIds.length; i < subredditCount; i++) {
@@ -10,10 +17,29 @@ app.controller("e", ["$http", "$location", "$routeParams", "$scope", function($h
 		$scope.subreddits.push(subreddit);
 	}
 
-	$scope.viewSubreddits = function() {
+	$scope.allAreSelected = true;
+
+	$scope.selectAll = function() {
+		for (var i = 0, count = $scope.subreddits.length; i < count; i++) {
+			$scope.subreddits[i].isChecked = $scope.allAreSelected;
+		}
+	};
+
+	$scope.toggle = function() {
+		for (var i = 0, count = $scope.subreddits.length; i < count; i++) {
+			if (!$scope.subreddits[i].isChecked) {
+				$scope.allAreSelected = false;
+				return;
+			}
+		}
+
+		$scope.allAreSelected = true;
+	};
+
+	$scope.view = function() {
 		var subredditIdsOfSelectedSubreddits = [];
 
-		for (var i = 0, subredditCount = $scope.subreddits.length; i < subredditCount; i++) {
+		for (var i = 0, count = $scope.subreddits.length; i < count; i++) {
 			if ($scope.subreddits[i].isChecked) {
 				subredditIdsOfSelectedSubreddits.push($scope.subreddits[i].id);
 			}
@@ -22,21 +48,46 @@ app.controller("e", ["$http", "$location", "$routeParams", "$scope", function($h
 		$location.path("/r/" + subredditIdsOfSelectedSubreddits.join("+"));
 	};
 
-	$scope.addSubreddit = function(event) {
+	$scope.add = function() {
+		$scope.err = "";
+
+		if (!isSubredditName($scope.name)) {
+			$scope.err = "This is not a valid subreddit name.";
+		} else if (isDuplicate($scope.name)) {
+			$scope.err = "This subreddit already exists in your list.";
+		}
+
+		if ($scope.err) {
+			return;
+		}
+
+		var subreddit = new Subreddit($scope.name, true);
+		$scope.subreddits.push(subreddit);
+
+		$scope.name = "";
+	};
+
+	$scope.addWithKeyboard = function(event) {
 		if (event.keyCode !== 13) {
 			return;
 		}
 
-		var subreddit = new Subreddit(event.target.value, true);
-		$scope.subreddits.push(subreddit);
-
-		event.target.value = "";
+		$scope.add();
 	};
 
-	function Subreddit(subredditId, isChecked) {
-		this.id = subredditId || "";
-		this.isChecked = isChecked || false;
-		this.name = subredditId || "";
+	function isSubredditName(name) {
+		var subredditNameRegExp = /^[A-Za-z0-9][A-Za-z0-9_]{2,20}$/;
+		return name.match(subredditNameRegExp);
+	}
+
+	function isDuplicate() {
+		for (var i = 0, count = $scope.subreddits.length; i < count; i++) {
+			if ($scope.subreddits[i].id === $scope.name) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	// var redditBaseUrl = "http://www.reddit.com";

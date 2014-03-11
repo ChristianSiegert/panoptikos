@@ -5,17 +5,31 @@
 <p>Tip: After you created your list of favorite subreddits and clicked on “View subreddits”, you can bookmark the URL in your browser for quick access.</p>
 
 <ul id="subreddit-list">
-	<li class="subreddit-list-item" ng-repeat="subreddit in subreddits">
-		<input type="checkbox" id="subreddit-{{subreddit.id}}" name="{{subreddit.name}}" value="/r/{{subreddit.id}}" ng-checked="subreddit.isChecked" ng-model="subreddit.isChecked">
-		<label for="subreddit-{{subreddit.id}}">{{subreddit.name}}</label>
+	<li class="subreddit-list-item">
+		<input id="a" ng-change="selectAll()" ng-model="allAreSelected" type="checkbox">
+		<label for="a">Select all</label>
+	</li>
+
+	<li class="subreddit-list-item" ng-repeat="s in subreddits">
+		<input id="s{{$index}}" name="{{s.name}}" ng-change="toggle()" ng-model="s.isChecked" type="checkbox" value="/r/{{s.id}}">
+		<label for="s{{$index}}">/r/{{s.name}}</label>
 	</li>
 
 	<li ng-if="!subreddits.length">Please add one or more subreddits.</li>
 </ul>
 
 <ul>
-	<li class="inline-list-item"><input type="text" ng-keyup="addSubreddit($event)" placeholder="Enter subreddit and press return"></li>
-	<li class="inline-list-item"><button ng-click="viewSubreddits()">View subreddits</button></li>
+	<li>
+		<input class="short" ng-keyup="addWithKeyboard($event)" ng-model="name" placeholder="Subreddit" type="text">
+		<button ng-click="add()">Add</button>
+	</li>
+
+	<li ng-if="err">{{err}}</li>
+
+	<li>
+		<br>
+		<button ng-click="view()">View subreddits</button>
+	</li>
 </ul>
 
 <!--

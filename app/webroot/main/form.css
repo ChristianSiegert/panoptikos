@@ -22,7 +22,7 @@ button {
 	padding: 0.6rem 1.8rem;
 	text-decoration: none;
 	text-shadow: 1px 1px 0 rgba(255, 255, 255, 0.5);
-	vertical-align: text-bottom;
+	vertical-align: middle;
 
 	-webkit-border-radius: 6px;
 	   -moz-border-radius: 6px;
@@ -72,17 +72,27 @@ textarea {
 	border-width: 0;
 	color: #767676;
 	outline: none;
-	margin: 0 0 10px; /* @alternate */
-	margin: 0 0 1rem;
+	margin: 0 10px 10px 0; /* @alternate */
+	margin: 0 1rem 1rem 0;
 	max-width: 600px;
 	padding: 8px 8px 6px; /* @alternate */
 	padding: 0.8rem 0.8rem 0.6rem;
 	text-shadow: 1px 1px #FFF; /* @alternate */
 	text-shadow: 0.1rem 0.1rem #FFF;
+	vertical-align: middle;
 	width: 100%;
 
 	-webkit-box-shadow: inset 0 1px 3px #CCC;
 	        box-shadow: inset 0 1px 3px #CCC;
+}
+
+input:last-child,
+textarea:last-child {
+	margin-right: 0;
+}
+
+input[type=text].short {
+	max-width: 300px;
 }
 
 input:focus,
@@ -91,7 +101,7 @@ textarea:focus {
 	color: #818181;
 }
 
-input[type="checkbox"] {
+input[type=checkbox] {
 	-webkit-appearance: checkbox;
 	margin: 0 5px 2px 0; /* @alternate */
 	margin: 0 0.5rem 0.2rem 0;
@@ -105,11 +115,11 @@ label {
 	margin: 0 0 0.2rem;
 }
 
-	input[type="checkbox"] + label {
+	input[type=checkbox] + label {
 		font-weight: normal;
 	}
 
-	input[type="checkbox"][disabled] + label {
+	input[type=checkbox][disabled] + label {
 		color: #999;
 	}
 
