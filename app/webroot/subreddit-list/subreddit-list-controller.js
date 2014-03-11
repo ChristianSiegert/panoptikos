@@ -1,5 +1,9 @@
-app.controller("e", ["$http", "$location", "$routeParams", "$scope", function($http, $location, $routeParams, $scope) {
+app.controller("e", [
+		"$http", "$location", "$routeParams", "$scope", "Flash",
+		function($http, $location, $routeParams, $scope, Flash) {
 	"use strict";
+
+	var groupKey = "subredditList";
 
 	function Subreddit(subredditId, isChecked) {
 		this.id = subredditId || "";
@@ -7,6 +11,7 @@ app.controller("e", ["$http", "$location", "$routeParams", "$scope", function($h
 		this.name = subredditId || "";
 	}
 
+	$scope.allAreSelected = true;
 	$scope.name = "";
 	$scope.subreddits = [];
 	$scope.isValidName = true;
@@ -17,7 +22,9 @@ app.controller("e", ["$http", "$location", "$routeParams", "$scope", function($h
 		$scope.subreddits.push(subreddit);
 	}
 
-	$scope.allAreSelected = true;
+	$scope.$on("$destroy", function() {
+		Flash.ClearAll(groupKey);
+	});
 
 	$scope.selectAll = function() {
 		for (var i = 0, count = $scope.subreddits.length; i < count; i++) {
@@ -26,6 +33,8 @@ app.controller("e", ["$http", "$location", "$routeParams", "$scope", function($h
 	};
 
 	$scope.toggle = function() {
+		Flash.ClearErrorMessages(groupKey);
+
 		for (var i = 0, count = $scope.subreddits.length; i < count; i++) {
 			if (!$scope.subreddits[i].isChecked) {
 				$scope.allAreSelected = false;
@@ -37,24 +46,33 @@ app.controller("e", ["$http", "$location", "$routeParams", "$scope", function($h
 	};
 
 	$scope.view = function() {
-		var subredditIdsOfSelectedSubreddits = [];
+		var idsOfSelectedSubreddits = [];
 
 		for (var i = 0, count = $scope.subreddits.length; i < count; i++) {
 			if ($scope.subreddits[i].isChecked) {
-				subredditIdsOfSelectedSubreddits.push($scope.subreddits[i].id);
+				idsOfSelectedSubreddits.push($scope.subreddits[i].id);
 			}
 		}
 
-		$location.path("/r/" + subredditIdsOfSelectedSubreddits.join("+"));
+		if (!idsOfSelectedSubreddits.length) {
+			Flash.ClearErrorMessages(groupKey);
+			Flash.AddErrorMessage("Please select at least one subreddit.", groupKey);
+			return;
+		}
+
+		$location.path("/r/" + idsOfSelectedSubreddits.join("+"));
 	};
 
 	$scope.add = function() {
+		Flash.ClearErrorMessages(groupKey);
 		$scope.err = "";
 
 		if (!isSubredditName($scope.name)) {
 			$scope.err = "This is not a valid subreddit name.";
 		} else if (isDuplicate($scope.name)) {
 			$scope.err = "This subreddit already exists in your list.";
+		} else if (urlIsTooLong($scope.name)) {
+			$scope.err = "You can’t add any more subreddits as the URL would get too long.";
 		}
 
 		if ($scope.err) {
@@ -67,7 +85,9 @@ app.controller("e", ["$http", "$location", "$routeParams", "$scope", function($h
 		$scope.name = "";
 	};
 
-	$scope.addWithKeyboard = function(event) {
+	$scope.keyUp = function(event) {
+		$scope.err = "";
+
 		if (event.keyCode !== 13) {
 			return;
 		}
@@ -80,14 +100,27 @@ app.controller("e", ["$http", "$location", "$routeParams", "$scope", function($h
 		return name.match(subredditNameRegExp);
 	}
 
-	function isDuplicate() {
+	function isDuplicate(name) {
 		for (var i = 0, count = $scope.subreddits.length; i < count; i++) {
-			if ($scope.subreddits[i].id === $scope.name) {
+			if ($scope.subreddits[i].id === name) {
 				return true;
 			}
 		}
 
 		return false;
+	}
+
+	function urlIsTooLong(name) {
+		var idsOfSelectedSubreddits = [name];
+
+		for (var i = 0, count = $scope.subreddits.length; i < count; i++) {
+			if ($scope.subreddits[i].isChecked) {
+				idsOfSelectedSubreddits.push($scope.subreddits[i].id);
+			}
+		}
+
+		var url = "/subreddits/" + idsOfSelectedSubreddits.join("+");
+		return url.length > 2047;
 	}
 
 	// var redditBaseUrl = "http://www.reddit.com";

@@ -20,11 +20,11 @@
 
 <ul>
 	<li>
-		<input class="short" ng-keyup="addWithKeyboard($event)" ng-model="name" placeholder="Subreddit" type="text">
+		<input class="short" ng-keyup="keyUp($event)" ng-model="name" placeholder="Subreddit" type="text">
 		<button ng-click="add()">Add</button>
 	</li>
 
-	<li ng-if="err">{{err}}</li>
+	<li class="inline-error" ng-if="err">{{err}}</li>
 
 	<li>
 		<br>
