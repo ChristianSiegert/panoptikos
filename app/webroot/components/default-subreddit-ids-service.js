@@ -1,7 +1,6 @@
 app.constant("defaultSubredditIds", [
-	"cityporn",
-	"earthporn",
-	"eyecandy",
+	"CityPorn",
+	"EarthPorn",
 	"ExposurePorn",
 	"lakeporn",
 	"wallpaper",
