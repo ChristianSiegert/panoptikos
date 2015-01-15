@@ -1,5 +1,5 @@
 application: panoptikos3
-version: 2014-03-01-1
+version: 2014-03-12-0
 runtime: go
 api_version: go1
 
@@ -67,9 +67,9 @@ handlers:
 
 # Serve production index.html
 - url: /.*
-  static_files: webroot/compiled-index/index-1wjPku.html
-  upload: webroot/compiled-index/index-1wjPku\.html
-  expiration: "2h"
+  static_files: webroot/compiled-index/index-1wnv54.html
+  upload: webroot/compiled-index/index-1wnv54\.html
+  expiration: "6h"
 
 # Files to skip when uploading the app to Google App Engine
 skip_files:
@@ -85,4 +85,4 @@ skip_files:
 - ^(.*/)?webroot/dev-css
 - ^(.*/)?webroot/dev-js
 - ^(.*/)?webroot/dev-partials
-- ^/temp/
+- ^temp/
