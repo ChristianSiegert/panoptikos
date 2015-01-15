@@ -2,7 +2,7 @@
 
 Panoptikos is an image viewer for Reddit. You can see it in action at [panoptikos.com](http://www.panoptikos.com/).
 
-The server-side code is written in Go, the client-side in JavaScript with [AngularJS](http://angularjs.org/). Panoptikos is hosted on [Google App Engine](https://developers.google.com/appengine/).
+The server-side code is written in Go, the client-side code in JavaScript with [AngularJS](http://angularjs.org/). Panoptikos is hosted on [Google App Engine](https://developers.google.com/appengine/).
 
 ## Table of Contents
 
@@ -97,3 +97,19 @@ The rules for compiling assets are:
 	```
 
 	You may have to adjust the path to the standard Go binary if you don’t develop on a Mac.
+
+### History
+
+I started developing Panoptikos in 2010. Back then it was written in PHP and served by an Apache webserver. I used [MooTools](http://mootools.net/) as JavaScript library and [CouchDB](https://couchdb.apache.org/) as database. When I introduced Panoptikos to Reddit, it was very well received. I kept working on it, added features, made it pretty. It grew steadily, both in terms of unique users per month and data stored on the server.
+
+After about two years of steady growth I had to shut it off. I simply couldn’t pay for it anymore. What started on a single, entry-level Linode, grew to three medium Linodes and eventually moved to one massive server. Sadly, it could have been prevented.
+
+The architecture of Panoptikos proved to be not scalable. In contrast to today, users could only browse through a very limited number of subreddits on the early Panoptikos. Instead of fetching content from Reddit with JavaScript everytime a user visited Panoptikos, users saw a copy and slightly older version of Reddit. A cron job ran every half hour, fetched the list of threads for the around 100 subreddits, downloaded the linked images, resized and saved them as preview images (thumbnails) and then displayed them.
+
+### Goal
+
+I started rewriting Panoptikos from scratch so I could:
+
+* Use Google’s free hosting on Google App Engine
+* Learn Go
+* Learn AngularJS
