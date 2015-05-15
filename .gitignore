@@ -27,4 +27,3 @@ panoptikos
 *.sublime-project
 *.sublime-workspace
 app/temp/
-app/webroot/compiled-index/
