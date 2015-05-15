@@ -11,12 +11,10 @@ button {
 	border: 1px solid #DCDCDC;
 	color: #585858;
 	cursor: pointer;
-	font-family: "Alegreya Sans", "Ubuntu", "DejaVu Sans", "Arial", sans-serif;
-	font-size: 17px; /* @alternate */
-	font-size: 1.7rem;
-	font-weight: bold;
-	margin: 0 0 10px; /* @alternate */
-	margin: 0 0 1rem;
+	font-family: "Roboto", "Ubuntu", "DejaVu Sans", "Arial", sans-serif;
+	font-size: 15px; /* @alternate */
+	font-size: 1.5rem;
+	margin: 0;
 	outline: none;
 	padding: 6px 18px; /* @alternate */
 	padding: 0.6rem 1.8rem;
@@ -27,10 +25,6 @@ button {
 	-webkit-border-radius: 6px;
 	   -moz-border-radius: 6px;
 	        border-radius: 6px;
-
-	-webkit-box-shadow: 0 -1px 0 0 rgba(146, 102, 102, 0.2) inset;
-	   -moz-box-shadow: 0 -1px 0 0 rgba(146, 102, 102, 0.2) inset;
-	        box-shadow: 0 -1px 0 0 rgba(146, 102, 102, 0.2) inset;
 }
 
 button:hover {
@@ -67,8 +61,7 @@ textarea {
 	-webkit-appearance: none;
 	-webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 	background-color: #F1F1F2;
-	border-radius: 4px; /* @alternate */
-	border-radius: 0.4rem;
+	border-radius: 0.3rem;
 	border-width: 0;
 	color: #767676;
 	outline: none;
@@ -82,8 +75,8 @@ textarea {
 	vertical-align: middle;
 	width: 100%;
 
-	-webkit-box-shadow: inset 0 1px 3px #CCC;
-	        box-shadow: inset 0 1px 3px #CCC;
+	-webkit-box-shadow: inset 0 1px 1px #CCC;
+	        box-shadow: inset 0 1px 1px #CCC;
 }
 
 input:last-child,
@@ -97,7 +90,7 @@ input[type=text].short {
 
 input:focus,
 textarea:focus {
-	background-color: #EAEAEA;
+	background-color: #F3F3F4;
 	color: #818181;
 }
 
@@ -110,9 +103,10 @@ input[type=checkbox] {
 
 label {
 	display: inline-block;
-	font-weight: bold;
-	margin: 0 0 2px; /* @alternate */
-	margin: 0 0 0.2rem;
+	font-size: 14px; /* @alternate */
+	font-size: 1.4rem;
+	margin: 0 0 3px; /* @alternate */
+	margin: 0 0 0.3rem;
 }
 
 	input[type=checkbox] + label {

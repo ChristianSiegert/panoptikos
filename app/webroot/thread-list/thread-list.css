@@ -1,3 +1,24 @@
+@media (max-width: 480px) {
+	#foo button {
+		padding-left: 1rem;
+		padding-right: 1rem;
+	}
+}
+
+@media (max-width: 383px) {
+	#foo button {
+		padding-left: 0.8rem;
+		padding-right: 0.8rem;
+	}
+}
+
+@media (max-width: 350px) {
+	#foo button {
+		padding-left: 0.6rem;
+		padding-right: 0.6rem;
+	}
+}
+
 #board {
 	line-height: 0;
 	margin: 5px 0 0 0;
@@ -30,9 +51,9 @@
 			overflow: hidden;
 			text-align: left;
 
-			-webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
-			   -moz-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
-			        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+			-webkit-box-shadow: 0 0.1rem 0.1rem rgba(0, 0, 0, 0.2);
+			   -moz-box-shadow: 0 0.1rem 0.1rem rgba(0, 0, 0, 0.2);
+			        box-shadow: 0 0.1rem 0.1rem rgba(0, 0, 0, 0.2);
 		}
 
 			.board-item-image-anchor {
@@ -73,8 +94,8 @@
 				.board-item-info-cell {
 					color: #333;
 					display: table-cell;
-					font-size: 14px; /* @alternate */
-					font-size: 1.4rem;
+					font-size: 13px; /* @alternate */
+					font-size: 1.3rem;
 					height: 16px; /* @alternate */
 					height: 1.6rem;
 					line-height: 16px; /* @alternate */

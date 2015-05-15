@@ -33,8 +33,13 @@ var cssCompilerArguments = []string{
 	// we use or else Closure Stylesheets won’t compile our CSS.
 	"--allowed-non-standard-function", "color-stop",
 	"--allowed-non-standard-function", "progid:DXImageTransform.Microsoft.gradient",
+	"--allowed-unrecognized-property", "-ms-flex",
+	"--allowed-unrecognized-property", "-ms-flex-wrap",
+	"--allowed-unrecognized-property", "-webkit-align-items",
 	"--allowed-unrecognized-property", "-webkit-flex",
+	"--allowed-unrecognized-property", "align-items",
 	"--allowed-unrecognized-property", "flex",
+	"--allowed-unrecognized-property", "flex-wrap",
 }
 
 var indexFileName = "./app/webroot/main/index.html"

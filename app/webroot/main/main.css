@@ -1,24 +1,18 @@
 *, *:before, *:after {
-	/* Firefox (desktop or Android) 28- */
-	-moz-box-sizing: border-box;
-
-	/* Chrome 9-, Safari 5-, iOS 4.2-, Android 3-, Blackberry 7- */
 	-webkit-box-sizing: border-box;
-
-	/* Firefox 29+, IE 8+, Chrome 10+, Safari 5.1+, Opera 9.5+, iOS 5+, Opera Mini Anything, Blackberry 10+, Android 4+ */
-	box-sizing: border-box;
+	   -moz-box-sizing: border-box;
+	        box-sizing: border-box;
 }
 
 html {
 	background: #F9F9F9; /* @alternate */
-	background: -webkit-linear-gradient(to top, #F7F7F7, #F9F9F9) fixed; /* @alternate */
-	background:    -moz-linear-gradient(to top, #F7F7F7, #F9F9F9) fixed; /* @alternate */
-	background:     -ms-linear-gradient(to top, #F7F7F7, #F9F9F9) fixed; /* @alternate */
-	background:         linear-gradient(to top, #F7F7F7, #F9F9F9) fixed;
-	color: #333;
-	font-family: "Alegreya Sans", "Ubuntu", "DejaVu Sans", "Lucida Grande", sans-serif;
+	background: -webkit-linear-gradient(#F9F9F9, #F7F7F7) fixed; /* @alternate */
+	background:    -moz-linear-gradient(#F9F9F9, #F7F7F7) fixed; /* @alternate */
+	background:     -ms-linear-gradient(#F9F9F9, #F7F7F7) fixed; /* @alternate */
+	background:         linear-gradient(#F9F9F9, #F7F7F7) fixed;
+	color: #282828;
+	font-family: "Roboto", "Ubuntu", "DejaVu Sans", "Lucida Grande", sans-serif;
 	font-size: 62.5%;
-	font-size-adjust: 0.46;
 
 	/* Show scrollbar right away so the available width for our board remains the same when images are added. */
 	overflow-y: scroll;
@@ -28,8 +22,8 @@ html {
 }
 
 body {
-	font-size: 16px; /* @alternate */
-	font-size: 1.6rem;
+	font-size: 14px; /* @alternate */
+	font-size: 1.4rem;
 }
 
 a {
@@ -48,18 +42,25 @@ h4,
 h5,
 h6 {
 	font-size: 100%;
-	font-weight: bold;
+	font-weight: normal;
+	line-height: 1.7;
+	margin: 5px 0 3px; /* @alternate */
 	margin: 0.5em 0 0.3em;
+	word-wrap: break-word;
 }
 
 h1 {
-	font-size: 37.5px; /* @alternate */
-	font-size: 3.75rem;
+	font-size: 29px; /* @alternate */
+	font-size: 2.9rem;
+	font-weight: 300;
 }
 
 p {
+	line-height: 130%;
 	margin: 0 0 10px; /* @alternate */
 	margin: 0 0 1rem;
+	max-width: 728px;
+	word-wrap: break-word;
 }
 
 .inline-list {
@@ -103,82 +104,125 @@ table {
 			border-right: none;
 		}
 
-#content {
-	margin: 15px 20px; /* @alternate */
-	margin: 1.5rem 2rem;
-}
-
-@media (max-width: 768px) {
-	#content {
-		margin: 10px; /* @alternate */
-		margin: 1rem;
-	}
-}
-
-@media (max-width: 360px) {
-	#content {
-		margin: 5px; /* @alternate */
-		margin: 0.5rem;
-	}
-}
-
 #nav-list {
-	-webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-	background: #FFF;
-	box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-	display: -webkit-flex;
+	display: -webkit-flex; /* @alternate */
+	display:     -ms-flexbox; /* @alternate */
 	display:         flex;
-	padding: 0 20px;
+	font-size: 15px; /* @alternate */
+	font-size: 1.5rem;
+	margin: 5px 0; /* @alternate */
+	margin: 0.5rem 0;
+	padding: 0 13px; /* @alternate */
+	padding: 0 1.3rem;
+
+	-webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+
+	-webkit-flex-wrap: wrap;
+	    -ms-flex-wrap: wrap;
+	        flex-wrap: wrap;
 }
 
 	.nav-list-item {
 		display: inline-block;
+		margin: 0 5px 0 0; /* @alternate */
+		margin: 0 0.5rem 0 0;
+	}
+
+	.nav-list-item:last-child {
+		margin-right: 0;
 	}
 
 	.nav-list-item-flex {
-		text-align: right;
-
-		-webkit-flex: auto;
-		        flex: auto;
+		-webkit-flex: 1 0 auto;
+		    -ms-flex: 1 0 auto;
+		        flex: 1 0 auto;
 	}
 
 		.nav-link,
 		.nav-link:visited {
 			color: #333;
 			display: inline-block;
-			font-weight: bold;
-			padding: 10px; /* @alternate */
-			padding: 1rem;
+			padding: 7px 10px; /* @alternate */
+			padding: 0.7rem 1rem;
 			text-transform: uppercase;
 		}
 
+		.nav-link.active,
 		.nav-link:hover {
-			color: #FFF;
-			background-color: #FD726E;
+			color: #E83A41;
 		}
 
-		.nav-link.active {
-			color: #FFF;
-			background-color: #FD726E;
+#content {
+	margin: 0 20px 15px; /* @alternate */
+	margin: 0 2rem 1.5rem;
+}
+
+.flex-list {
+	display: -webkit-flex;
+	display:     -ms-flexbox;
+	display:         flex;
+	margin-right: -10px; /* @alternate */
+	margin-right: -1rem;
+
+	-webkit-align-items: center;
+	        align-items: center;
+
+	-webkit-flex-wrap: wrap;
+	    -ms-flex-wrap: wrap;
+	        flex-wrap: wrap;
+}
+
+	/* Fallback for IE 9- as they don’t support flex behavior. */
+	.flex-list-item {
+		display: inline-block;
+		margin: 0 10px 10px 0; /* @alternate */
+		margin: 0 1rem 1rem 0;
+	}
+
+	.flex-list-item > :last-child {
+		margin-bottom: 0;
+		margin-right: 0;
+	}
+
+		.flex {
+			-webkit-flex: 1 0 auto;
+			    -ms-flex: 1 0 auto;
+			        flex: 1 0 auto;
 		}
 
-@media (max-width: 768px) {
-	#nav-list {
-		padding: 0 10px;
+/* Increase font size on mobile devices. */
+@media (max-width: 1024px) {
+	html {
+		font-size: 67.3077%;
 	}
 }
 
-@media (max-width: 450px) {
-	#nav-list {
-		display: block;
+/* Reduce margins on mobile phones. */
+@media (max-width: 480px) {
+	#content {
+		margin-left: 1rem;
+		margin-right: 1rem;
 	}
+
+	#nav-list {
+		padding-left: 0.7rem;
+		padding-right: 0.7rem;
+	}
+
+		.nav-link {
+			padding-left: 0.3rem;
+			padding-right: 0.3rem;
+		}
 }
 
-@media (max-width: 360px) {
+@media (max-width: 384px) {
 	#nav-list {
 		display: block;
-		padding: 0 5px;
 	}
+
+		.nav-list-item {
+			margin-right: 0.3rem;
+		}
 }
 
 #no-js {
