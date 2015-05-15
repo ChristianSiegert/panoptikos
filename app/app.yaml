@@ -1,5 +1,5 @@
 application: panoptikos3
-version: 2015-05-16-0
+version: 2015-05-16-1
 runtime: go
 api_version: go1
 
@@ -17,6 +17,7 @@ error_handlers:
     file: error-pages/timeout.html
 
 handlers:
+# # UNCOMMENT THIS BLOCK TO ENABLE DEVELOPMENT MODE.
 # # Allow access to development CSS and JS files locally.
 # # Development CSS and JS files are not uploaded. See skip_files below.
 # - url: /(.*\.(?:css|js))
@@ -24,6 +25,7 @@ handlers:
 #   upload: webroot/(.*\.(?:css|js))
 #   expiration: "0s"
 
+# # UNCOMMENT THIS BLOCK TO ENABLE DEVELOPMENT MODE.
 # # Allow access to development HTML template files locally.
 # # Development HTML template files are not uploaded. See skip_files below.
 # - url: /.*\.html
@@ -59,12 +61,14 @@ handlers:
 - url: /(feeds|pictures|preferences|referrals|sources)(/.*)?
   script: _go_app
 
+# # UNCOMMENT THIS BLOCK TO ENABLE DEVELOPMENT MODE.
 # # Serve development index.html
 # - url: /.*
 #   static_files: webroot/main/index.html
 #   upload: webroot/main/index\.html
 #   expiration: "0s"
 
+# COMMENT THIS BLOCK TO DISABLE PRODUCTION MODE.
 # Serve production index.html
 - url: /.*
   static_files: webroot/compiled-index/index-1yTogK.html
