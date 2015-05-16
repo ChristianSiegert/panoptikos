@@ -116,6 +116,9 @@ table {
 	padding: 0 13px; /* @alternate */
 	padding: 0 1.3rem;
 
+	-webkit-align-items: baseline;
+	        align-items: baseline;
+
 	-webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 
 	-webkit-flex-wrap: wrap;
@@ -151,6 +154,29 @@ table {
 		.nav-link.active,
 		.nav-link:hover {
 			color: #E83A41;
+		}
+
+		.nav-link-patreon {
+			color: #8B8B8B !important;
+			font-size: 13px; /* @alternate */
+			font-size: 1.3rem;
+			text-transform: none;
+		}
+
+		.nav-link-patreon:hover {
+			color: #E83A41 !important;
+		}
+
+		.nav-link-patreon::after {
+			/* Inlined image is ic_open_in_new_24px.svg */
+			background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0Ij48cGF0aCBkPSJNMTkgMTlINVY1aDdWM0g1Yy0xLjExIDAtMiAuOS0yIDJ2MTRjMCAxLjEuODkgMiAyIDJoMTRjMS4xIDAgMi0uOSAyLTJ2LTdoLTJ2N3pNMTQgM3YyaDMuNTlsLTkuODMgOS44MyAxLjQxIDEuNDFMMTkgNi40MVYxMGgyVjNoLTd6IiBmaWxsPSIjOEI4QjhCIi8+PC9zdmc+");
+			background-repeat: no-repeat;
+			background-size: 1.2rem;
+			content: "";
+			display: inline-block;
+			height: 1.2rem;
+			margin: 0 0 -0.1rem 0.2rem;
+			width: 1.2rem;
 		}
 
 #content {
@@ -214,6 +240,12 @@ table {
 			padding-left: 0.3rem;
 			padding-right: 0.3rem;
 		}
+}
+
+@media (min-width: 430px) and (max-width: 600px) {
+	.nav-link-patreon {
+		display: none;
+	}
 }
 
 @media (max-width: 384px) {
