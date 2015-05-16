@@ -71,8 +71,8 @@ handlers:
 # COMMENT THIS BLOCK TO DISABLE PRODUCTION MODE.
 # Serve production index.html
 - url: /.*
-  static_files: webroot/compiled-index/index-1yTogK.html
-  upload: webroot/compiled-index/index-1yTogK\.html
+  static_files: webroot/compiled-index/index-1yTGdy.html
+  upload: webroot/compiled-index/index-1yTGdy\.html
   expiration: "6h"
 
 # Files to skip when uploading the app to Google App Engine
