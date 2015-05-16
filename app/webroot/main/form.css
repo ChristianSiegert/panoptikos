@@ -1,3 +1,10 @@
+button,
+input,
+select,
+textarea {
+	text-rendering: geometricPrecision;
+}
+
 button {
 	-webkit-appearance: none;
 	-webkit-tap-highlight-color: rgba(0, 0, 0, 0);
