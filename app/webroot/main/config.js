@@ -14,6 +14,8 @@ app
 	}])
 
 	.config(["$routeProvider", function($routeProvider) {
+		// If you add a route, make sure the templateUrl is accessible in
+		// development mode by adding it also in main.go’s init function.
 		$routeProvider
 			.when("/donate", {
 				controller: "a", // DonationsController
@@ -38,6 +40,10 @@ app
 			.when("/subreddits/:subredditIds?", {
 				controller: "e", // SubredditListController
 				templateUrl: "/subreddit-list/subreddit-list.html"
+			})
+			.when("/supporters", {
+				controller: "supportersController",
+				templateUrl: "/supporters/supporters.html"
 			})
 			// TODO: Check if I can remove this.
 			.when("/:subredditIds?", {

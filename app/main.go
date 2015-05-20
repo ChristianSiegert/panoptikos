@@ -1,4 +1,4 @@
-// Package main only handles some legacy URLs.
+// Package main handles requests to templates and to legacy URLs.
 package main
 
 import (
@@ -36,6 +36,7 @@ func init() {
 		http.HandleFunc("/feedback/feedback.html", handleTemplateRequest)
 		http.HandleFunc("/settings/settings.html", handleTemplateRequest)
 		http.HandleFunc("/subreddit-list/subreddit-list.html", handleTemplateRequest)
+		http.HandleFunc("/supporters/supporters.html", handleTemplateRequest)
 		http.HandleFunc("/thread-detail/thread-detail.html", handleTemplateRequest)
 		http.HandleFunc("/thread-list/thread-list.html", handleTemplateRequest)
 	}

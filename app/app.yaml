@@ -1,5 +1,5 @@
 application: panoptikos3
-version: 2015-05-16-1
+version: 2015-05-20-0
 runtime: go
 api_version: go1
 
@@ -71,8 +71,8 @@ handlers:
 # COMMENT THIS BLOCK TO DISABLE PRODUCTION MODE.
 # Serve production index.html
 - url: /.*
-  static_files: webroot/compiled-index/index-1yTGdy.html
-  upload: webroot/compiled-index/index-1yTGdy\.html
+  static_files: webroot/compiled-index/index-1yUW9B.html
+  upload: webroot/compiled-index/index-1yUW9B\.html
   expiration: "6h"
 
 # Files to skip when uploading the app to Google App Engine

@@ -6,7 +6,6 @@ app.controller("n", ["$route", "$scope", function($route, $scope) {
 			return;
 		}
 
-		var controllerName = $route.current.controller.replace(/Controller$/, "");
-		$scope.p[controllerName] = true;
+		$scope.p[$route.current.controller] = true;
 	});
 }]);
