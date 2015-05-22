@@ -1,0 +1,16 @@
+#supporter-table {
+	display: table;
+}
+
+	.supporter-table-row {
+		display: table-row;
+	}
+
+		.supporter-table-cell {
+			display: inline-block; /* @alternate */
+			display: table-cell;
+		}
+
+		.supporter-table-cell:first-child {
+			padding-right: 1rem;
+		}
