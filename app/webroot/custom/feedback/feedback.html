@@ -2,12 +2,12 @@
 
 <p>Tell me what you like about Panoptikos or what it could do better.</p>
 
-<form ng-submit="submit()">
+<form id="form">
 	<ul>
 		<li><label for="sender">Your e-mail address (optional):</label></li>
-		<li><input id="sender" ng-model="sender" placeholder="E-mail address (optional)" type="email"></li>
+		<li><input id="sender" placeholder="E-mail address" type="email"></li>
 		<li><label for="message">Message:</label></li>
-		<li><textarea id="message" maxlength="16384" ng-model="message" placeholder="Message" required></textarea></li>
+		<li><textarea id="message" maxlength="10000" placeholder="Message" required></textarea></li>
 		<li><button type="submit">Send feedback</button></li>
 	</ul>
 </form>

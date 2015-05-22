@@ -5,7 +5,8 @@ textarea {
 	text-rendering: geometricPrecision;
 }
 
-button {
+button,
+.button {
 	-webkit-appearance: none;
 	-webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 	background: #F6F6F6; /* @alternate */
@@ -14,10 +15,10 @@ button {
 	background:    -moz-linear-gradient(to bottom, #FFF 5%, #F6F6F6 100%); /* @alternate */
 	background:     -ms-linear-gradient(to bottom, #FFF 5%, #F6F6F6 100%); /* @alternate */
 	background:         linear-gradient(to bottom, #FFF 5%, #F6F6F6 100%);
-	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#FFFFFF", endColorstr="#F6F6F6"); /* IE 6 to 9 */
 	border: 1px solid #DCDCDC;
 	color: #585858;
 	cursor: pointer;
+	display: inline-block;
 	font-family: "Roboto", "Ubuntu", "DejaVu Sans", "Arial", sans-serif;
 	font-size: 15px; /* @alternate */
 	font-size: 1.5rem;
@@ -34,24 +35,25 @@ button {
 	        border-radius: 6px;
 }
 
-button:hover {
+button:hover,
+.button:hover {
 	background: #E7E7E7; /* @alternate */
 	background: -webkit-gradient(linear, left top, left bottom, color-stop(0.05, #F9F9F9), color-stop(1, #E7E7E7)); /* @alternate */
 	background: -webkit-linear-gradient(to bottom, #F9F9F9 5%, #E7E7E7 100%); /* @alternate */
 	background:    -moz-linear-gradient(to bottom, #F9F9F9 5%, #E7E7E7 100%); /* @alternate */
 	background:     -ms-linear-gradient(to bottom, #F9F9F9 5%, #E7E7E7 100%); /* @alternate */
 	background:         linear-gradient(to bottom, #F9F9F9 5%, #E7E7E7 100%);
-	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#F9F9F9", endColorstr="#E7E7E7"); /* IE 6 to 9 */
+	color: #585858;
 }
 
-button:active {
+button:active,
+.button:active {
 	background: #D9D9D9; /* @alternate */
 	background: -webkit-gradient(linear, left top, left bottom, color-stop(0.05, #EEE), color-stop(1, #D9D9D9)); /* @alternate */
 	background: -webkit-linear-gradient(to bottom, #EEE 5%, #D9D9D9 100%); /* @alternate */
 	background:    -moz-linear-gradient(to bottom, #EEE 5%, #D9D9D9 100%); /* @alternate */
 	background:     -ms-linear-gradient(to bottom, #EEE 5%, #D9D9D9 100%); /* @alternate */
 	background:         linear-gradient(to bottom, #EEE 5%, #D9D9D9 100%);
-	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#EEEEEE", endColorstr="#D9D9D9"); /* IE 6 to 9 */
 	box-shadow: 0 0 2px 0 rgba(146, 102, 102, 0.16) inset;
 	padding: 7px 18px 5px; /* @alternate */
 	padding: 0.7rem 1.8rem 0.5rem;

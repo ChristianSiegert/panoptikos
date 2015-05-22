@@ -1,5 +1,5 @@
 application: panoptikos3
-version: 2015-05-20-0
+version: 2015-05-20-1
 runtime: go
 api_version: go1
 
@@ -20,9 +20,14 @@ handlers:
 # # UNCOMMENT THIS BLOCK TO ENABLE DEVELOPMENT MODE.
 # # Allow access to development CSS and JS files locally.
 # # Development CSS and JS files are not uploaded. See skip_files below.
-# - url: /(.*\.(?:css|js))
+# - url: /(.*\.css)
+#   static_files: webroot/custom/\1
+#   upload: webroot/custom/(.*\.css)
+#   expiration: "0s"
+
+# - url: /(.*\.js)
 #   static_files: webroot/\1
-#   upload: webroot/(.*\.(?:css|js))
+#   upload: webroot/(.*\.js)
 #   expiration: "0s"
 
 # # UNCOMMENT THIS BLOCK TO ENABLE DEVELOPMENT MODE.
@@ -64,8 +69,8 @@ handlers:
 # # UNCOMMENT THIS BLOCK TO ENABLE DEVELOPMENT MODE.
 # # Serve development index.html
 # - url: /.*
-#   static_files: webroot/main/index.html
-#   upload: webroot/main/index\.html
+#   static_files: webroot/custom/main/index.html
+#   upload: webroot/custom/main/index\.html
 #   expiration: "0s"
 
 # COMMENT THIS BLOCK TO DISABLE PRODUCTION MODE.

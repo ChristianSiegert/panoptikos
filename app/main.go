@@ -32,12 +32,10 @@ func init() {
 	http.HandleFunc("/worker/send-feedback", workerSendFeedback)
 
 	if isDevAppServer {
-		http.HandleFunc("/donations/donations.html", handleTemplateRequest)
 		http.HandleFunc("/feedback/feedback.html", handleTemplateRequest)
 		http.HandleFunc("/settings/settings.html", handleTemplateRequest)
 		http.HandleFunc("/subreddit-list/subreddit-list.html", handleTemplateRequest)
 		http.HandleFunc("/supporters/supporters.html", handleTemplateRequest)
-		http.HandleFunc("/thread-detail/thread-detail.html", handleTemplateRequest)
 		http.HandleFunc("/thread-list/thread-list.html", handleTemplateRequest)
 	}
 }
@@ -80,7 +78,7 @@ func handleTemplateRequest(responseWriter http.ResponseWriter, request *http.Req
 		return
 	}
 
-	fileName := "./webroot" + request.URL.Path
+	fileName := "./webroot/custom" + request.URL.Path
 	fileContent, err := ioutil.ReadFile(fileName)
 
 	if err != nil {
