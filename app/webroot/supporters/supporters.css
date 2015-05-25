@@ -9,6 +9,7 @@
 		.supporter-table-cell {
 			display: inline-block; /* @alternate */
 			display: table-cell;
+			padding: 0.1rem 0;
 		}
 
 		.supporter-table-cell:first-child {
