@@ -15,7 +15,7 @@ import (
 	"strings"
 )
 
-var adminEmailAddress = "contact@panoptikos.com"
+var adminEmailAddress = "christian@panoptikos.com"
 var isDevAppServer = appengine.IsDevAppServer()
 var legacyPicturesUrlRegExp = regexp.MustCompile("^/pictures/browse/n?sfw/source:reddit-([a-zA-Z0-9_-]+)")
 
