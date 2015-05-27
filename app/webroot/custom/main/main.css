@@ -264,6 +264,10 @@ a[target="_blank"]::after {
 	text-align: center;
 }
 
+	#no-js p {
+		max-width: none;
+	}
+
 	#no-js table {
 		font-size: 13px; /* @alternate */
 		font-size: 1.3rem;
@@ -271,8 +275,3 @@ a[target="_blank"]::after {
 		margin: 1rem auto;
 		text-align: left;
 	}
-
-/* AngularJS CSS */
-[ng-cloak], .ng-cloak {
-	display: none !important;
-}
