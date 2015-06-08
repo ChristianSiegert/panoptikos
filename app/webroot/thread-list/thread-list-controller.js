@@ -67,7 +67,7 @@ app.controller("d", [
 	var hasReachedEnd = false;
 
 	var loadMoreButtonTexts = {
-		ERROR: "There was a problem. Try again.",
+		ERROR: "There was a problem. Maybe Reddit is under heavy load, you blocked Reddit, the subreddit doesn’t exist anymore or you mistyped its name.",
 		LOAD_MORE: "Load more",
 		LOADING: "Loading…",
 		NO_THREADS: "There are no threads here :(",
