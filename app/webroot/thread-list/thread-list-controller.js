@@ -163,9 +163,33 @@ app.controller("d", [
 	}
 
 	function handleRedditRequestError(responseData, status, headers, config) {
-		$log.info("ThreadListController: Error retrieving threads from Reddit.", responseData, status, headers, config);
 		redditRequestIsRunning = false;
 		$scope.loadMoreButtonText = loadMoreButtonTexts.ERROR;
+		// console.error("ThreadListController: Error retrieving threads from Reddit.", responseData, status, headers, config);
+
+		// Send error to developer for debugging
+		var data = {
+			message: "threadListController.handleRedditRequestError:"
+				+ "\n\nHTTP status code:\n" + status
+				+ "\n\nResponse data (JSON encoded):\n" + JSON.stringify(responseData)
+				+ "\n\nRequest URL:\n" + config.url,
+			sender: "",
+		};
+		var encodedData = JSON.stringify(data);
+
+		var request = new XMLHttpRequest();
+		// request.onerror = function(event) {
+		// 	console.error(event);
+		// };
+		// request.onload = function(event) {
+		// 	if (event.target.status !== 200) {
+		// 		console.debug(event.target.status, event.target.statusText, event.target.responseText);
+		// 		return;
+		// 	}
+		// 	// console.debug("Sent error to developer.");
+		// };
+		request.open("POST", "/api/1/feedback");
+		request.send(encodedData);
 	};
 
 	function updateLoadMoreButtonLabel() {

@@ -127,8 +127,10 @@ func api1Feedback(responseWriter http.ResponseWriter, request *http.Request) {
 	}
 
 	task := taskqueue.NewPOSTTask("/worker/send-feedback", map[string][]string{
-		"message": {feedback.Message},
-		"sender":  {feedback.Sender},
+		"ip":        {request.RemoteAddr},
+		"message":   {feedback.Message},
+		"sender":    {feedback.Sender},
+		"userAgent": {request.UserAgent()},
 	})
 
 	if _, err := taskqueue.Add(context, task, ""); err != nil {
@@ -158,6 +160,10 @@ func workerSendFeedback(responseWriter http.ResponseWriter, request *http.Reques
 	if message == "" {
 		return
 	}
+
+	message += "\n\n\nThis message was sent by:"
+	message += "\n\nUser agent:\n" + request.FormValue("userAgent")
+	message += "\n\nIP:\n" + request.FormValue("ip")
 
 	m := &mail.Message{
 		Body:    message,
