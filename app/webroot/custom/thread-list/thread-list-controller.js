@@ -3,248 +3,102 @@
 
 	var template = new sprinkles.Template("/thread-list/thread-list.html");
 
-	function init(){
-		app.router.addRoute("/", handleRequest);
-	}
+	var ThreadListController = function() {
+		this.threadProcessor = new custom.threadList.ThreadProcessor();
 
-	function handleRequest() {
+		this.columnsManager;
+		this.threadListElement;
+		this.threadListRequest;
+	};
+
+	ThreadListController.prototype.init = function(){
+		app.router.registerRoute("/", this.loadPage.bind(null, this.handleList.bind(this)));
+
+		app.router.registerRoute("/r/([^/]*)", function(params) {
+			this.loadPage(this.handleList.bind(this, params))
+		}.bind(this));
+	};
+
+	ThreadListController.prototype.loadPage = function(onSuccess) {
 		var page = new sprinkles.Page(document.getElementById("content"), template);
-		page.serve();
+		page.load(onSuccess);
+	};
+
+	ThreadListController.prototype.handleList = function(params) {
+		this.threadProcessor.reset();
+
+		this.threadListElement = document.getElementById("thread-list");
+		this.columnsManager = new custom.threadList.ColumnsManager(this.threadListElement, 400, 10, "board-column", this.loadMoreToFillPage.bind(this));
+		this.columnsManager.rebuild();
+
+		var subredditIds = [];
+
+		if (params && params.length > 0) {
+			subredditIds = getSubredditIdsFromParam(params[0]);
+		}
+
+		if (subredditIds.length === 0) {
+			subredditIds = custom.main.config.defaultSubredditIds;
+		}
+
+		this.threadListRequest = new custom.reddit.ThreadListRequest(subredditIds);
+		this.threadListRequest.onError = this.onThreadListRequestError.bind(this);
+		this.threadListRequest.onSuccess = this.onThreadListRequestSuccess.bind(this);
+		this.threadListRequest.send();
+
+		window.addEventListener("scroll", this.onWindowScroll.bind(this));
 	}
 
-	init();
+	ThreadListController.prototype.onThreadListRequestError = function(event) {
+		// TODO: Handle request error.
+		console.error("error", event);
+	};
+
+	ThreadListController.prototype.onThreadListRequestSuccess = function(threadListItems) {
+		var onProcessedItem = function(threadListItem, imagePreviewUrl) {
+			threadListItem.imagePreviewUrl = imagePreviewUrl;
+			this.columnsManager.addItems([threadListItem.toElement()]);
+		}.bind(this);
+
+		this.threadProcessor.addToQueue(threadListItems, onProcessedItem);
+	};
+
+	// loadMoreToFillPage sends a request to Reddit to retrieve more thread list
+	// items if the page is not filled yet.
+	ThreadListController.prototype.loadMoreToFillPage = function(isScrolledToBottom) {
+		// Don’t load more threads from Reddit unless all but one thread list
+		// item have been added to the page.
+		if (!isScrolledToBottom
+				|| this.columnsManager.itemElements.length === 0
+				|| this.columnsManager.itemElements.length < this.threadProcessor.threadDict.length - 1) {
+			return;
+		}
+
+		this.threadListRequest.send();
+	}
+
+	ThreadListController.prototype.onWindowScroll = function(event) {
+		if (this.columnsManager.isScrolledToBottom()) {
+			this.loadMoreToFillPage(true);
+		}
+	}
+
+	// getSubredditIdsFromParam parses param to extract subreddit ids, e.g.
+	// “aww+flower” to ["aww", "flower"].
+	function getSubredditIdsFromParam(param) {
+		var subredditIds = [];
+
+		var pieces = param.split("+");
+		for (var i = 0, count = pieces.length; i < count; i++) {
+			var piece = pieces[i];
+			if (piece.length > 0) {
+				subredditIds.push(piece);
+			}
+		}
+
+		return subredditIds;
+	}
+
+	var controller = new ThreadListController();
+	app.addInitFunc(controller.init.bind(controller));
 })();
-
-
-
-// app.controller("d", [
-// 		"$http", "$location", "$log", "$rootScope", "$route", "$routeParams",
-// 		"$scope", "$timeout", "$window", "defaultSubredditIds", "Board",
-// 		"BoardItem", "localStorageService", "Settings", "ThreadList", "threadProcessor",
-// 		function($http, $location, $log, $rootScope, $route, $routeParams,
-// 			$scope, $timeout, $window, defaultSubredditIds, Board, BoardItem,
-// 			localStorageService, Settings, ThreadList, threadProcessor) {
-// 	"use strict";
-
-// 	Settings.setDefaults();
-
-// 	// We may have used threadProcessor previously. Clear any old state
-// 	// (e.g. queue).
-// 	threadProcessor.clear();
-
-// 	var locationPath = $location.path();
-
-// 	// Redirect empty subreddit URL "/r/" to "/"
-// 	if (locationPath === "/r" || locationPath === "/r/") {
-// 		$location.path("/");
-// 		return;
-// 	}
-
-// 	var isDefaultPage = locationPath === "/"
-// 		|| locationPath === "/controversial"
-// 		|| locationPath === "/new"
-// 		|| locationPath === "/rising"
-// 		|| locationPath === "/top";
-
-// 	// Redirect legacy URL "/:subredditIds" to "/r/:subredditIds"
-// 	if (!isDefaultPage && !locationPath.match(/^\/r\//)) {
-// 		var url = $routeParams.subredditIds ? "/r/" + $routeParams.subredditIds : "/";
-// 		$location.path(url);
-// 		return;
-// 	}
-
-// 	var subredditIds = isDefaultPage ? defaultSubredditIds : $routeParams.subredditIds.split("+");
-
-// 	$scope.isMultiReddit = subredditIds.length > 1 || subredditIds[0] === "all";
-
-// 	$rootScope.pageTitle = isDefaultPage ? "" : "/r/" + subredditIds.join("+") + " - ";
-
-// 	// Sections that exist on Reddit that we want to support, besides "hot".
-// 	var sections = {
-// 		"controversial": true,
-// 		"new": true,
-// 		"rising": true,
-// 		"top": true
-// 	};
-
-// 	var section = (isDefaultPage ? $routeParams.subredditIds : $routeParams.section) || "";
-
-// 	// If section is not "controversial", "hot", "new", "rising" or "top", redirect.
-// 	if ($routeParams.section && !sections[$routeParams.section]) {
-// 		var url = "/r/" + subredditIds.join("+");
-// 		$log.info("ThreadListController: Unknown section '%s'. Redirecting to '%s'.", $routeParams.section, url);
-// 		$location.path(url);
-// 		return;
-// 	}
-
-// 	var redditBaseUrl = "http://www.reddit.com";
-// 	var lastThreadId = "";
-// 	var maxThreadsPerRequest = 25;
-// 	var redditRequestIsRunning = false;
-// 	var timeOfLastRedditRequest = 0;
-
-// 	var hasReachedEnd = false;
-
-// 	var loadMoreButtonTexts = {
-// 		ERROR: "There was a problem. Try again.",
-// 		LOAD_MORE: "Load more",
-// 		LOADING: "Loading…",
-// 		NO_THREADS: "There are no threads here :(",
-// 		REACHED_END: "You reached the end"
-// 	};
-
-// 	$scope.loadMoreButtonText = loadMoreButtonTexts.LOADING;
-// 	$scope.openExternalLinksInNewTab = localStorageService.get(Settings.keys.O) === "true";
-// 	$scope.onlyShowPostsWithImages = localStorageService.get(Settings.keys.I) === "true";
-
-// 	function main() {
-// 		$scope.board = Board.New();
-
-// 		if (!$scope.board) {
-// 			$log.error("ThreadListController: Couldn't create Board.");
-// 			return;
-// 		}
-
-// 		$scope.retrieveThreadsFromReddit();
-// 	};
-
-// 	$scope.retrieveThreadsFromReddit = function() {
-// 		if (redditRequestIsRunning) {
-// 			$log.info("ThreadListController: Request to Reddit is already running or queued.");
-// 			return;
-// 		}
-
-// 		if (hasReachedEnd) {
-// 			$log.info("ThreadListController: You reached the end.");
-// 			return;
-// 		}
-
-// 		$scope.loadMoreButtonText = loadMoreButtonTexts.LOADING;
-
-// 		var now = Date.now();
-// 		var minDelay = 2000;
-
-// 		var difference = now - timeOfLastRedditRequest;
-// 		var delay = difference > minDelay ? 0 : minDelay - difference;
-
-// 		if (difference < minDelay) {
-// 			$log.info("ThreadListController: Last request to Reddit was less than %d ms ago. Waiting %d ms until sending request.", minDelay, delay);
-// 		}
-
-// 		redditRequestIsRunning = true;
-// 		$timeout(retrieveThreadsFromReddit_, delay);
-// 	};
-
-// 	function retrieveThreadsFromReddit_() {
-// 		timeOfLastRedditRequest = Date.now();
-
-// 		var httpPromise = $http.jsonp(
-// 			redditBaseUrl +
-// 			"/r/" + subredditIds.join("+") +
-// 			"/" + section +
-// 			".json?jsonp=JSON_CALLBACK" +
-// 			"&after=" + lastThreadId +
-// 			"&limit=" + maxThreadsPerRequest
-// 		);
-
-// 		httpPromise.success(handleRedditRequestSuccess);
-// 		httpPromise.error(handleRedditRequestError);
-// 	}
-
-// 	function handleRedditRequestSuccess(responseData) {
-// 		redditRequestIsRunning = false;
-// 		var threadList = ThreadList.fromRedditThreadList(responseData) || new ThreadList();
-// 		var threadListItems = threadList.items;
-// 		var atLeastOneItemWasAddedToQueue = false;
-
-// 		for (var i = 0, threadListItemCount = threadListItems.length; i < threadListItemCount; i++) {
-// 			if (threadProcessor.addToQueue(threadListItems[i], handleProcessedSuccess)) {
-// 				atLeastOneItemWasAddedToQueue = true;
-// 			}
-// 		}
-
-// 		lastThreadId = threadList.lastThreadId;
-// 		hasReachedEnd = !lastThreadId;
-
-// 		if (!atLeastOneItemWasAddedToQueue) {
-// 			updateLoadMoreButtonLabel();
-// 		}
-// 	};
-
-// 	function handleProcessedSuccess(threadListItem, imagePreviewUrl, imageFullSizeUrl) {
-// 		var boardItem = BoardItem.New(threadListItem, imagePreviewUrl, imageFullSizeUrl);
-
-// 		if (!boardItem) {
-// 			return;
-// 		}
-
-// 		$scope.board.addItems([boardItem]);
-// 	}
-
-// 	function handleRedditRequestError(responseData, status, headers, config) {
-// 		$log.info("ThreadListController: Error retrieving threads from Reddit.", responseData, status, headers, config);
-// 		redditRequestIsRunning = false;
-// 		$scope.loadMoreButtonText = loadMoreButtonTexts.ERROR;
-// 	};
-
-// 	function updateLoadMoreButtonLabel() {
-// 		// If a request to Reddit is running or queued
-// 		if (redditRequestIsRunning) {
-// 			$scope.loadMoreButtonText = loadMoreButtonTexts.LOADING;
-// 			return;
-// 		}
-
-// 		// If there are no further board items to add
-// 		if ($scope.board.items.length === threadProcessor.threadDict.length) {
-// 			if (hasReachedEnd) {
-// 				if (threadProcessor.threadDict.length) {
-// 					$scope.loadMoreButtonText = loadMoreButtonTexts.REACHED_END;
-// 				} else {
-// 					$scope.loadMoreButtonText = loadMoreButtonTexts.NO_THREADS;
-// 				}
-// 			} else {
-// 				$scope.loadMoreButtonText = loadMoreButtonTexts.LOAD_MORE;
-// 			}
-// 		}
-// 	}
-
-// 	$scope.selectSection = function(buttonIndex) {
-// 		// TODO: Cancel running requests.
-
-// 		var newSection = "";
-
-// 		switch (buttonIndex) {
-// 			case 0: newSection = ""; break;
-// 			case 1: newSection = "new"; break;
-// 			case 2: newSection = "rising"; break;
-// 			case 3: newSection = "controversial"; break;
-// 			case 4: newSection = "top"; break;
-// 		}
-
-// 		if (newSection === section) {
-// 			$route.reload();
-// 			return;
-// 		}
-
-// 		var url = (isDefaultPage ? "" : "/r/" + subredditIds.join("+")) + "/" + newSection
-// 		$location.path(url);
-// 	};
-
-// 	$scope.loadMoreToFillPage = function(boardIsScrolledToBottom) {
-// 		// Don't load more threads from Reddit unless all but one board item
-// 		// have been added to the board.
-// 		if (!boardIsScrolledToBottom
-// 				|| !$scope.board.items.length
-// 				|| $scope.board.items.length < threadProcessor.threadDict.length - 1) {
-// 			return;
-// 		}
-
-// 		$scope.retrieveThreadsFromReddit();
-// 	}
-
-// 	$scope.selectSubreddits = function() {
-// 		$location.path("/subreddits/" + subredditIds.join("+"));
-// 	};
-
-// 	main();
-// }]);

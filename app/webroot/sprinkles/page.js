@@ -6,23 +6,23 @@
 		this.template = template;
 	};
 
-	Page.prototype.serve = function(func) {
-		var successFunc = function() {
+	Page.prototype.load = function(onSuccess) {
+		var onLoadSuccess = function() {
 			this.containerElement.innerHTML = this.template.html;
-			if (func) {
-				func();
+			if (onSuccess) {
+				onSuccess();
 			}
 		}.bind(this);
 
-		var errorFunc = function() {
+		var onLoadError = function() {
 			this.containerElement.innerHTML = "<p>This page couldn’t be loaded. Try again shortly.</p>";
 		}.bind(this);
 
 		if (this.template.isLoaded) {
-			successFunc();
+			onLoadSuccess();
 			return;
 		}
-		this.template.load(successFunc, errorFunc);
+		this.template.load(onLoadSuccess, onLoadError);
 	};
 
 	sprinkles.Page = Page;

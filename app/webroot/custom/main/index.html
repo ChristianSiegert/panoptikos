@@ -9,8 +9,8 @@
 		<!-- COMPILED_CSS_HERE -->
 		<link href="/main/reset.css" rel="stylesheet">
 		<link href="/main/main.css" rel="stylesheet">
+		<link href="/main/flash.css" rel="stylesheet">
 		<link href="/main/form.css" rel="stylesheet">
-		<link href="/components/flash/flash.css" rel="stylesheet">
 		<link href="/subreddit-list/subreddit-list.css" rel="stylesheet">
 		<link href="/supporters/supporters.css" rel="stylesheet">
 		<link href="/thread-list/thread-list.css" rel="stylesheet">
@@ -50,16 +50,22 @@
 		<script src="/sprinkles/main.js"></script>
 		<script src="/sprinkles/flash.js"></script>
 		<script src="/sprinkles/page.js"></script>
+		<script src="/sprinkles/router/param.js"></script>
 		<script src="/sprinkles/router.js"></script>
 		<script src="/sprinkles/session.js"></script>
 		<script src="/sprinkles/template.js"></script>
 		<script src="/custom/main/app.js"></script>
+		<script src="/custom/main/config.js"></script>
 		<script src="/custom/feedback/feedback-controller.js"></script>
+		<script src="/custom/reddit/thread-list-item.js"></script>
+		<script src="/custom/reddit/thread-list-request.js"></script>
 		<script src="/custom/settings/settings-controller.js"></script>
 		<script src="/custom/subreddit-list/subreddit-list-controller.js"></script>
 		<script src="/custom/supporters/supporters-controller.js"></script>
+		<script src="/custom/thread-list/columns-manager.js"></script>
+		<script src="/custom/thread-list/thread-processor.js"></script>
 		<script src="/custom/thread-list/thread-list-controller.js"></script>
-		<script type="text/javascript">app.init()</script>
+		<script type="text/javascript">app.init.bind(app)();</script>
 
 		<!-- Google Analytics -->
 		<script>if(location.hostname==="www.panoptikos.com"){(function(i,s,o,g,r,a,m){i["GoogleAnalyticsObject"]=r;i[r]=i[r]||function(){(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)})(window,document,"script","//www.google-analytics.com/analytics.js","ga");ga("create","UA-44086983-1","panoptikos.com");ga("send","pageview");}</script>

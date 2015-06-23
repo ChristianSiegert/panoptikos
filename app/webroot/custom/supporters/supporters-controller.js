@@ -3,14 +3,19 @@
 
 	var template = new sprinkles.Template("/supporters/supporters.html");
 
-	function init() {
-		app.router.addRoute("/supporters", handleRequest);
-	}
+	var SupportersController = function() {
 
-	function handleRequest() {
+	};
+
+	SupportersController.prototype.init = function() {
+		app.router.registerRoute("/supporters", this.handleRequest);
+	};
+
+	SupportersController.prototype.handleRequest = function() {
 		var page = new sprinkles.Page(document.getElementById("content"), template);
-		page.serve();
-	}
+		page.load();
+	};
 
-	init();
+	var controller = new SupportersController();
+	app.addInitFunc(controller.init.bind(controller));
 })();

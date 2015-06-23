@@ -31,13 +31,14 @@ func init() {
 	http.HandleFunc("/pictures/browse/", handlePicturesRequest)
 	http.HandleFunc("/worker/send-feedback", workerSendFeedback)
 
-	if isDevAppServer {
-		http.HandleFunc("/feedback/feedback.html", handleTemplateRequest)
-		http.HandleFunc("/settings/settings.html", handleTemplateRequest)
-		http.HandleFunc("/subreddit-list/subreddit-list.html", handleTemplateRequest)
-		http.HandleFunc("/supporters/supporters.html", handleTemplateRequest)
-		http.HandleFunc("/thread-list/thread-list.html", handleTemplateRequest)
-	}
+	// TODO: Uncomment when script minification works again.
+	// if isDevAppServer {
+	http.HandleFunc("/feedback/feedback.html", handleTemplateRequest)
+	http.HandleFunc("/settings/settings.html", handleTemplateRequest)
+	http.HandleFunc("/subreddit-list/subreddit-list.html", handleTemplateRequest)
+	http.HandleFunc("/supporters/supporters.html", handleTemplateRequest)
+	http.HandleFunc("/thread-list/thread-list.html", handleTemplateRequest)
+	// }
 }
 
 // handleRequest treats all incoming requests as requests to legacy URLs and
@@ -73,10 +74,11 @@ func handlePicturesRequest(responseWriter http.ResponseWriter, request *http.Req
 }
 
 func handleTemplateRequest(responseWriter http.ResponseWriter, request *http.Request) {
-	if !isDevAppServer {
-		http.NotFound(responseWriter, request)
-		return
-	}
+	// TODO: Uncomment when script minification works again.
+	// if !isDevAppServer {
+	// http.NotFound(responseWriter, request)
+	// return
+	// }
 
 	fileName := "./webroot/custom" + request.URL.Path
 	fileContent, err := ioutil.ReadFile(fileName)

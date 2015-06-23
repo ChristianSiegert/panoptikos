@@ -1,59 +1,89 @@
 (function() {
 	"use strict";
 
-	var Router = function(windowElement, onRequest) {
-		this.onRequest = onRequest;
+	var Router = function() {
+		this.regExpRelativeUrl = /^\/[^\/]?/;
+
 		this.routes = {};
-		this.windowElement = windowElement;
-		this.windowElement.addEventListener("click", this.onWindowClick.bind(this));
-		this.windowElement.addEventListener("popstate", this.onHistoryPopState);
+
+		// onRouteChange is called when the route changes.
+		this.onRouteChange = function() {};
+
+		window.addEventListener("click", this.onWindowClick.bind(this));
+		window.addEventListener("popstate", this.onHistoryPopState);
 	};
 
-	Router.prototype.addRoute = function(relativeUrl, handleFunc) {
-		this.routes[relativeUrl] = handleFunc;
+	// dispatchRequest dispatches an internal request to load the page specified
+	// by relativeUrl. If no route is registered to handle relativeUrl, nothing
+	// will happen.
+	Router.prototype.dispatchRequest = function(relativeUrl) {
+		for (var route in this.routes) {
+			if (!this.routes.hasOwnProperty(route)) {
+				continue;
+			}
+
+			var finalRoute = "^" + route + "$";
+			var routeRegExp = new RegExp(finalRoute);
+			var match = routeRegExp.exec(relativeUrl);
+
+			if (match === null) {
+				continue;
+			}
+
+			if (typeof(this.onRouteChange) === "function") {
+				this.onRouteChange();
+			}
+
+			var params = [];
+
+			if (match.length > 1) {
+				params = match.slice(1);
+			}
+
+			this.routes[route](params);
+			return;
+		}
 	};
 
 	Router.prototype.onHistoryPopState = function(event) {
-		// console.debug("onPopState", event);
+		// console.debug("popstate", event);
 	};
 
+	// onWindowClick triggers a new page request if the user clicked on a link
+	// with a relative URL, e.g. “/settings”. If the link’s “target” attribute
+	// is set to a non-empty string, no “href” attribute exists or the URL is
+	// absolute, Router lets the browser handle the click.
 	Router.prototype.onWindowClick = function(event) {
 		if (event.target.tagName === "A") {
 			var element = event.target;
+
+			// If link opens in new tab or window
 			if (element.hasAttribute("target") && element.getAttribute("target") !== "") {
 				return;
 			}
 
+			// If link doesn’t have a URL
 			var url = element.getAttribute("href");
 			if (!url) {
 				return;
 			}
 
-			window.history.pushState(null, "", url);
-
-			// If route exists, call request event callback and execute route
-			// handler.
-			if (this.routes[url]) {
-				if (this.onRequest) {
-					this.onRequest();
-				}
-
-				this.routes[url]();
+			// If URL is not relative
+			if (!this.regExpRelativeUrl.test(url)) {
+				return;
 			}
 
 			event.preventDefault();
 			event.stopPropagation();
+
+			this.dispatchRequest(url);
+			window.history.pushState(null, "", url);
 		}
 	};
 
-	Router.prototype.triggerRequest = function(relativeUrl) {
-		if (this.routes[relativeUrl]) {
-			if (this.onRequest) {
-				this.onRequest();
-			}
-
-			this.routes[relativeUrl]();
-		}
+	// registerRoute registers a route and its handleFunc.
+	Router.prototype.registerRoute = function(route, handleFunc) {
+		this.routes[route] = handleFunc;
 	};
 
 	sprinkles.Router = Router;

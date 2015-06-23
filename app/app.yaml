@@ -1,5 +1,5 @@
 application: panoptikos3
-version: 2015-05-20-1
+version: 2015-06-23-0
 runtime: go
 api_version: go1
 
@@ -17,38 +17,38 @@ error_handlers:
     file: error-pages/timeout.html
 
 handlers:
-# # UNCOMMENT THIS BLOCK TO ENABLE DEVELOPMENT MODE.
-# # Allow access to development CSS and JS files locally.
-# # Development CSS and JS files are not uploaded. See skip_files below.
-# - url: /(.*\.css)
-#   static_files: webroot/custom/\1
-#   upload: webroot/custom/(.*\.css)
-#   expiration: "0s"
+# UNCOMMENT THIS BLOCK TO ENABLE DEVELOPMENT MODE.
+# Allow access to development CSS and JS files locally.
+# Development CSS and JS files are not uploaded. See skip_files below.
+- url: /(.*\.css)
+  static_files: webroot/custom/\1
+  upload: webroot/custom/(.*\.css)
+  expiration: "0s"
 
-# - url: /(.*\.js)
-#   static_files: webroot/\1
-#   upload: webroot/(.*\.js)
-#   expiration: "0s"
+- url: /(.*\.js)
+  static_files: webroot/\1
+  upload: webroot/(.*\.js)
+  expiration: "0s"
 
-# # UNCOMMENT THIS BLOCK TO ENABLE DEVELOPMENT MODE.
-# # Allow access to development HTML template files locally.
-# # Development HTML template files are not uploaded. See skip_files below.
-# - url: /.*\.html
-#   script: _go_app
+# UNCOMMENT THIS BLOCK TO ENABLE DEVELOPMENT MODE.
+# Allow access to development HTML template files locally.
+# Development HTML template files are not uploaded. See skip_files below.
+- url: /.*\.html
+  script: _go_app
 
 # File doesn't exist but some browsers request it, so serve an equivalent one.
 - url: /apple-touch-icon-precomposed\.png
-  static_files: webroot/components/images/a4.png
-  upload: webroot/components/images/a4\.png
+  static_files: webroot/main/images/a4.png
+  upload: webroot/main/images/a4\.png
 
 # File doesn't exist but some browsers request it, so serve an equivalent one.
 - url: /favicon\.ico
-  static_files: webroot/components/images/f1.ico
-  upload: webroot/components/images/f1\.ico
+  static_files: webroot/main/images/f1.ico
+  upload: webroot/main/images/f1\.ico
 
 - url: /(.*\.(?:ico|png))
-  static_files: webroot/components/images/\1
-  upload: webroot/components/images/.*\.(?:ico|png)
+  static_files: webroot/main/images/\1
+  upload: webroot/main/images/.*\.(?:ico|png)
 
 - url: /robots\.txt
   static_files: webroot/robots.txt
@@ -66,19 +66,19 @@ handlers:
 - url: /(feeds|pictures|preferences|referrals|sources)(/.*)?
   script: _go_app
 
-# # UNCOMMENT THIS BLOCK TO ENABLE DEVELOPMENT MODE.
-# # Serve development index.html
-# - url: /.*
-#   static_files: webroot/custom/main/index.html
-#   upload: webroot/custom/main/index\.html
-#   expiration: "0s"
-
-# COMMENT THIS BLOCK TO DISABLE PRODUCTION MODE.
-# Serve production index.html
+# UNCOMMENT THIS BLOCK TO ENABLE DEVELOPMENT MODE.
+# Serve development index.html
 - url: /.*
-  static_files: webroot/compiled-index/index-1yUW9B.html
-  upload: webroot/compiled-index/index-1yUW9B\.html
-  expiration: "6h"
+  static_files: webroot/custom/main/index.html
+  upload: webroot/custom/main/index\.html
+  expiration: "0s"
+
+# # COMMENT THIS BLOCK TO DISABLE PRODUCTION MODE.
+# # Serve production index.html
+# - url: /.*
+#   static_files: webroot/compiled-index/index-1yUW9B.html
+#   upload: webroot/compiled-index/index-1yUW9B\.html
+#   expiration: "6h"
 
 # Files to skip when uploading the app to Google App Engine
 skip_files:

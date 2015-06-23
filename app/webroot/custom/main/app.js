@@ -1,18 +1,53 @@
-"use strict";
-
-// Global namespace for this app.
-var app = {};
-
 (function() {
-	var flashList = document.getElementById("flash-list");
-	if (!flashList) {
-		return;
+	"use strict";
+
+	var App = function() {
+		// flashListElement is the element that contains any flash messages.
+		this.flashListElement = document.getElementById("flash-list");
+
+		// initFuncs is a list of functions that are called when App is
+		// initialized.
+		this.initFuncs = [];
+
+		// router handles the app’s routing.
+		this.router = null;
+
+		// session is the user’s current session.
+		this.session = null;
 	}
 
-	app.router = new sprinkles.Router(window, resetFlashes);
-	app.session = new sprinkles.Session(onAddFlash);
+	// init initializes the app. It must only be called after all other files
+	// are loaded and initialized.
+	App.prototype.init = function() {
+		this.router = new sprinkles.Router();
+		this.router.onRouteChange = this.resetFlashes.bind(this);
 
-	function onAddFlash(flash) {
+		this.session = new sprinkles.Session();
+		this.session.onAddFlash = this.onAddFlash.bind(this);
+
+		for (var i = 0, count = this.initFuncs.length; i < count; i++) {
+			this.initFuncs[i]();
+		}
+		this.initFuncs = [];
+
+		// Load page for current URL
+		this.router.dispatchRequest(location.pathname);
+	};
+
+	// resetFlashes deletes all flash messages.
+	App.prototype.resetFlashes = function() {
+		this.session.flashes = [];
+		this.flashListElement.innerHTML = "";
+	};
+
+	// addInitFunc adds func to a list of functions that are called when init is
+	// called.
+	App.prototype.addInitFunc = function(func) {
+		this.initFuncs.push(func);
+	};
+
+	// onAddFlash displays flash messages to the user.
+	App.prototype.onAddFlash = function(flash) {
 		var listItem = document.createElement("li");
 		listItem.className = "flash";
 		if (flash.type === sprinkles.Session.flashTypeError) {
@@ -21,18 +56,12 @@ var app = {};
 
 		var textNode = document.createTextNode(flash.message);
 		listItem.appendChild(textNode);
-		flashList.appendChild(listItem);
+		this.flashListElement.appendChild(listItem);
 	}
 
-	function resetFlashes() {
-		app.session.flashes = [];
-		flashList.innerHTML = "";
-	}
-	app.resetFlashes = resetFlashes;
-
-	// init is called after all controllers are initialized.
-	app.init = function() {
-		this.router.triggerRequest(location.pathname);
-	}
+	// Create instance and make it globally accessible
+	var app = new App();
+	sprinkles.provide("app", app);
 })();
+
 
