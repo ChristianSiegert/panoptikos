@@ -4,13 +4,18 @@
 	var Router = function() {
 		this.regExpRelativeUrl = /^\/[^\/]?/;
 
+		// dispatchedFirstRequest indicates whether the Router dispatched its
+		// first request. It is used to prevent Safari from triggering the
+		// popstate event on page load.
+		this.dispatchedFirstRequest = false;
+
 		this.routes = {};
 
 		// onRouteChange is called when the route changes.
 		this.onRouteChange = function() {};
 
 		window.addEventListener("click", this.onWindowClick.bind(this));
-		window.addEventListener("popstate", this.onHistoryPopState);
+		window.addEventListener("popstate", this.onHistoryPopState.bind(this));
 	};
 
 	// dispatchRequest dispatches an internal request to load the page specified
@@ -43,10 +48,17 @@
 			this.routes[route](params);
 			return;
 		}
+
+		this.dispatchedFirstRequest = true;
 	};
 
 	Router.prototype.onHistoryPopState = function(event) {
-		// console.debug("popstate", event);
+		// Prevent Safari from triggering popstate event on page load
+		if (!this.dispatchedFirstRequest) {
+			return;
+		}
+
+		this.dispatchRequest(location.pathname);
 	};
 
 	// onWindowClick triggers a new page request if the user clicked on a link
