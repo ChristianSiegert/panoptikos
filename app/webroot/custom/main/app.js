@@ -9,6 +9,9 @@
 		// initialized.
 		this.initFuncs = [];
 
+		// logger handles logging and submitting log reports.
+		this.logger = null;
+
 		// router handles the app’s routing.
 		this.router = null;
 
@@ -19,6 +22,10 @@
 	// init initializes the app. It must only be called after all other files
 	// are loaded and initialized.
 	App.prototype.init = function() {
+		this.logger = new sprinkles.Logger();
+		this.logger.allowSubmissions = true;
+		this.logger.submissionUrl = "/api/1/log";
+
 		this.router = new sprinkles.Router();
 		this.router.onRouteChange = this.resetFlashes.bind(this);
 
