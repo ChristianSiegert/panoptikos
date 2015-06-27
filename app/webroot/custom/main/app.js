@@ -57,8 +57,14 @@
 	App.prototype.onAddFlash = function(flash) {
 		var listItem = document.createElement("li");
 		listItem.className = "flash";
-		if (flash.type === sprinkles.Session.flashTypeError) {
-			listItem.className += " flash-error";
+
+		switch (flash.type) {
+			case sprinkles.Session.flashTypeError:
+				listItem.className += " flash-error";
+				break;
+			case sprinkles.Session.flashTypeWarning:
+				listItem.className += " flash-warning";
+				break;
 		}
 
 		var textNode = document.createTextNode(flash.message);

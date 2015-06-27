@@ -25,6 +25,16 @@
 		}
 	};
 
+	Session.prototype.addFlashWarningMessage = function(message) {
+		var flash = new sprinkles.Flash(message, Session.flashTypeWarning);
+		this.flashes.push(flash);
+		if (typeof(this.onAddFlash) === "function") {
+			this.onAddFlash(flash);
+		}
+	};
+
+	// flashAll returns an array of all flash messages and empties
+	// Session.flashes.
 	Session.prototype.flashAll = function() {
 		var flashes = this.flashes;
 		this.flashes = [];
@@ -34,6 +44,7 @@
 	// Types of flash messages.
 	Session.flashTypeError = 1;
 	Session.flashTypeInfo = 2;
+	Session.flashTypeWarning = 3;
 
 	sprinkles.Session = Session;
 })();

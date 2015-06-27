@@ -6,10 +6,10 @@
 	padding: 10px 15px;
 }
 
-.flash-warn {
-	background: #FE9B50;
-}
-
 .flash-error {
 	background: #FE5050;
+}
+
+.flash-warning {
+	background: #FE9B50;
 }
