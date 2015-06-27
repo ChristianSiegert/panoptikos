@@ -24,6 +24,8 @@
 	}
 
 	ThreadListItem.prototype.toElement = function() {
+		var openExternalLinksInNewTab = custom.settings.Settings.getOpenExternalLinksInNewTab();
+
 		var listElement = document.createElement("li");
 		listElement.className = "board-item";
 
@@ -31,7 +33,9 @@
 			var imageAnchorElement = document.createElement("a");
 			imageAnchorElement.href = this.url;
 			imageAnchorElement.className = "board-item-image-anchor";
-			imageAnchorElement.target = "_blank";
+			if (openExternalLinksInNewTab) {
+				imageAnchorElement.target = "_blank";
+			}
 			listElement.appendChild(imageAnchorElement);
 
 			var imageElement = document.createElement("img");
@@ -43,8 +47,10 @@
 		var titleAnchorElement = document.createElement("a");
 		titleAnchorElement.className = "board-item-title-anchor";
 		titleAnchorElement.href = this.url;
-		titleAnchorElement.target = "_blank";
 		titleAnchorElement.textContent = this.title;
+		if (openExternalLinksInNewTab) {
+			titleAnchorElement.target = "_blank";
+		}
 		listElement.appendChild(titleAnchorElement);
 
 		var infoElement = document.createElement("div");
@@ -54,8 +60,10 @@
 		var commentsAnchorElement = document.createElement("a");
 		commentsAnchorElement.className = "board-item-info-cell board-item-comments-anchor";
 		commentsAnchorElement.href = "http://www.reddit.com" + this.commentUrl;
-		commentsAnchorElement.target = "_blank";
 		commentsAnchorElement.textContent = this.commentCount === 1 ? "1 Comment" : this.commentCount + " Comments";
+		if (openExternalLinksInNewTab) {
+			commentsAnchorElement.target = "_blank";
+		}
 		infoElement.appendChild(commentsAnchorElement);
 
 		// if (this.isMultiReddit) {

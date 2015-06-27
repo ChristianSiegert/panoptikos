@@ -17,5 +17,9 @@
 		"windowshots"
 	];
 
+	// Default settings for thread list
+	Config.onlyShowPostsWithImages = false;
+	Config.openExternalLinksInNewTab = true;
+
 	sprinkles.provide("custom.main.Config", Config);
 })();

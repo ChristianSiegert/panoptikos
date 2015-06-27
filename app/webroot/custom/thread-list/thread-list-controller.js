@@ -9,6 +9,8 @@
 		this.columnsManager;
 		this.threadListElement;
 		this.threadListRequest;
+
+		this.postsWithoutImageCount = 0;
 	};
 
 	ThreadListController.prototype.init = function(){
@@ -17,6 +19,8 @@
 		app.router.registerRoute("/r/([^/]*)", function(params) {
 			this.loadPage(this.handleList.bind(this, params))
 		}.bind(this));
+
+		this.onlyShowPostsWithImages = custom.settings.Settings.getOnlyShowPostsWithImages();
 	};
 
 	ThreadListController.prototype.loadPage = function(onSuccess) {
@@ -38,7 +42,7 @@
 		}
 
 		if (subredditIds.length === 0) {
-			subredditIds = custom.main.config.defaultSubredditIds;
+			subredditIds = custom.main.Config.defaultSubredditIds;
 		}
 
 		this.threadListRequest = new custom.reddit.ThreadListRequest(subredditIds);
@@ -55,12 +59,16 @@
 	};
 
 	ThreadListController.prototype.onThreadListRequestSuccess = function(threadListItems) {
-		var onProcessedItem = function(threadListItem, imagePreviewUrl) {
-			threadListItem.imagePreviewUrl = imagePreviewUrl;
-			this.columnsManager.addItems([threadListItem.toElement()]);
-		}.bind(this);
+		this.threadProcessor.addToQueue(threadListItems, this.onProcessedItem.bind(this));
+	};
 
-		this.threadProcessor.addToQueue(threadListItems, onProcessedItem);
+	ThreadListController.prototype.onProcessedItem = function(threadListItem, imagePreviewUrl) {
+		if (this.onlyShowPostsWithImages && !imagePreviewUrl) {
+			this.postsWithoutImageCount++;
+			return;
+		}
+		threadListItem.imagePreviewUrl = imagePreviewUrl;
+		this.columnsManager.addItems([threadListItem.toElement()]);
 	};
 
 	// loadMoreToFillPage sends a request to Reddit to retrieve more thread list
@@ -70,7 +78,7 @@
 		// item have been added to the page.
 		if (!isScrolledToBottom
 				|| this.columnsManager.itemElements.length === 0
-				|| this.columnsManager.itemElements.length < this.threadProcessor.threadDict.length - 1) {
+				|| this.columnsManager.itemElements.length < this.threadProcessor.threadDict.length - 1 - this.postsWithoutImageCount) {
 			return;
 		}
 
