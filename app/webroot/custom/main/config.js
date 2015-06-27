@@ -1,9 +1,13 @@
 (function() {
 	"use strict";
 
-	var config = {};
+	function Config() {
 
-	config.defaultSubredditIds = [
+	}
+
+	Config.appVersion = "2015-06-27";
+
+	Config.defaultSubredditIds = [
 		"CityPorn",
 		"EarthPorn",
 		"ExposurePorn",
@@ -13,5 +17,5 @@
 		"windowshots"
 	];
 
-	sprinkles.provide("custom.main.config", config);
+	sprinkles.provide("custom.main.Config", Config);
 })();

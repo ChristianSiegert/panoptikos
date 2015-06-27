@@ -17,6 +17,9 @@
 
 		// session is the user’s current session.
 		this.session = null;
+
+		// storage handles storing data.
+		this.storage = null;
 	}
 
 	// init initializes the app. It must only be called after all other files
@@ -31,6 +34,9 @@
 
 		this.session = new sprinkles.Session();
 		this.session.onAddFlash = this.onAddFlash.bind(this);
+
+		this.storage = new sprinkles.Storage();
+		this.storage.keyPrefix = custom.main.Config.appVersion;
 
 		for (var i = 0, count = this.initFuncs.length; i < count; i++) {
 			this.initFuncs[i]();
