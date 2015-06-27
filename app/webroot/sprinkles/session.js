@@ -1,7 +1,7 @@
 (function() {
 	"use strict";
 
-	var Session = function(onAddFlash) {
+	function Session(onAddFlash) {
 		this.flashes = [];
 
 		// onAddFlash is called every time a flash message is added to session.

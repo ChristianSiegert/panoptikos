@@ -3,7 +3,7 @@
 
 	var templateFeedback = new sprinkles.Template("/feedback/feedback.html");
 
-	var FeedbackController = function() {
+	function FeedbackController() {
 
 	}
 

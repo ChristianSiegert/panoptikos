@@ -1,9 +1,13 @@
 (function() {
 	"use strict";
 
-	var sprinkles = {};
+	// sprinkles takes care of the nitty gritty of web apps. It is evolving
+	// alongside Panoptikos.
+	function sprinkles() {
 
-	// TODO: Fix doc comment.
+	}
+
+	// TODO: Fix incorrect doc comment.
 	// namespace takes a string with dot-delimited subpaths, and returns the
 	// object in this namespace. If no object exists, an new object is created
 	// and returned.

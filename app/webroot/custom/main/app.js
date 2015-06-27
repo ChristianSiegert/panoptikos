@@ -1,7 +1,7 @@
 (function() {
 	"use strict";
 
-	var App = function() {
+	function App() {
 		// flashListElement is the element that contains any flash messages.
 		this.flashListElement = document.getElementById("flash-list");
 

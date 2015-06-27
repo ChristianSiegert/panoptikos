@@ -3,7 +3,7 @@
 
 	var template = new sprinkles.Template("/thread-list/thread-list.html");
 
-	var ThreadListController = function() {
+	function ThreadListController() {
 		this.threadProcessor = new custom.threadList.ThreadProcessor();
 
 		this.columnsManager;

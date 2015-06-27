@@ -1,7 +1,7 @@
 (function() {
 	"use strict";
 
-	var Page = function(containerElement, template) {
+	function Page(containerElement, template) {
 		this.containerElement = containerElement;
 		this.template = template;
 	};

@@ -1,7 +1,7 @@
 (function() {
 	"use strict";
 
-	var Template = function(url) {
+	function Template(url) {
 		this.isLoaded = false;
 		this.html = "";
 		this.url = url;

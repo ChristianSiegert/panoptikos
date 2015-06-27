@@ -1,7 +1,7 @@
 (function() {
 	"use strict";
 
-	var Flash = function(message, type) {
+	function Flash(message, type) {
 		this.message = message;
 		this.type = type;
 	};

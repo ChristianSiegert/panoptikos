@@ -3,7 +3,7 @@
 
 	var template = new sprinkles.Template("/subreddit-list/subreddit-list.html");
 
-	var SubredditListController = function() {
+	function SubredditListController() {
 
 	};
 

@@ -3,7 +3,7 @@
 
 	var template = new sprinkles.Template("/supporters/supporters.html");
 
-	var SupportersController = function() {
+	function SupportersController() {
 
 	};
 

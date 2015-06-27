@@ -1,7 +1,7 @@
 (function() {
 	"use strict";
 
-	var Router = function() {
+	function Router() {
 		this.regExpRelativeUrl = /^\/[^\/]?/;
 
 		// dispatchedFirstRequest indicates whether the Router dispatched its
