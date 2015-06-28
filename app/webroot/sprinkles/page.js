@@ -15,7 +15,8 @@
 		}.bind(this);
 
 		var onLoadError = function() {
-			this.containerElement.innerHTML = "<p>This page couldn’t be loaded. Try again shortly.</p>";
+			this.containerElement.innerHTML = "";
+			app.session.addFlashErrorMessage("This page couldn’t be loaded. Try again shortly.");
 		}.bind(this);
 
 		if (this.template.isLoaded) {
