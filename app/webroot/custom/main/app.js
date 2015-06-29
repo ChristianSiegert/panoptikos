@@ -36,7 +36,6 @@
 		this.session.onAddFlash = this.onAddFlash.bind(this);
 
 		this.storage = new sprinkles.Storage();
-		this.storage.keyPrefix = custom.main.Config.appVersion;
 
 		for (var i = 0, count = this.initFuncs.length; i < count; i++) {
 			this.initFuncs[i]();

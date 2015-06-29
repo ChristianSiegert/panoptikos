@@ -18,7 +18,7 @@
 		// available.
 		this.sessionStorageIsAvailable = isSessionStorageAvailable();
 
-		// keyPrefix is the string that is prefixed to keys.
+		// keyPrefix is the string that is prepended to keys.
 		this.keyPrefix = keyPrefix || "";
 	}
 
@@ -34,11 +34,11 @@
 
 	Storage.prototype.getItem = function(key, temporaryStorageOnly) {
 		if (!temporaryStorageOnly && this.localStorageIsAvailable) {
-			localStorage.getItem(this.keyPrefix + key);
+			return localStorage.getItem(this.keyPrefix + key);
 		} else if (this.sessionStorageIsAvailable) {
-			sessionStorage.getItem(this.keyPrefix + key);
+			return sessionStorage.getItem(this.keyPrefix + key);
 		} else {
-			liveStorage.getItem(this.keyPrefix + key);
+			return liveStorage.getItem(this.keyPrefix + key);
 		}
 	};
 

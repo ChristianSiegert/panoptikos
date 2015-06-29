@@ -12,6 +12,7 @@
 		this.threadListRequest;
 
 		this.postsWithoutImageCount = 0;
+		this.onlyShowPostsWithImages = false;
 	};
 
 	ThreadListController.prototype.init = function(){
@@ -20,8 +21,6 @@
 		app.router.registerRoute("/r/([^/]*)", function(params) {
 			this.loadPage(this.handleList.bind(this, params))
 		}.bind(this));
-
-		this.onlyShowPostsWithImages = custom.settings.Settings.getOnlyShowPostsWithImages();
 	};
 
 	ThreadListController.prototype.loadPage = function(onSuccess) {
@@ -30,6 +29,8 @@
 	};
 
 	ThreadListController.prototype.handleList = function(params) {
+		this.onlyShowPostsWithImages = custom.settings.Settings.getOnlyShowPostsWithImages();
+
 		this.threadProcessor.reset();
 		this.threadListElement = document.getElementById("thread-list");
 
