@@ -17,6 +17,10 @@
 		"windowshots"
 	];
 
+	Config.threadList = {
+		minPreviewImageWidth: 240
+	};
+
 	// Default settings for thread list
 	Config.onlyShowPostsWithImages = false;
 	Config.openExternalLinksInNewTab = true;

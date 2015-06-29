@@ -2,6 +2,7 @@
 	"use strict";
 
 	var template = new sprinkles.Template("/thread-list/thread-list.html");
+	var Config = custom.main.Config;
 
 	function ThreadListController() {
 		this.threadProcessor = new custom.threadList.ThreadProcessor();
@@ -30,9 +31,15 @@
 
 	ThreadListController.prototype.handleList = function(params) {
 		this.threadProcessor.reset();
-
 		this.threadListElement = document.getElementById("thread-list");
-		this.columnsManager = new custom.threadList.ColumnsManager(this.threadListElement, 400, 10, "board-column", this.loadMoreToFillPage.bind(this));
+
+		this.columnsManager = new custom.threadList.ColumnsManager(
+			this.threadListElement,
+			Config.threadList.minPreviewImageWidth,
+			10,
+			"board-column",
+			this.loadMoreToFillPage.bind(this)
+		);
 		this.columnsManager.rebuild();
 
 		var subredditIds = [];
@@ -42,7 +49,7 @@
 		}
 
 		if (subredditIds.length === 0) {
-			subredditIds = custom.main.Config.defaultSubredditIds;
+			subredditIds = Config.defaultSubredditIds;
 		}
 
 		this.threadListRequest = new custom.reddit.ThreadListRequest(subredditIds);
