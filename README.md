@@ -2,7 +2,7 @@
 
 Panoptikos is an image viewer for Reddit. You can see it in action at [panoptikos.com](http://www.panoptikos.com/).
 
-The server-side code is written in Go, the client-side code in JavaScript with [AngularJS](http://angularjs.org/). Panoptikos is hosted on [Google App Engine](https://developers.google.com/appengine/).
+The server-side code is written in Go, the client-side code in plain JavaScript. Panoptikos is hosted on [Google App Engine](https://developers.google.com/appengine/).
 
 ## Features
 
@@ -20,11 +20,18 @@ The server-side code is written in Go, the client-side code in JavaScript with [
 
 ## Development
 
+If you want to work on Panoptikos or use it as a basis for your project, follow the steps below.
+
 ### Installing Panoptikos
 
 [Install the Google App Engine SDK for Go](https://developers.google.com/appengine/downloads#Google_App_Engine_SDK_for_Go) if you haven’t done so already. Then:
 
 	$ go get github.com/ChristianSiegert/panoptikos
+
+Switch to the git branch `vanilla-js`:
+
+	$ cd $GOPATH/src/github.com/ChristianSiegert/panoptikos/
+	$ git checkout vanilla-js
 
 ### Running Panoptikos locally
 
@@ -59,11 +66,15 @@ This replaces your already deployed version. If you want to keep your deployed v
 
 ### Switching between development and production mode
 
+**_Ignore this chapter. Enabling production mode for Panoptikos does not work yet in this branch._**
+
 By default, the app is in production mode. That means a single file that contains all templates, Javascript and CSS was generated and is served. Any changes to the source code will have no effect unless you generate a new single production file. Generated production files are stored in `app/webroot/compiled-index/`.
 
 To make development easier, you can enable development mode. If development mode is enabled, the server serves template, Javascript and CSS files from their development directories. Any changes to the source code will be reflected immediately on page refresh. Open `app.yaml` and uncomment the marked blocks to enable development mode.
 
 ### Generating a new production file
+
+**_Ignore the instructions below. Generating a production file does not work yet in this branch._**
 
 To generate a new production file that contains all templates, Javascript and CSS:
 
