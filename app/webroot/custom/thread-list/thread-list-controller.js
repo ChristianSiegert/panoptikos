@@ -15,10 +15,10 @@
 		this.onlyShowPostsWithImages = false;
 	};
 
-	ThreadListController.prototype.init = function(){
-		app.router.registerRoute("/", this.loadPage.bind(null, this.handleList.bind(this)));
+	ThreadListController.prototype.init = function(router) {
+		router.registerRoute("/", this.loadPage.bind(null, this.handleList.bind(this)));
 
-		app.router.registerRoute("/r/([^/]*)", function(params) {
+		router.registerRoute("/r/([^/]*)", function(params) {
 			this.loadPage(this.handleList.bind(this, params))
 		}.bind(this));
 	};
@@ -115,6 +115,5 @@
 		return subredditIds;
 	}
 
-	var controller = new ThreadListController();
-	app.addInitFunc(controller.init.bind(controller));
+	sprinkles.provide("custom.threadList.ThreadListController", ThreadListController);
 })();

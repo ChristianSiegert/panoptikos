@@ -7,8 +7,8 @@
 
 	}
 
-	FeedbackController.prototype.init = function() {
-		app.router.registerRoute("/feedback", function() {loadPage(handleFeedback)});
+	FeedbackController.prototype.init = function(router) {
+		router.registerRoute("/feedback", function() {loadPage(handleFeedback)});
 	}
 
 	function loadPage(onSuccess) {
@@ -61,6 +61,5 @@
 		request.send(JSON.stringify(data));
 	}
 
-	var controller = new FeedbackController();
-	app.addInitFunc(controller.init.bind(controller));
+	sprinkles.provide("custom.feedback.FeedbackController", FeedbackController);
 })();

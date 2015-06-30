@@ -5,10 +5,6 @@
 		// flashListElement is the element that contains any flash messages.
 		this.flashListElement = document.getElementById("flash-list");
 
-		// initFuncs is a list of functions that are called when App is
-		// initialized.
-		this.initFuncs = [];
-
 		// logger handles logging and submitting log reports.
 		this.logger = null;
 
@@ -23,7 +19,7 @@
 	}
 
 	// init initializes the app. It must only be called after all other files
-	// are loaded and initialized.
+	// are loaded.
 	App.prototype.init = function() {
 		this.logger = new sprinkles.Logger();
 		this.logger.allowSubmissions = true;
@@ -37,10 +33,11 @@
 
 		this.storage = new sprinkles.Storage();
 
-		for (var i = 0, count = this.initFuncs.length; i < count; i++) {
-			this.initFuncs[i]();
-		}
-		this.initFuncs = [];
+		// Initialize controllers
+		(new custom.feedback.FeedbackController()).init(this.router);
+		(new custom.settings.SettingsController()).init(this.router);
+		(new custom.supporters.SupportersController()).init(this.router);
+		(new custom.threadList.ThreadListController()).init(this.router);
 
 		// Load page for current URL
 		this.router.dispatchRequest(location.pathname);
@@ -50,12 +47,6 @@
 	App.prototype.resetFlashes = function() {
 		this.session.flashes = [];
 		this.flashListElement.innerHTML = "";
-	};
-
-	// addInitFunc adds func to a list of functions that are called when init is
-	// called.
-	App.prototype.addInitFunc = function(func) {
-		this.initFuncs.push(func);
 	};
 
 	// onAddFlash displays flash messages to the user.
@@ -77,9 +68,7 @@
 		this.flashListElement.appendChild(listItem);
 	}
 
-	// Create instance and make it globally accessible
-	var app = new App();
-	sprinkles.provide("app", app);
+	sprinkles.provide("custom.main.App", App);
 })();
 
 

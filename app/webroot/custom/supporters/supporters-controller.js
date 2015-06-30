@@ -7,8 +7,8 @@
 
 	};
 
-	SupportersController.prototype.init = function() {
-		app.router.registerRoute("/supporters", this.handleRequest);
+	SupportersController.prototype.init = function(router) {
+		router.registerRoute("/supporters", this.handleRequest);
 	};
 
 	SupportersController.prototype.handleRequest = function() {
@@ -16,6 +16,5 @@
 		page.load();
 	};
 
-	var controller = new SupportersController();
-	app.addInitFunc(controller.init.bind(controller));
+	sprinkles.provide("custom.supporters.SupportersController", SupportersController);
 })();

@@ -7,8 +7,8 @@
 
 	};
 
-	SubredditListController.prototype.init = function() {
-		app.router.registerRoute("/subreddits", this.handleRequest);
+	SubredditListController.prototype.init = function(router) {
+		router.registerRoute("/subreddits", this.handleRequest);
 	};
 
 	SubredditListController.prototype.handleRequest = function() {
@@ -17,6 +17,5 @@
 		page.load();
 	};
 
-	var controller = new SubredditListController();
-	app.addInitFunc(controller.init.bind(controller));
+	sprinkles.provide("custom.subredditList.SubredditListController", SubredditListController);
 })();

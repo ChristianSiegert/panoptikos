@@ -10,8 +10,8 @@
 		this.checkboxOpenExternalLinksInNewTab = null;
 	};
 
-	SettingsController.prototype.init = function() {
-		app.router.registerRoute("/settings", this.loadPage.bind(this));
+	SettingsController.prototype.init = function(router) {
+		router.registerRoute("/settings", this.loadPage.bind(this));
 	};
 
 	SettingsController.prototype.loadPage = function() {
@@ -46,6 +46,5 @@
 		Settings.setOpenExternalLinksInNewTab(this.checkboxOpenExternalLinksInNewTab.checked);
 	};
 
-	var controller = new SettingsController();
-	app.addInitFunc(controller.init.bind(controller));
+	sprinkles.provide("custom.settings.SettingsController", SettingsController);
 })();
