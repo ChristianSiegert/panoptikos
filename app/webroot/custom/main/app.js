@@ -32,6 +32,9 @@
 		this.session.onAddFlash = this.onAddFlash.bind(this);
 
 		this.storage = new sprinkles.Storage();
+		if (window.location.hostname === "localhost") {
+			this.storage.keyPrefix = "panoptikos.";
+		}
 
 		// Initialize controllers
 		(new custom.feedback.FeedbackController()).init(this.router);
