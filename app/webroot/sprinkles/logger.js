@@ -27,20 +27,28 @@
 		this.log(args, submit, Logger.LogTypeInfo);
 	};
 
+	Logger.prototype.warn = function(args, submit) {
+		this.log(args, submit, Logger.LogTypeWarning);
+	};
+
 	Logger.prototype.log = function(args, submit, logType) {
-		if (window.console) {
+		var console = window.console;
+		if (console) {
 			switch (logType) {
 				case Logger.LogTypeDebug:
-					console.debug(args);
+					console.debug.apply(console, args);
 					break;
 				case Logger.LogTypeError:
-					console.error(args);
+					console.error.apply(console, args);
 					break;
 				case Logger.LogTypeInfo:
-					console.info(args);
+					console.info.apply(console, args);
+					break;
+				case Logger.LogTypeWarning:
+					console.warn.apply(console, args);
 					break;
 				default:
-					console.log(args);
+					console.log.apply(console, args);
 			}
 		}
 
@@ -66,9 +74,10 @@
 	};
 
 	// Log types.
-	Logger.LogTypeDebug = "debug";
-	Logger.LogTypeError = "error";
-	Logger.LogTypeInfo  = "info";
+	Logger.LogTypeDebug   = "debug";
+	Logger.LogTypeError   = "error";
+	Logger.LogTypeInfo    = "info";
+	Logger.LogTypeWarning = "warning";
 
 	sprinkles.Logger = Logger;
 })();
