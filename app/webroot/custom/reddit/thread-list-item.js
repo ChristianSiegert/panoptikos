@@ -23,7 +23,7 @@
 		}
 	}
 
-	ThreadListItem.prototype.toElement = function() {
+	ThreadListItem.prototype.toElement = function(showTitle, showInfo) {
 		var openExternalLinksInNewTab = custom.settings.Settings.getOpenExternalLinksInNewTab();
 
 		var listElement = document.createElement("li");
@@ -44,35 +44,39 @@
 			imageAnchorElement.appendChild(imageElement);
 		}
 
-		var titleAnchorElement = document.createElement("a");
-		titleAnchorElement.className = "board-item-title-anchor";
-		titleAnchorElement.href = this.url;
-		titleAnchorElement.textContent = this.title;
-		if (openExternalLinksInNewTab) {
-			titleAnchorElement.target = "_blank";
+		if (showTitle) {
+			var titleAnchorElement = document.createElement("a");
+			titleAnchorElement.className = "board-item-title-anchor";
+			titleAnchorElement.href = this.url;
+			titleAnchorElement.textContent = this.title;
+			if (openExternalLinksInNewTab) {
+				titleAnchorElement.target = "_blank";
+			}
+			listElement.appendChild(titleAnchorElement);
 		}
-		listElement.appendChild(titleAnchorElement);
 
-		var infoElement = document.createElement("div");
-		infoElement.className = "board-item-info";
-		listElement.appendChild(infoElement);
+		if (showInfo) {
+			var infoElement = document.createElement("div");
+			infoElement.className = "board-item-info";
+			listElement.appendChild(infoElement);
 
-		var commentsAnchorElement = document.createElement("a");
-		commentsAnchorElement.className = "board-item-info-cell board-item-comments-anchor";
-		commentsAnchorElement.href = "http://www.reddit.com" + this.commentUrl;
-		commentsAnchorElement.textContent = this.commentCount === 1 ? "1 Comment" : this.commentCount + " Comments";
-		if (openExternalLinksInNewTab) {
-			commentsAnchorElement.target = "_blank";
+			var commentsAnchorElement = document.createElement("a");
+			commentsAnchorElement.className = "board-item-info-cell";
+			commentsAnchorElement.href = "http://www.reddit.com" + this.commentUrl;
+			commentsAnchorElement.textContent = this.commentCount === 1 ? "1 Comment" : this.commentCount + " Comments";
+			if (openExternalLinksInNewTab) {
+				commentsAnchorElement.target = "_blank";
+			}
+			infoElement.appendChild(commentsAnchorElement);
+
+			// if (this.isMultiReddit) {
+				var subredditAnchorElement = document.createElement("a");
+				subredditAnchorElement.className = "board-item-info-cell board-item-info-cell-right";
+				subredditAnchorElement.href = "/r/" + this.subredditName;
+				subredditAnchorElement.textContent = "/r/" + this.subredditName;
+				infoElement.appendChild(subredditAnchorElement);
+			// }
 		}
-		infoElement.appendChild(commentsAnchorElement);
-
-		// if (this.isMultiReddit) {
-			var subredditAnchorElement = document.createElement("a");
-			subredditAnchorElement.className = "board-item-info-cell board-item-info-cell-right board-item-subreddit-anchor";
-			subredditAnchorElement.href = "/r/" + this.subredditName;
-			subredditAnchorElement.textContent = "/r/" + this.subredditName;
-			infoElement.appendChild(subredditAnchorElement);
-		// }
 
 		return listElement
 	};

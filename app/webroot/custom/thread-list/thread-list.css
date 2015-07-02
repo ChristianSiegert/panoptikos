@@ -58,6 +58,7 @@
 
 			.board-item-image-anchor {
 				display: block;
+				line-height: 0;
 			}
 
 				.board-item-image {
@@ -70,9 +71,11 @@
 				display: block;
 				line-height: 20px; /* @alternate */
 				line-height: 2rem;
+				margin: 0 0 4px; /* @alternate */
+				margin: 0 0 0.4rem;
 				overflow: hidden;
-				padding: 6px 4px 4px; /* @alternate */
-				padding: 0.6rem 0.4rem 0.4rem;
+				padding: 6px 4px 0; /* @alternate */
+				padding: 0.6rem 0.4rem 0;
 				text-align: center;
 				text-decoration: none;
 				text-overflow: ellipsis;
@@ -88,6 +91,8 @@
 
 			.board-item-info {
 				display: table;
+				margin: 4px 0 0; /* @alternate */
+				margin: 0.4rem 0 0;
 				width: 100%;
 			}
 

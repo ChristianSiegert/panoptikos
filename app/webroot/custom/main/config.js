@@ -5,8 +5,7 @@
 
 	}
 
-	Config.appVersion = "2015-06-27";
-
+	// Default subreddits
 	Config.defaultSubredditIds = [
 		"CityPorn",
 		"EarthPorn",
@@ -17,13 +16,14 @@
 		"windowshots"
 	];
 
-	Config.threadList = {
-		minPreviewImageWidth: 240
-	};
-
 	// Default settings for thread list
-	Config.onlyShowPostsWithImages = false;
-	Config.openExternalLinksInNewTab = true;
+	Config.threadList = {
+		minPreviewImageWidth: 300,
+		onlyShowPostsWithImages: false,
+		openExternalLinksInNewTab: true,
+		showInfo: true,						// Comment count and subreddit name
+		showPostTitles: true
+	};
 
 	sprinkles.provide("custom.main.Config", Config);
 })();

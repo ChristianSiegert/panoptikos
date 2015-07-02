@@ -3,6 +3,7 @@
 
 	var template = new sprinkles.Template("/thread-list/thread-list.html");
 	var Config = custom.main.Config;
+	var Settings = custom.settings.Settings;
 
 	function ThreadListController() {
 		this.threadProcessor = new custom.threadList.ThreadProcessor();
@@ -76,7 +77,13 @@
 			return;
 		}
 		threadListItem.imagePreviewUrl = imagePreviewUrl;
-		this.columnsManager.addItems([threadListItem.toElement()]);
+
+		var threadListItemElement = threadListItem.toElement(
+			Settings.getShowPostTitles(),
+			Settings.getShowInfo()
+		);
+
+		this.columnsManager.addItems([threadListItemElement]);
 	};
 
 	// loadMoreToFillPage sends a request to Reddit to retrieve more thread list

@@ -10,32 +10,55 @@
 
 	}
 
+	// get returns the key’s value. If key exists, a string is returned. If key
+	// does not exist, null is returned.
+	Settings.get = function(key) {
+		var setting = app.storage.getItem("settings." + key);
+		return setting;
+	};
+
+	// set stores the key’s value. value is cast to String before storing.
+	Settings.set = function(key, value) {
+		app.storage.setItem("settings." + key, String(value));
+	};
+
 	// getOnlyShowPostsWithImages returns whether only posts that have an image
 	// should be displayed.
 	Settings.getOnlyShowPostsWithImages = function() {
-		var setting = app.storage.getItem("settings.onlyShowPostsWithImages");
-		if (!setting) {
-			return Config.onlyShowPostsWithImages;
-		}
-		return setting === "true";
+		return Settings.get("onlyShowPostsWithImages") === "true";
 	};
 
 	Settings.setOnlyShowPostsWithImages = function(value) {
-		app.storage.setItem("settings.onlyShowPostsWithImages", String(value));
+		Settings.set("onlyShowPostsWithImages", value);
 	};
 
 	// getOpenExternalLinksInNewTab returns whether external links should be
 	// opened in a new tab.
 	Settings.getOpenExternalLinksInNewTab = function() {
-		var setting = app.storage.getItem("settings.openExternalLinksInNewTab");
-		if (!setting) {
-			return Config.openExternalLinksInNewTab;
-		}
-		return setting === "true";
+		return Settings.get("openExternalLinksInNewTab") === "true";
 	};
 
 	Settings.setOpenExternalLinksInNewTab = function(value) {
-		app.storage.setItem("settings.openExternalLinksInNewTab", String(value));
+		Settings.set("openExternalLinksInNewTab", value);
+	};
+
+	// getShowInfo returns whether comment count and subreddit name should be
+	// displayed.
+	Settings.getShowInfo = function() {
+		return Settings.get("showInfo") === "true";
+	};
+
+	Settings.setShowInfo = function(value) {
+		Settings.set("showInfo", value);
+	};
+
+	// getShowPostTitles returns whether thread titles should be displayed.
+	Settings.getShowPostTitles = function() {
+		return Settings.get("showPostTitles") === "true";
+	};
+
+	Settings.setShowPostTitles = function(value) {
+		Settings.set("showPostTitles", value);
 	};
 
 	sprinkles.provide("custom.settings.Settings", Settings);
