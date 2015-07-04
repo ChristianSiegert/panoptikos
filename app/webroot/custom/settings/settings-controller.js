@@ -45,7 +45,7 @@
 				|| !this.checkboxOpenExternalLinksInNewTab
 				|| !this.checkboxShowInfo
 				|| !this.checkboxShowPostTitles) {
-			app.logger.error("SettingsController: A required element is missing.");
+			app.logger.error(["SettingsController: Element is missing."]);
 			return;
 		}
 
