@@ -1,7 +1,7 @@
 (function() {
 	"use strict";
 
-	// Logger provides logging to the browser’s console, and sending log
+	// Logger provides logging to the browser’s console, and submission of log
 	// messages to a server for debugging purposes.
 	function Logger(allowSubmissions, submissionUrl) {
 		// allowSubmissions indicates whether log messages can be sent to a
@@ -57,12 +57,14 @@
 		}
 	};
 
-	// submit sends a log messages to a server.
-	Logger.prototype.submit = function(logType, report) {
-		var report = String(logType).toUpperCase() + ": " + String(report);
+	// submit sends a log message to a server.
+	Logger.prototype.submit = function(logType, message) {
+		var message = String(logType).toUpperCase() + ": " + message;
 
 		var request = new XMLHttpRequest();
-		request.onerror = this.error("Logger: Sending %s report failed.", logType);
+		request.onerror = function(event) {
+			this.error("Logger: Sending %s message failed.", logType);
+		}.bind(this);
 		request.onload = function(event) {
 			if (event.target.status !== 200) {
 				request.onerror(event);
@@ -70,7 +72,7 @@
 			}
 		};
 		request.open("POST", this.submissionUrl)
-		request.send(report);
+		request.send(message);
 	};
 
 	// Log types.
