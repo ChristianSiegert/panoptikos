@@ -46,10 +46,12 @@
 			}
 
 			this.routes[route](params);
-			return;
+			break;
 		}
 
-		this.dispatchedFirstRequest = true;
+		setTimeout(function() {
+			this.dispatchedFirstRequest = true;
+		}, 0);
 	};
 
 	Router.prototype.onHistoryPopState = function(event) {
