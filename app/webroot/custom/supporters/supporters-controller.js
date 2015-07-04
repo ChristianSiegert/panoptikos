@@ -3,12 +3,12 @@
 
 	var template = new sprinkles.Template("/supporters/supporters.html");
 
-	function SupportersController() {
-
+	function SupportersController(router) {
+		this.router = router;
 	};
 
-	SupportersController.prototype.init = function(router) {
-		router.registerRoute("/supporters", this.handleRequest);
+	SupportersController.prototype.init = function() {
+		this.router.registerRoute("/supporters", this.handleRequest);
 	};
 
 	SupportersController.prototype.handleRequest = function() {

@@ -5,7 +5,8 @@
 	var Config = custom.main.Config;
 	var Settings = custom.settings.Settings;
 
-	function SettingsController() {
+	function SettingsController(router) {
+		this.router = router;
 		this.settingsListElement = null;
 		this.checkboxOnlyShowPostsWithImages = null;
 		this.checkboxOpenExternalLinksInNewTab = null;
@@ -13,7 +14,7 @@
 		this.checkboxShowPostTitles = null;
 	};
 
-	SettingsController.prototype.init = function(router) {
+	SettingsController.prototype.init = function() {
 		// If it is the user’s first visit, make the default settings the user’s
 		// settings.
 		if (Settings.get("version") === null) {
@@ -24,7 +25,7 @@
 			Settings.setShowPostTitles(Config.threadList.showPostTitles);
 		}
 
-		router.registerRoute("/settings", this.loadPage.bind(this));
+		this.router.registerRoute("/settings", this.loadPage.bind(this));
 	};
 
 	SettingsController.prototype.loadPage = function() {

@@ -3,12 +3,12 @@
 
 	var template = new sprinkles.Template("/subreddit-list/subreddit-list.html");
 
-	function SubredditListController() {
-
+	function SubredditListController(router) {
+		this.router = router;
 	};
 
-	SubredditListController.prototype.init = function(router) {
-		router.registerRoute("/subreddits", this.handleRequest);
+	SubredditListController.prototype.init = function() {
+		this.router.registerRoute("/subreddits", this.handleRequest);
 	};
 
 	SubredditListController.prototype.handleRequest = function() {

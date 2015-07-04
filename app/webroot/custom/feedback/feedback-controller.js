@@ -3,12 +3,12 @@
 
 	var templateFeedback = new sprinkles.Template("/feedback/feedback.html");
 
-	function FeedbackController() {
-
+	function FeedbackController(router) {
+		this.router = router;
 	}
 
-	FeedbackController.prototype.init = function(router) {
-		router.registerRoute("/feedback", function() {loadPage(handleFeedback)});
+	FeedbackController.prototype.init = function() {
+		this.router.registerRoute("/feedback", function() {loadPage(handleFeedback)});
 	}
 
 	function loadPage(onSuccess) {

@@ -37,10 +37,10 @@
 		}
 
 		// Initialize controllers
-		(new custom.feedback.FeedbackController()).init(this.router);
-		(new custom.settings.SettingsController()).init(this.router);
-		(new custom.supporters.SupportersController()).init(this.router);
-		(new custom.threadList.ThreadListController()).init(this.router);
+		(new custom.feedback.FeedbackController(this.router)).init();
+		(new custom.settings.SettingsController(this.router)).init();
+		(new custom.supporters.SupportersController(this.router)).init();
+		(new custom.threadList.ThreadListController(this.router)).init();
 
 		// Load page for current URL
 		this.router.dispatchRequest(location.pathname);
