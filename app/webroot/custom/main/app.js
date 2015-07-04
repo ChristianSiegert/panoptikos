@@ -25,7 +25,7 @@
 		this.logger.allowSubmissions = true;
 		this.logger.submissionUrl = "/api/1/log";
 
-		this.router = new sprinkles.Router();
+		this.router = new sprinkles.Router(this.logger);
 		this.router.onRouteChange = this.resetFlashes.bind(this);
 
 		this.session = new sprinkles.Session();

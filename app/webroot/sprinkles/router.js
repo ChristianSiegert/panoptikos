@@ -1,13 +1,16 @@
 (function() {
 	"use strict";
 
-	function Router() {
+	function Router(logger) {
 		this.regExpRelativeUrl = /^\/[^\/]?/;
 
 		// dispatchedFirstRequest indicates whether the Router dispatched its
 		// first request. It is used to prevent Safari from triggering the
 		// popstate event on page load.
 		this.dispatchedFirstRequest = false;
+
+		// logger is of type sprinkles.Logger.
+		this.logger = logger;
 
 		this.routes = {};
 
@@ -22,6 +25,8 @@
 	// by relativeUrl. If no route is registered to handle relativeUrl, nothing
 	// will happen.
 	Router.prototype.dispatchRequest = function(relativeUrl) {
+		var foundRoute = false;
+
 		for (var route in this.routes) {
 			if (!this.routes.hasOwnProperty(route)) {
 				continue;
@@ -45,8 +50,13 @@
 				params = match.slice(1);
 			}
 
+			foundRoute = true;
 			this.routes[route](params);
 			break;
+		}
+
+		if (!foundRoute) {
+			this.logger.error(["Router: No route found for %s", relativeUrl]);
 		}
 
 		setTimeout(function() {
