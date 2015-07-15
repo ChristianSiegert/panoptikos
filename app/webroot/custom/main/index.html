@@ -72,7 +72,18 @@
 		<script type="text/javascript">app = new custom.main.App(); app.init();</script>
 
 		<!-- Google Analytics -->
-		<script>if(location.hostname==="www.panoptikos.com"){(function(i,s,o,g,r,a,m){i["GoogleAnalyticsObject"]=r;i[r]=i[r]||function(){(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)})(window,document,"script","//www.google-analytics.com/analytics.js","ga");ga("create","UA-44086983-1","panoptikos.com");ga("send","pageview");}</script>
+		<script>
+			(function() {
+				if (navigator.doNotTrack === "1"
+						|| navigator.doNotTrack === "yes"	// Firefox 31-
+						|| navigator.msDoNotTrack === "1"	// IE 9-10
+						|| window.doNotTrack === "1") {		// Safari & IE 11
+					return;
+				}
+
+				(function(i,s,o,g,r,a,m){i["GoogleAnalyticsObject"]=r;i[r]=i[r]||function(){(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)})(window,document,"script","//www.google-analytics.com/analytics.js","ga");ga("create","UA-44086983-1","panoptikos.com");ga("send","pageview");
+			})();
+		</script>
 
 		<!-- Tell visitors who have JavaScript disabled how great the site is so they enable it again. -->
 		<noscript>
