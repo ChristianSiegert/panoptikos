@@ -15,7 +15,7 @@
 		var pieces = namespace.split(".");
 		var namespaceTail = window;
 		for (var i = 0, count = pieces.length; i < count; i++) {
-			var piece = pieces[i]
+			var piece = pieces[i];
 			if (!namespaceTail.hasOwnProperty(piece)) {
 				namespaceTail[piece] = {};
 			}
@@ -25,7 +25,7 @@
 				namespaceTail[piece] = value;
 			}
 		}
-	}
+	};
 
 	// TODO: Implement.
 	sprinkles.provide = sprinkles.namespace;
@@ -33,7 +33,7 @@
 	// TODO: Implement.
 	sprinkles.require = function(namespace) {
 		return sprinkles.namespace(namespace);
-	}
+	};
 
 	// Add framework to global namespace
 	window.sprinkles = sprinkles;
