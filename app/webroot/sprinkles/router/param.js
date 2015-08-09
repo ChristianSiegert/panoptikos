@@ -7,5 +7,5 @@
 		this.value = "";
 	}
 
-	sprinkles.provide("sprinkles.router.Param", Param)
+	sprinkles.provide("sprinkles.router.Param", Param);
 })();

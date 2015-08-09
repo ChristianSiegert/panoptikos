@@ -105,10 +105,27 @@
 		}
 	};
 
-	// registerRoute registers a route and its handleFunc.
-	Router.prototype.registerRoute = function(route, handleFunc) {
-		this.routes[route] = handleFunc;
+	// registerRoute registers a URL pattern and its handleFunc.
+	Router.prototype.registerRoute = function(urlPattern, handleFunc) {
+		this.routes[urlPattern] = handleFunc;
 	};
+
+	function urlPatternToRegExpPattern(urlPattern) {
+		var regExpPieces = [];
+		var urlPatternPieces = urlPattern.split("/");
+
+		for (var i = 0, count = urlPatternPieces.length; i < count; i++) {
+			var pathPiece = urlPatternPieces[i];
+			if (pathPiece[0] === ":") {
+				regExpPieces.push("([^/]*)");
+			} else {
+				regExpPieces.push(pathPiece);
+			}
+		}
+
+		var finalPath = "^" + regExpPieces.join("/") + "$";
+		return new RegExp(finalPath);
+	}
 
 	sprinkles.Router = Router;
 })();
