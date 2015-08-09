@@ -2,24 +2,44 @@
 	"use strict";
 
 	var template = new sprinkles.Template("/thread-list/thread-list.html");
-	var Config = custom.main.Config;
-	var Settings = custom.settings.Settings;
 
-	function ThreadListController() {
-		this.threadProcessor = new custom.threadList.ThreadProcessor();
+	var ColumnsManager    = custom.threadList.ColumnsManager;
+	var Config            = custom.main.Config;
+	var Settings          = custom.settings.Settings;
+	var ThreadListRequest = custom.reddit.ThreadListRequest;
+	var ThreadProcessor   = custom.threadList.ThreadProcessor;
+
+	function ThreadListController(router) {
+		this.router = router;
+		this.threadProcessor = new ThreadProcessor();
 
 		this.columnsManager;
 		this.threadListElement;
 		this.threadListRequest;
 
-		this.postsWithoutImageCount = 0;
+		this.imagelessPostsCount = 0;
 		this.onlyShowPostsWithImages = false;
+
+		// sectionsElement is the button bar for switching Reddit sections.
+		this.sectionsElement = null;
 	};
 
-	ThreadListController.prototype.init = function(router) {
-		router.registerRoute("/", this.loadPage.bind(null, this.handleList.bind(this)));
+	ThreadListController.prototype.init = function() {
+		this.router.registerRoute("/", this.loadPage.bind(null, this.handleList.bind(this)));
 
-		router.registerRoute("/r/([^/]*)", function(params) {
+		// this.router.registerRoute("/:section", function(params) {
+		// 	this.loadPage(this.handleList.bind(this, params));
+		// }.bind(this));
+
+		// this.router.registerRoute("/r/:subredditIds", function(params) {
+		// 	this.loadPage(this.handleList.bind(this, params));
+		// }.bind(this));
+
+		// this.router.registerRoute("/r/:subredditIds/:section", function(params) {
+		// 	this.loadPage(this.handleList.bind(this, params));
+		// }.bind(this));
+
+		this.router.registerRoute("/r/([^/]*)", function(params) {
 			this.loadPage(this.handleList.bind(this, params))
 		}.bind(this));
 	};
@@ -30,12 +50,18 @@
 	};
 
 	ThreadListController.prototype.handleList = function(params) {
-		this.onlyShowPostsWithImages = custom.settings.Settings.getOnlyShowPostsWithImages();
-
+		this.onlyShowPostsWithImages = Settings.getOnlyShowPostsWithImages();
 		this.threadProcessor.reset();
 		this.threadListElement = document.getElementById("thread-list");
 
-		this.columnsManager = new custom.threadList.ColumnsManager(
+		if (!this.threadListElement) {
+			app.logger.error(["ThreadListController: Element is missing."]);
+			return;
+		}
+
+		// this.sectionsElement.addEventListener("click", this.onSectionsClick.bind(this));
+
+		this.columnsManager = new ColumnsManager(
 			this.threadListElement,
 			Config.threadList.minPreviewImageWidth,
 			10,
@@ -54,13 +80,13 @@
 			subredditIds = Config.defaultSubredditIds;
 		}
 
-		this.threadListRequest = new custom.reddit.ThreadListRequest(subredditIds);
+		this.threadListRequest = new ThreadListRequest(subredditIds);
 		this.threadListRequest.onError = this.onThreadListRequestError.bind(this);
 		this.threadListRequest.onSuccess = this.onThreadListRequestSuccess.bind(this);
 		this.threadListRequest.send();
 
 		window.addEventListener("scroll", this.onWindowScroll.bind(this));
-	}
+	};
 
 	ThreadListController.prototype.onThreadListRequestError = function(event) {
 		// TODO: Handle request error.
@@ -73,7 +99,7 @@
 
 	ThreadListController.prototype.onProcessedItem = function(threadListItem, imagePreviewUrl) {
 		if (this.onlyShowPostsWithImages && !imagePreviewUrl) {
-			this.postsWithoutImageCount++;
+			this.imagelessPostsCount++;
 			return;
 		}
 		threadListItem.imagePreviewUrl = imagePreviewUrl;
@@ -89,25 +115,36 @@
 	// loadMoreToFillPage sends a request to Reddit to retrieve more thread list
 	// items if the page is not filled yet.
 	ThreadListController.prototype.loadMoreToFillPage = function(isScrolledToBottom) {
-		// Don’t load more threads from Reddit unless all but one thread list
-		// item have been added to the page.
+		// Don’t load more thread list items from Reddit unless all but one have
+		// been added to the page.
 		if (!isScrolledToBottom
 				|| this.columnsManager.itemElements.length === 0
-				|| this.columnsManager.itemElements.length < this.threadProcessor.threadDict.length - 1 - this.postsWithoutImageCount) {
+				|| this.columnsManager.itemElements.length < this.threadProcessor.threadDict.length - 1 - this.imagelessPostsCount) {
 			return;
 		}
 
 		this.threadListRequest.send();
-	}
+	};
+
+	ThreadListController.prototype.onSectionsClick = function(event) {
+		var supportedSections = ["controversial", "hot", "new", "rising", "top"];
+		var section = event.target.getAttribute("data-section");
+		if (supportedSections.indexOf(section) === -1) {
+			return;
+		}
+
+		var url = "/" + section;
+		this.router.dispatchRequest(url);
+	};
 
 	ThreadListController.prototype.onWindowScroll = function(event) {
 		if (this.columnsManager.isScrolledToBottom()) {
 			this.loadMoreToFillPage(true);
 		}
-	}
+	};
 
-	// getSubredditIdsFromParam parses param to extract subreddit ids, e.g.
-	// “aww+flower” to ["aww", "flower"].
+	// getSubredditIdsFromParam parses param and returns an array of subreddit
+	// ids.
 	function getSubredditIdsFromParam(param) {
 		var subredditIds = [];
 
