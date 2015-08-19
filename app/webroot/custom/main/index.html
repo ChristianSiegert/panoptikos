@@ -52,6 +52,7 @@
 		<script src="/sprinkles/logger.js"></script>
 		<script src="/sprinkles/page.js"></script>
 		<script src="/sprinkles/router.js"></script>
+		<script src="/sprinkles/privacy/privacy.js"></script>
 		<script src="/sprinkles/session.js"></script>
 		<script src="/sprinkles/storage.js"></script>
 		<script src="/sprinkles/string.js"></script>
@@ -73,10 +74,7 @@
 		<!-- Google Analytics -->
 		<script>
 			(function() {
-				if (navigator.doNotTrack === "1"
-						|| navigator.doNotTrack === "yes"	// Firefox 31-
-						|| navigator.msDoNotTrack === "1"	// IE 9-10
-						|| window.doNotTrack === "1") {		// Safari & IE 11
+				if (sprinkles.privacy.Privacy.doNotTrack()) {
 					return;
 				}
 
