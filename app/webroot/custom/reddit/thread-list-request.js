@@ -67,7 +67,7 @@
 	}
 
 	function send(threadListRequest) {
-		var url = "http://www.reddit.com";
+		var url = "https://www.reddit.com";
 
 		if (threadListRequest.subredditIds) {
 			url += "/r/" + threadListRequest.subredditIds.join("+");
