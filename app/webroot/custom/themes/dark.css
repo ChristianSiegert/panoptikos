@@ -68,3 +68,7 @@ input[type=checkbox][disabled] + label {
 .board-item-title-anchor:visited {
 	color: #5A5A5A;
 }
+
+.board-item-title-anchor:visited:hover {
+	color: rgba(25, 131, 165, 1);
+}
