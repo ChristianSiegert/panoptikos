@@ -4,10 +4,9 @@
 	function Router(logger) {
 		this.regExpRelativeUrl = /^\/[^\/]?/;
 
-		// dispatchedFirstRequest indicates whether the Router dispatched its
-		// first request. It is used to prevent Safari from triggering the
-		// popstate event on page load.
-		this.dispatchedFirstRequest = false;
+		// ignorePopstateEvents is used to ignore Safari’s popstate event on
+		// page load.
+		this.ignorePopstateEvents = true;
 
 		// logger is of type sprinkles.Logger.
 		this.logger = logger;
@@ -60,13 +59,13 @@
 		}
 
 		setTimeout(function() {
-			this.dispatchedFirstRequest = true;
-		}, 0);
+			this.ignorePopstateEvents = false;
+		}.bind(this), 0);
 	};
 
 	Router.prototype.onHistoryPopState = function(event) {
-		// Prevent Safari from triggering popstate event on page load
-		if (!this.dispatchedFirstRequest) {
+		// Ignore Safari’s popstate event on page load
+		if (this.ignorePopstateEvents) {
 			return;
 		}
 
