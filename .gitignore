@@ -27,3 +27,4 @@ panoptikos
 *.sublime-project
 *.sublime-workspace
 app/temp/
+.idea
