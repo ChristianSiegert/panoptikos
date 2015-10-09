@@ -221,13 +221,6 @@ a[target="_blank"]::after {
 	text-align: center;
 }
 
-/* Increase font size on mobile devices. */
-@media (max-width: 1024px) {
-	html {
-		font-size: 67.3077%;
-	}
-}
-
 /* Reduce margins on mobile phones. */
 @media (max-width: 480px) {
 	#content {
