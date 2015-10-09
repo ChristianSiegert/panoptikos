@@ -1,17 +1,9 @@
-#supporter-table {
+#supporters-table {
 	display: table;
+	margin: 0 auto;
 }
 
-	.supporter-table-row {
-		display: table-row;
+	.supporters-table-row {
+		margin: 10px 0; /* @alternate */
+		margin: 1rem 0;
 	}
-
-		.supporter-table-cell {
-			display: inline-block; /* @alternate */
-			display: table-cell;
-			padding: 0.1rem 0;
-		}
-
-		.supporter-table-cell:first-child {
-			padding-right: 1rem;
-		}
