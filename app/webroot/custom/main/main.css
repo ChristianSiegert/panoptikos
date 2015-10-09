@@ -156,17 +156,6 @@ table {
 			color: #E83A41;
 		}
 
-		.nav-link-patreon {
-			color: #8B8B8B !important;
-			font-size: 13px; /* @alternate */
-			font-size: 1.3rem;
-			text-transform: none;
-		}
-
-		.nav-link-patreon:hover {
-			color: #E83A41 !important;
-		}
-
 #content {
 	margin: 0 20px 15px; /* @alternate */
 	margin: 0 2rem 1.5rem;
@@ -237,12 +226,6 @@ a[target="_blank"]::after {
 			padding-left: 0.3rem;
 			padding-right: 0.3rem;
 		}
-}
-
-@media (min-width: 430px) and (max-width: 600px) {
-	.nav-link-patreon {
-		display: none;
-	}
 }
 
 @media (max-width: 384px) {
