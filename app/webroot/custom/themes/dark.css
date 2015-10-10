@@ -1,7 +1,7 @@
 /* General */
 html {
 	background: rgba(24, 28, 31, 0.92);
-	color: #AAA;
+	color: rgba(255, 255, 255, 0.9);
 }
 
 a {
@@ -28,7 +28,7 @@ noscript th {
 	}
 
 	.nav-link:hover {
-		color: #ADAFB2;
+		color: #F8FBFF;
 	}
 
 	.nav-link-patreon:hover {
