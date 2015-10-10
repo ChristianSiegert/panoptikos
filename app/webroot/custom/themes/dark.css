@@ -1,0 +1,78 @@
+/* General */
+html {
+	background: rgba(24, 28, 31, 0.92);
+	color: #AAA;
+}
+
+a {
+	color: rgba(25, 131, 165, 0.8);
+}
+
+a:hover {
+	color: rgba(25, 131, 165, 1);
+}
+
+/* Navigation bar */
+#nav-list {
+	background: #181C1F;
+}
+
+	.nav-link,
+	.nav-link:visited {
+		color: #C7CACD;
+	}
+
+	.nav-link:hover {
+		color: #ADAFB2;
+	}
+
+	.nav-link-patreon:hover {
+		color: #9C9EA1 !important;
+	}
+
+/* Flash messages */
+.flash {
+	background: rgba(12, 150, 217, 0.8);
+	color: rgba(255, 255, 255, 0.8);
+}
+
+.flash-error {
+	background: rgba(254, 63, 53, 0.8);
+}
+
+.flash-warning {
+	background: rgba(254, 108, 59, 0.8);
+}
+
+/* Forms */
+input,
+input:focus,
+textarea,
+textarea:focus {
+	background: #262626;
+	text-shadow: none;
+	-webkit-box-shadow: inset 0 1px 1px #1F1F1F;
+	        box-shadow: inset 0 1px 1px #1F1F1F;
+}
+
+input[type=checkbox][disabled] + label {
+	color: #626262;
+}
+
+/* Thread list */
+.board-item {
+	background: rgba(0, 0, 0, 0.4);
+}
+
+.board-item-info-cell {
+	color: rgba(255, 255, 255, 0.4);
+}
+
+.board-item-title-anchor,
+.board-item-title-anchor:visited {
+	color: rgba(255, 255, 255, 0.7);
+}
+
+.board-item-title-anchor:visited:hover {
+	color: rgba(25, 131, 165, 1);
+}
