@@ -13,6 +13,7 @@ html {
 	color: #282828;
 	font-family: -apple-system, "Roboto", "Ubuntu", "DejaVu Sans", "Lucida Grande", sans-serif;
 	font-size: 62.5%;
+	font-weight: 300;
 	text-rendering: geometricPrecision;
 
 	/* Show scrollbar right away so the available width for our board remains the same when images are added. */
