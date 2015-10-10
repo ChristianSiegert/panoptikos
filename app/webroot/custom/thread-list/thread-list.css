@@ -1,24 +1,3 @@
-@media (max-width: 480px) {
-	#foo button {
-		padding-left: 1rem;
-		padding-right: 1rem;
-	}
-}
-
-@media (max-width: 383px) {
-	#foo button {
-		padding-left: 0.8rem;
-		padding-right: 0.8rem;
-	}
-}
-
-@media (max-width: 350px) {
-	#foo button {
-		padding-left: 0.6rem;
-		padding-right: 0.6rem;
-	}
-}
-
 #board {
 	line-height: 0;
 	margin: 5px 0 0 0;

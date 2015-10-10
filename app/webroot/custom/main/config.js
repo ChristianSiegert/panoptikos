@@ -18,7 +18,7 @@
 
 	// Default settings for thread list
 	Config.threadList = {
-		minPreviewImageWidth: 300,
+		minPreviewImageWidth: 400,
 		onlyShowPostsWithImages: false,
 		openExternalLinksInNewTab: true,
 		showInfo: true,						// Comment count and subreddit name

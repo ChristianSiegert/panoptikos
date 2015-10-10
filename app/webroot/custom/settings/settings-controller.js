@@ -34,7 +34,7 @@
 	};
 
 	SettingsController.prototype.handleRequest = function(page) {
-		this.settingsListElement = document.getElementById("settings-list");
+		this.settingsListElement = document.getElementById("settings-table");
 		this.checkboxOnlyShowPostsWithImages = document.getElementById("setting-only-show-posts-with-images");
 		this.checkboxOpenExternalLinksInNewTab = document.getElementById("setting-open-external-links-in-new-tab");
 		this.checkboxShowInfo = document.getElementById("setting-show-info");

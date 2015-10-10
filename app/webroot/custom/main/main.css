@@ -11,7 +11,7 @@ html {
 	background:     -ms-linear-gradient(#F9F9F9, #F7F7F7) fixed; /* @alternate */
 	background:         linear-gradient(#F9F9F9, #F7F7F7) fixed;
 	color: #282828;
-	font-family: "Roboto", "Ubuntu", "DejaVu Sans", "Lucida Grande", sans-serif;
+	font-family: -apple-system, "Roboto", "Ubuntu", "DejaVu Sans", "Lucida Grande", sans-serif;
 	font-size: 62.5%;
 	text-rendering: geometricPrecision;
 
@@ -23,8 +23,8 @@ html {
 }
 
 body {
-	font-size: 14px; /* @alternate */
-	font-size: 1.4rem;
+	font-size: 16px; /* @alternate */
+	font-size: 1.6rem;
 }
 
 a {
@@ -156,17 +156,6 @@ table {
 			color: #E83A41;
 		}
 
-		.nav-link-patreon {
-			color: #8B8B8B !important;
-			font-size: 13px; /* @alternate */
-			font-size: 1.3rem;
-			text-transform: none;
-		}
-
-		.nav-link-patreon:hover {
-			color: #E83A41 !important;
-		}
-
 #content {
 	margin: 0 20px 15px; /* @alternate */
 	margin: 0 2rem 1.5rem;
@@ -221,13 +210,6 @@ a[target="_blank"]::after {
 	text-align: center;
 }
 
-/* Increase font size on mobile devices. */
-@media (max-width: 1024px) {
-	html {
-		font-size: 67.3077%;
-	}
-}
-
 /* Reduce margins on mobile phones. */
 @media (max-width: 480px) {
 	#content {
@@ -244,12 +226,6 @@ a[target="_blank"]::after {
 			padding-left: 0.3rem;
 			padding-right: 0.3rem;
 		}
-}
-
-@media (min-width: 430px) and (max-width: 600px) {
-	.nav-link-patreon {
-		display: none;
-	}
 }
 
 @media (max-width: 384px) {
