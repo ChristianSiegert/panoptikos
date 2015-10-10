@@ -238,20 +238,22 @@ a[target="_blank"]::after {
 		}
 }
 
-#no-js {
+noscript {
+	display: block;
 	margin: 30px 0; /* @alternate */
 	margin: 3rem 0;
 	text-align: center;
 }
 
-	#no-js p {
+	noscript p {
 		max-width: none;
+		margin-bottom: 2rem;
 	}
 
-	#no-js table {
-		font-size: 13px; /* @alternate */
-		font-size: 1.3rem;
-		margin: 10px auto; /* @alternate */
-		margin: 1rem auto;
+	noscript table {
+		font-size: 14px; /* @alternate */
+		font-size: 1.4rem;
+		margin: 20px auto; /* @alternate */
+		margin: 2rem auto;
 		text-align: left;
 	}

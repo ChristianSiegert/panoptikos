@@ -12,6 +12,11 @@ a:hover {
 	color: rgba(25, 131, 165, 1);
 }
 
+noscript td,
+noscript th {
+	border-color: rgba(255, 255, 255, 0.5);
+}
+
 /* Navigation bar */
 #nav-list {
 	background: #181C1F;
