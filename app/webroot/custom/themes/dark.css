@@ -31,10 +31,6 @@ noscript th {
 		color: #F8FBFF;
 	}
 
-	.nav-link-patreon:hover {
-		color: #9C9EA1 !important;
-	}
-
 /* Flash messages */
 .flash {
 	background: rgba(12, 150, 217, 0.8);
