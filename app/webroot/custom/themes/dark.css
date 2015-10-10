@@ -1,6 +1,6 @@
 /* General */
 html {
-	background: #333;
+	background: rgba(24, 28, 31, 0.92);
 	color: #AAA;
 }
 
@@ -13,18 +13,22 @@ a:hover {
 }
 
 /* Navigation bar */
-.nav-link,
-.nav-link:visited {
-	color: #94999B;
+#nav-list {
+	background: #181C1F;
 }
 
-.nav-link:hover {
-	color: #ADAFB2;
-}
+	.nav-link,
+	.nav-link:visited {
+		color: #C7CACD;
+	}
 
-.nav-link-patreon:hover {
-	color: #9C9EA1 !important;
-}
+	.nav-link:hover {
+		color: #ADAFB2;
+	}
+
+	.nav-link-patreon:hover {
+		color: #9C9EA1 !important;
+	}
 
 /* Flash messages */
 .flash {
@@ -57,16 +61,16 @@ input[type=checkbox][disabled] + label {
 
 /* Thread list */
 .board-item {
-	background: #262626;
+	background: rgba(0, 0, 0, 0.4);
 }
 
 .board-item-info-cell {
-	color: #4D4D4D;
+	color: rgba(255, 255, 255, 0.4);
 }
 
 .board-item-title-anchor,
 .board-item-title-anchor:visited {
-	color: #5A5A5A;
+	color: rgba(255, 255, 255, 0.7);
 }
 
 .board-item-title-anchor:visited:hover {
