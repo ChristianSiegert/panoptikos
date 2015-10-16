@@ -76,6 +76,10 @@ p {
 		vertical-align: middle;
 	}
 
+.max-width-m {
+	max-width: 60rem;
+}
+
 strong {
 	font-weight: bold;
 }
@@ -110,8 +114,6 @@ table {
 	display: -webkit-flex; /* @alternate */
 	display:     -ms-flexbox; /* @alternate */
 	display:         flex;
-	font-size: 15px; /* @alternate */
-	font-size: 1.5rem;
 	margin: 0 0 20px; /* @alternate */
 	margin: 0 0 2rem;
 	padding: 5px 13px; /* @alternate */
@@ -205,6 +207,11 @@ a[target="_blank"]::after {
 	height: 1.2rem;
 	margin: 0 0 -0.1rem 0.2rem;
 	width: 1.2rem;
+}
+
+.center {
+	margin-left: auto;
+	margin-right: auto;
 }
 
 .center-text {
