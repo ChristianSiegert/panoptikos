@@ -9,51 +9,34 @@ button,
 .button {
 	-webkit-appearance: none;
 	-webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-	background: #F6F6F6; /* @alternate */
-	background: -webkit-gradient(linear, left top, left bottom, color-stop(0.05, #FFF), color-stop(1, #F6F6F6)); /* @alternate */
-	background: -webkit-linear-gradient(to bottom, #FFF 5%, #F6F6F6 100%); /* @alternate */
-	background:    -moz-linear-gradient(to bottom, #FFF 5%, #F6F6F6 100%); /* @alternate */
-	background:     -ms-linear-gradient(to bottom, #FFF 5%, #F6F6F6 100%); /* @alternate */
-	background:         linear-gradient(to bottom, #FFF 5%, #F6F6F6 100%);
-	border: 1px solid #DCDCDC;
-	color: #585858;
+	background: #F6F6F6;
+	border: none;
+	color: #FFF;
 	cursor: pointer;
 	display: inline-block;
-	font-family: "Roboto", "Ubuntu", "DejaVu Sans", "Arial", sans-serif;
-	font-size: 15px; /* @alternate */
-	font-size: 1.5rem;
+	font-family: -apple-system, "Roboto", "Ubuntu", "DejaVu Sans", "Lucida Grande", sans-serif;
+	font-size: 16px; /* @alternate */
+	font-size: 1.6rem;
 	margin: 0;
 	outline: none;
-	padding: 6px 18px; /* @alternate */
-	padding: 0.6rem 1.8rem;
+	padding: 9px 20px; /* @alternate */
+	padding: 0.9rem 2rem;
 	text-decoration: none;
-	text-shadow: 1px 1px 0 rgba(255, 255, 255, 0.5);
 	vertical-align: middle;
 
-	-webkit-border-radius: 6px;
-	   -moz-border-radius: 6px;
-	        border-radius: 6px;
+	-webkit-border-radius: 0.3rem;
+	   -moz-border-radius: 0.3rem;
+	        border-radius: 0.3rem;
 }
 
 button:hover,
 .button:hover {
-	background: #E7E7E7; /* @alternate */
-	background: -webkit-gradient(linear, left top, left bottom, color-stop(0.05, #F9F9F9), color-stop(1, #E7E7E7)); /* @alternate */
-	background: -webkit-linear-gradient(to bottom, #F9F9F9 5%, #E7E7E7 100%); /* @alternate */
-	background:    -moz-linear-gradient(to bottom, #F9F9F9 5%, #E7E7E7 100%); /* @alternate */
-	background:     -ms-linear-gradient(to bottom, #F9F9F9 5%, #E7E7E7 100%); /* @alternate */
-	background:         linear-gradient(to bottom, #F9F9F9 5%, #E7E7E7 100%);
-	color: #585858;
+	background: #E7E7E7;
 }
 
 button:active,
 .button:active {
-	background: #D9D9D9; /* @alternate */
-	background: -webkit-gradient(linear, left top, left bottom, color-stop(0.05, #EEE), color-stop(1, #D9D9D9)); /* @alternate */
-	background: -webkit-linear-gradient(to bottom, #EEE 5%, #D9D9D9 100%); /* @alternate */
-	background:    -moz-linear-gradient(to bottom, #EEE 5%, #D9D9D9 100%); /* @alternate */
-	background:     -ms-linear-gradient(to bottom, #EEE 5%, #D9D9D9 100%); /* @alternate */
-	background:         linear-gradient(to bottom, #EEE 5%, #D9D9D9 100%);
+	background: #D9D9D9;
 	box-shadow: 0 0 2px 0 rgba(146, 102, 102, 0.16) inset;
 	padding: 7px 18px 5px; /* @alternate */
 	padding: 0.7rem 1.8rem 0.5rem;
@@ -63,6 +46,16 @@ button:active,
 button::-moz-focus-inner {
 	border: 0;
 	padding: 0;
+}
+
+button.primary,
+.button.primary {
+	background-color: #7ECB61;
+}
+
+button.primary:hover,
+.button.primary:hover {
+	background-color: #85CF69;
 }
 
 input,
@@ -77,8 +70,8 @@ textarea {
 	margin: 0 10px 10px 0; /* @alternate */
 	margin: 0 1rem 1rem 0;
 	max-width: 600px;
-	padding: 8px 8px 6px; /* @alternate */
-	padding: 0.8rem 0.8rem 0.6rem;
+	padding: 10px; /* @alternate */
+	padding: 1rem;
 	text-shadow: 1px 1px #FFF; /* @alternate */
 	text-shadow: 0.1rem 0.1rem #FFF;
 	vertical-align: middle;
