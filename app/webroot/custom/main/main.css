@@ -107,8 +107,8 @@ table {
 	display: -webkit-flex; /* @alternate */
 	display:     -ms-flexbox; /* @alternate */
 	display:         flex;
-	margin: 0 0 20px; /* @alternate */
-	margin: 0 0 2rem;
+	margin: 5px 0; /* @alternate */
+	margin: 0.5rem 0;
 	padding: 5px 13px; /* @alternate */
 	padding: 0.5rem 1.3rem;
 
