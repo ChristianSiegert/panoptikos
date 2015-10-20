@@ -18,10 +18,6 @@ noscript th {
 }
 
 /* Navigation bar */
-#nav-list {
-	background: #181C1F;
-}
-
 	.nav-link,
 	.nav-link:visited {
 		color: #C7CACD;
@@ -50,7 +46,7 @@ input,
 input:focus,
 textarea,
 textarea:focus {
-	background: #262626;
+	background: rgba(0, 0, 0, 0.4);
 	text-shadow: none;
 	-webkit-box-shadow: inset 0 1px 1px #1F1F1F;
 	        box-shadow: inset 0 1px 1px #1F1F1F;
@@ -58,6 +54,17 @@ textarea:focus {
 
 input[type=checkbox][disabled] + label {
 	color: #626262;
+}
+
+button.primary,
+.button.primary {
+	background-color: rgba(126, 203, 97, 0.8);
+	color: rgba(255, 255, 255, 0.9);
+}
+
+button.primary:hover,
+.button.primary:hover {
+	background-color: rgba(126, 203, 97, 0.9);
 }
 
 /* Thread list */
