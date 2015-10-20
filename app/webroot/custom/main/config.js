@@ -16,6 +16,13 @@
 		"windowshots"
 	];
 
+	Config.defaultTheme = "light";
+
+	Config.themes = [
+		"dark",
+		"light"
+	];
+
 	// Default settings for thread list
 	Config.threadList = {
 		minPreviewImageWidth: 400,

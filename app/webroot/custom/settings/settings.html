@@ -1,20 +1,29 @@
 <h1 class="center-text">Settings</h1>
 
-<ul id="settings-table">
-	<li class="settings-table-row">
-		<div class="settings-table-cell"><input id="setting-only-show-posts-with-images" type="checkbox"></div>
-		<div class="settings-table-cell"><label for="setting-only-show-posts-with-images">Only show posts with images</label></div>
-	</li>
-	<li class="settings-table-row">
-		<div class="settings-table-cell"><input id="setting-show-post-titles" type="checkbox"></div>
-		<div class="settings-table-cell"><label for="setting-show-post-titles">Show title</label></div>
-	</li>
-	<li class="settings-table-row">
-		<div class="settings-table-cell"><input id="setting-show-info" type="checkbox"></div>
-		<div class="settings-table-cell"><label for="setting-show-info">Show comment count and subreddit name</label></div>
-	</li>
-	<li class="settings-table-row">
-		<div class="settings-table-cell"><input id="setting-open-external-links-in-new-tab" type="checkbox"></div>
-		<div class="settings-table-cell"><label for="setting-open-external-links-in-new-tab">Open external links in new tab</label></div>
-	</li>
-</ul>
+<table class="center" id="settings-table">
+	<tr>
+		<td colspan="2">
+			<label for="setting-theme">Theme:</label>
+			<select id="setting-theme">
+				<option value="dark">Dark</option>
+				<option value="light">Light</option>
+			</select>
+		</td>
+	</tr>
+	<tr>
+		<td><input id="setting-only-show-posts-with-images" type="checkbox"></td>
+		<td><label for="setting-only-show-posts-with-images">Only show posts with images</label></td>
+	</tr>
+	<tr>
+		<td><input id="setting-show-post-titles" type="checkbox"></td>
+		<td><label for="setting-show-post-titles">Show title</label></td>
+	</tr>
+	<tr>
+		<td><input id="setting-show-info" type="checkbox"></td>
+		<td><label for="setting-show-info">Show comment count and subreddit name</label></td>
+	</tr>
+	<tr>
+		<td><input id="setting-open-external-links-in-new-tab" type="checkbox"></td>
+		<td><label for="setting-open-external-links-in-new-tab">Open external links in new tab</label></td>
+	</tr>
+</table>

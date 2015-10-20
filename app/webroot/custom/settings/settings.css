@@ -1,21 +1,16 @@
-#settings-table {
-	display: table;
-	margin: 0 auto;
+#settings-table tr {
+	display: table-row;
+	margin: 10px 0; /* @alternate */
+	margin: 1rem 0;
 }
 
-	.settings-table-row {
-		display: table-row;
-		margin: 10px 0; /* @alternate */
-		margin: 1rem 0;
+	#settings-table td {
+		display: table-cell;
+		padding: 5px 0; /* @alternate */
+		padding: 0.5rem 0;
+		vertical-align: top;
 	}
 
-		.settings-table-row label {
+		#settings-table label {
 			font-size: 1.6rem;
 		}
-
-			.settings-table-cell {
-				display: table-cell;
-				padding: 5px 0; /* @alternate */
-				padding: 0.5rem 0;
-				vertical-align: top;
-			}

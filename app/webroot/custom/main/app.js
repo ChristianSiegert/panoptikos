@@ -36,9 +36,12 @@
 			this.storage.keyPrefix = "panoptikos.";
 		}
 
+		var settingsController = new custom.settings.SettingsController(this.router);
+		settingsController.init();
+		settingsController.loadTheme(custom.settings.Settings.getTheme());
+
 		// Initialize controllers
 		(new custom.feedback.FeedbackController(this.router)).init();
-		(new custom.settings.SettingsController(this.router)).init();
 		(new custom.supporters.SupportersController(this.router)).init();
 		(new custom.threadList.ThreadListController(this.router)).init();
 
