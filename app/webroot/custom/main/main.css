@@ -11,7 +11,7 @@ html {
 	background:     -ms-linear-gradient(#F9F9F9, #F7F7F7) fixed; /* @alternate */
 	background:         linear-gradient(#F9F9F9, #F7F7F7) fixed;
 	color: #282828;
-	font-family: -apple-system, "Roboto", "Ubuntu", "DejaVu Sans", "Lucida Grande", sans-serif;
+	font-family: -apple-system, "Roboto", "Ubuntu", "Helvetica Neue", "Helvetica", sans-serif;
 	font-size: 62.5%;
 	font-weight: 300;
 	text-rendering: geometricPrecision;
