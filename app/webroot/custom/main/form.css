@@ -119,6 +119,10 @@ label {
 		color: #999;
 	}
 
+	label + select {
+		margin-left: 1rem;
+	}
+
 textarea {
 	min-height: 150px; /* @alternate */
 	min-height: 15rem;

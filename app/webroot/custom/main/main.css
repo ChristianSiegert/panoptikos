@@ -99,23 +99,16 @@ table {
 
 		td,
 		th {
-			border: 1px solid #333;
-			border-width: 0 1px 1px 0;
 			padding: 1px 5px; /* @alternate */
 			padding: 0.1rem 0.5rem;
-		}
-
-		td:last-of-type,
-		th:last-of-type {
-			border-right: none;
 		}
 
 #nav-list {
 	display: -webkit-flex; /* @alternate */
 	display:     -ms-flexbox; /* @alternate */
 	display:         flex;
-	margin: 0 0 20px; /* @alternate */
-	margin: 0 0 2rem;
+	margin: 5px 0; /* @alternate */
+	margin: 0.5rem 0;
 	padding: 5px 13px; /* @alternate */
 	padding: 0.5rem 1.3rem;
 
@@ -265,3 +258,15 @@ noscript {
 		margin: 2rem auto;
 		text-align: left;
 	}
+
+
+		noscript td,
+		noscript th {
+			border: 1px solid #333;
+			border-width: 0 1px 1px 0;
+		}
+
+		noscript td:last-of-type,
+		noscript th:last-of-type {
+			border-right: none;
+		}

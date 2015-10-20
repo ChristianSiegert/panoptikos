@@ -5,7 +5,7 @@
 
 	// Settings provides access to user-editable settings. If persistent storage
 	// is available, settings are stored in a persistent way, otherwise they
-	// will be lost when the session ends (i.e. when the browser tab is closed).
+	// will be lost when the browser tab is closed.
 	function Settings() {
 
 	}
@@ -59,6 +59,36 @@
 
 	Settings.setShowPostTitles = function(value) {
 		Settings.set("showPostTitles", value);
+	};
+
+	Settings.getTheme = function() {
+		return Settings.get("theme");
+	};
+
+	Settings.setTheme = function(themeName) {
+		if (themeName !== "dark" && themeName !== "light") {
+			return;
+		}
+		Settings.set("theme", themeName);
+	};
+
+	Settings.getVersion = function() {
+		return Settings.get("version");
+	};
+
+	Settings.setVersion = function(version) {
+		Settings.set("version", version);
+	};
+
+	// isTheme returns whether theme is a known theme, i.e. is listed in
+	// Config.themes.
+	Settings.isTheme = function(theme) {
+		for (var i = 0, length = Config.themes.length; i < length; i++) {
+			if (Config.themes[i] === theme) {
+				return true;
+			}
+		}
+		return false;
 	};
 
 	sprinkles.provide("custom.settings.Settings", Settings);
