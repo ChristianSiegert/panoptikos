@@ -7,13 +7,14 @@
 
 	function SettingsController(router) {
 		this.router = router;
-		this.settingsListElement = null;
+		this.settingsTableElement = null;
+		this.themeLinkElement = null;
+
 		this.checkboxOnlyShowPostsWithImages = null;
 		this.checkboxOpenExternalLinksInNewTab = null;
 		this.checkboxShowInfo = null;
 		this.checkboxShowPostTitles = null;
 		this.themeSelectElement = null;
-		this.themeLinkElement = null;
 	}
 
 	// init sets the initial settings values and registers the route
@@ -44,14 +45,14 @@
 	};
 
 	SettingsController.prototype.handleRequest = function(page) {
-		this.settingsListElement = document.getElementById("settings-table");
+		this.settingsTableElement = document.getElementById("settings-table");
 		this.checkboxOnlyShowPostsWithImages = document.getElementById("setting-only-show-posts-with-images");
 		this.checkboxOpenExternalLinksInNewTab = document.getElementById("setting-open-external-links-in-new-tab");
 		this.checkboxShowInfo = document.getElementById("setting-show-info");
 		this.checkboxShowPostTitles = document.getElementById("setting-show-post-titles");
 		this.themeSelectElement = document.getElementById("setting-theme");
 
-		if (!this.settingsListElement
+		if (!this.settingsTableElement
 				|| !this.checkboxOnlyShowPostsWithImages
 				|| !this.checkboxOpenExternalLinksInNewTab
 				|| !this.checkboxShowInfo
@@ -81,10 +82,11 @@
 			app.session.addFlashWarningMessage(message);
 		}
 
-		this.settingsListElement.addEventListener("click", this.onListClick.bind(this));
+		this.settingsTableElement.addEventListener("click", this.onTableClick.bind(this));
+		this.themeSelectElement.addEventListener("change", this.onThemeChange.bind(this));
 	};
 
-	SettingsController.prototype.onListClick = function(event) {
+	SettingsController.prototype.onTableClick = function(event) {
 		Settings.setOnlyShowPostsWithImages(this.checkboxOnlyShowPostsWithImages.checked);
 		Settings.setOpenExternalLinksInNewTab(this.checkboxOpenExternalLinksInNewTab.checked);
 		Settings.setShowInfo(this.checkboxShowInfo.checked);
@@ -95,11 +97,11 @@
 			this.checkboxShowPostTitles.checked = true;
 			Settings.setShowPostTitles(true);
 		}
+	};
 
-		if (this.themeSelectElement.value !== Settings.getTheme()) {
-			Settings.setTheme(this.themeSelectElement.value);
-			this.loadTheme(Settings.getTheme());
-		}
+	SettingsController.prototype.onThemeChange = function(event) {
+		Settings.setTheme(this.themeSelectElement.value);
+		this.loadTheme(Settings.getTheme());
 	};
 
 	// loadTheme loads the CSS file associated with theme.
